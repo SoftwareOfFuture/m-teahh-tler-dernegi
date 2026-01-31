@@ -23,7 +23,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full max-w-full border-b border-black/5 bg-white/90 backdrop-blur overflow-x-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-      <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-2 px-3 py-3 sm:gap-2.5 sm:px-4 md:px-5" style={{ maxWidth: '100%' }}>
+      <div className="mx-auto flex w-full min-w-0 max-w-4xl items-center justify-between gap-1.5 px-2 py-3 sm:gap-2 sm:px-3 md:px-4" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="grid size-10 place-items-center rounded-xl bg-burgundy text-white shadow-card">
@@ -41,7 +41,7 @@ export function Header() {
             <Link
               key={item.label}
               href={item.href}
-              className="text-[13px] font-medium text-slate-700 transition-colors hover:text-burgundy xl:text-sm"
+              className="whitespace-nowrap text-[12px] font-medium text-slate-700 transition-colors hover:text-burgundy xl:text-[13px]"
             >
               {item.label}
             </Link>
@@ -116,7 +116,7 @@ export function Header() {
       {/* Mobile menu */}
       {open && (
         <div className="w-full border-t border-black/5 bg-white lg:hidden overflow-x-hidden" style={{ maxWidth: '100vw' }}>
-          <div className="mx-auto w-full max-w-5xl px-3 py-3 sm:px-4 md:px-5" style={{ maxWidth: '100%' }}>
+          <div className="mx-auto w-full min-w-0 max-w-4xl px-2 py-3 sm:px-3 md:px-4" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
             <nav className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link

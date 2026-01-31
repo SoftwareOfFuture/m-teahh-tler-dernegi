@@ -13,13 +13,13 @@ export default function HomePage() {
     <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
       <Header />
 
-      <main className="mx-auto w-full max-w-5xl px-3 pb-16 pt-6 sm:px-4 md:px-5" style={{ maxWidth: '100%' }}>
+      <main className="mx-auto w-full max-w-4xl px-2 pb-16 pt-6 sm:px-3 md:px-4" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
         {/* HERO / SLIDER */}
         <HeroSlider items={sliderItems} />
 
         {/* Content + Sidebar (desktop) */}
         <section className="mt-10 w-full overflow-x-hidden">
-          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-[1fr_300px] lg:gap-8 lg:grid-cols-[1fr_320px]">
+          <div className="grid w-full min-w-0 grid-cols-1 gap-4 md:grid-cols-[1fr_280px] lg:gap-6 lg:grid-cols-[1fr_300px]">
             {/* Main content */}
             <div className="space-y-12">
               {/* Güncel Haberler */}
@@ -31,7 +31,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 lg:gap-4 lg:grid-cols-3">
                   {newsItems.slice(0, 6).map((item) => (
                     <NewsCard key={item.id} item={item} />
                   ))}
@@ -63,7 +63,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid min-w-0 grid-cols-1 gap-3 md:grid-cols-2 lg:gap-4 lg:grid-cols-3">
                   {videoItems.slice(0, 3).map((item) => (
                     <VideoCard key={item.id} item={item} />
                   ))}
