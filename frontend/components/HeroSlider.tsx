@@ -26,7 +26,7 @@ export function HeroSlider({ items }: Props) {
   if (!current) return null;
 
   return (
-    <section className="relative overflow-hidden rounded-3xl bg-slate-900">
+    <section className="relative w-full max-w-full overflow-hidden rounded-3xl bg-slate-900" style={{ maxWidth: '100%' }}>
       <div className="relative h-[360px] md:h-[460px] lg:h-[520px]">
         <Image
           src={current.imageUrl}

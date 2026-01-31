@@ -11,10 +11,10 @@ export function LogoSlider({ logos }: Props) {
   const doubled = [...logos, ...logos];
 
   return (
-    <div className="overflow-hidden rounded-3xl bg-white p-6 shadow-card">
-      <div className="relative">
+    <div className="w-full max-w-full overflow-hidden rounded-3xl bg-white p-4 shadow-card sm:p-6" style={{ maxWidth: '100%' }}>
+      <div className="relative w-full overflow-hidden">
         {/* NOTE: Avoid fixed 200% widths to prevent horizontal overflow on some viewports */}
-        <div className="inline-flex animate-marquee gap-6 will-change-transform">
+        <div className="inline-flex w-max animate-marquee gap-4 will-change-transform sm:gap-6">
           {doubled.map((logo, idx) => (
             <div
               key={`${logo.id}-${idx}`}
