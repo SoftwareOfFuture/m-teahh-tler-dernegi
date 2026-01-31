@@ -56,11 +56,6 @@ export default function Header() {
             </Link>
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
-                {isAdmin && (
-                  <Link to="/admin" className="btn-secondary text-sm py-2 px-4 hidden sm:inline-flex">
-                    Yönetim
-                  </Link>
-                )}
                 <button
                   onClick={handleLogout}
                   className="text-sm font-medium text-dark-gray hover:text-primary transition-colors py-2 px-3"
