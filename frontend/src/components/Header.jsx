@@ -12,7 +12,7 @@ const navItems = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isAuthenticated, isAdmin, user, logout } = useAuth();
+  const { isAuthenticated, isContentAdmin, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -54,6 +54,11 @@ export default function Header() {
             <Link to="/demo" className="text-sm font-medium text-primary hover:underline py-2 px-3 hidden sm:inline">
               Demo Gör
             </Link>
+            {isContentAdmin && (
+              <Link to="/admin" className="btn-secondary text-sm py-2 px-4 hidden sm:inline-flex">
+                Yönetim
+              </Link>
+            )}
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 <button
@@ -108,6 +113,11 @@ export default function Header() {
                   {label}
                 </NavLink>
               ))}
+              {isContentAdmin && (
+                <Link to="/admin" onClick={() => setMenuOpen(false)} className="px-4 py-3 font-medium text-primary">
+                  Yönetim
+                </Link>
+              )}
               {!isAuthenticated && (
                 <>
                   <Link to="/login" onClick={() => setMenuOpen(false)} className="px-4 py-3 font-medium text-dark-gray">

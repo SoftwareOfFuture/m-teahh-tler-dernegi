@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { newsApi } from '../../api/client';
 import { announcementsApi } from '../../api/client';
 import { membersApi } from '../../api/client';
@@ -24,9 +24,9 @@ export default function AdminDashboard() {
   }
 
   const cards = [
-    { label: 'Haberler', value: stats.news, to: '/admin/news', color: 'primary' },
-    { label: 'Duyurular', value: stats.announcements, to: '/admin/announcements', color: 'primary' },
-    { label: 'Üyeler', value: stats.members, to: '/admin/members', color: 'primary' },
+    { label: 'Haberler', value: stats.news, to: `${base}/news`, color: 'primary' },
+    { label: 'Duyurular', value: stats.announcements, to: `${base}/announcements`, color: 'primary' },
+    { label: 'Üyeler', value: stats.members, to: `${base}/members`, color: 'primary' },
   ];
 
   return (

@@ -60,6 +60,7 @@ export function AuthProvider({ children }) {
     member,
     loading,
     isAdmin: user?.role === 'admin' || user?.role === 'platform_admin',
+    isContentAdmin: user?.role === 'admin',
     isPlatformAdmin: user?.role === 'platform_admin',
     isAuthenticated: !!user,
     login,
