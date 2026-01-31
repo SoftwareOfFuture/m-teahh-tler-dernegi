@@ -36,7 +36,7 @@ router.get(
   '/admin/all',
   auth,
   adminOnly,
-  [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 100 }).toInt()],
+  [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 500 }).toInt()],
   validate,
   async (req, res) => {
     try {
