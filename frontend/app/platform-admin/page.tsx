@@ -350,8 +350,46 @@ function SlidesPanel({ token }: { token: string | null }) {
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-slate-900">Slider Yönetimi</h2>
-      <p className="mt-1 text-sm text-slate-600">Ana sayfa hero slider içeriklerini buradan ekleyin/düzenleyin.</p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">Slider Yönetimi</h2>
+          <p className="mt-1 text-sm text-slate-600">Ana sayfa hero slider içeriklerini buradan ekleyin/düzenleyin.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            disabled={!token || loading}
+            onClick={refresh}
+            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          >
+            Yenile
+          </button>
+          <button
+            type="button"
+            disabled={!token || loading || items.length === 0}
+            onClick={async () => {
+              if (!token) return;
+              if (!confirm('Tüm slaytlar silinsin mi? (Geri alınamaz)')) return;
+              setLoading(true);
+              setError(null);
+              try {
+                // delete sequentially to keep it simple
+                for (const it of items) {
+                  await deleteSlide(token, it.id);
+                }
+                await refresh();
+              } catch (e: any) {
+                setError(e?.message ?? 'Slaytlar silinemedi.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
+          >
+            Tümünü Sil
+          </button>
+        </div>
+      </div>
 
       <div className="mt-6 rounded-3xl bg-soft-gray p-5">
         <h3 className="text-sm font-bold text-slate-900">Yeni Slayt Ekle</h3>

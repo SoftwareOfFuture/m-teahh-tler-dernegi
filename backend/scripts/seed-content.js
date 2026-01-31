@@ -1,6 +1,14 @@
 require('dotenv').config();
 const db = require('../models');
 
+// Default content seeding is optional.
+// If you want to seed baseline demo content, set:
+//   SEED_DEFAULT_CONTENT=true
+if (String(process.env.SEED_DEFAULT_CONTENT || '').toLowerCase() !== 'true') {
+  console.log('seed-content: skipped (SEED_DEFAULT_CONTENT is not true)');
+  process.exit(0);
+}
+
 function isoFromDotDate(dot) {
   // "30.01.2026" -> "2026-01-30"
   const m = String(dot || '').match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
