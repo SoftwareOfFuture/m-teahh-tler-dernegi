@@ -73,7 +73,7 @@ router.post(
   adminOnly,
   [
     body('title').trim().notEmpty(),
-    body('publishDate').optional().isDate(),
+    body('publishDate').optional({ checkFalsy: true }).isDate(),
     body('excerpt').optional().trim(),
     body('thumbnailUrl').optional().trim(),
     body('href').optional().trim(),
@@ -106,7 +106,7 @@ router.put(
   [
     param('id').isInt().toInt(),
     body('title').optional().trim().notEmpty(),
-    body('publishDate').optional().isDate(),
+    body('publishDate').optional({ checkFalsy: true }).isDate(),
     body('excerpt').optional().trim(),
     body('thumbnailUrl').optional().trim(),
     body('href').optional().trim(),

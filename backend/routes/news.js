@@ -88,7 +88,7 @@ router.post(
   [
     body('title').trim().notEmpty(),
     body('content').trim().notEmpty(),
-    body('publishDate').optional().isDate(),
+    body('publishDate').optional({ checkFalsy: true }).isDate(),
     body('excerpt').optional().trim(),
     body('imageUrl').optional().trim(),
     body('isPublished').optional().isBoolean(),
@@ -120,7 +120,7 @@ router.put(
     param('id').isInt().toInt(),
     body('title').optional().trim().notEmpty(),
     body('content').optional().trim().notEmpty(),
-    body('publishDate').optional().isDate(),
+    body('publishDate').optional({ checkFalsy: true }).isDate(),
     body('excerpt').optional().trim(),
     body('imageUrl').optional().trim(),
     body('isPublished').optional().isBoolean(),

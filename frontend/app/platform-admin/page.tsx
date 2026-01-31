@@ -209,6 +209,13 @@ function Toggle({ value, onChange }: { value: boolean; onChange: (v: boolean) =>
   );
 }
 
+function getPublishedValue(obj: any): boolean {
+  if (!obj) return false;
+  if (typeof obj.isPublished === 'boolean') return obj.isPublished;
+  if (typeof obj.is_published === 'boolean') return obj.is_published;
+  return Boolean(obj.isPublished ?? obj.is_published);
+}
+
 function MembersPanel({
   token,
   items,
@@ -425,7 +432,7 @@ function SlidesPanel({ token }: { token: string | null }) {
 
       <div className="mt-6 space-y-3">
         {items.map((it) => {
-          const published = !!it.isPublished;
+          const published = getPublishedValue(it as any);
           const isEditing = editingId === it.id;
           return (
             <div key={it.id} className="rounded-3xl border border-black/5 bg-white p-4 shadow-card">
@@ -721,10 +728,19 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
               setLoading(true);
               setError(null);
               try {
-                await create(token, {
-                  ...createForm,
-                  isPublished: !!createForm.isPublished,
-                } as any);
+                const payload: Record<string, any> = { isPublished: !!createForm.isPublished };
+                for (const f of fields) {
+                  const raw = createForm[f.key];
+                  const v = typeof raw === 'string' ? raw.trim() : raw;
+                  if (f.required) {
+                    payload[f.key] = typeof v === 'string' ? v : v;
+                    continue;
+                  }
+                  if (v === undefined || v === null) continue;
+                  if (typeof v === 'string' && v.length === 0) continue;
+                  payload[f.key] = v;
+                }
+                await create(token, payload as any);
                 setCreateForm({ isPublished: true });
                 await refresh();
               } catch (e: any) {
@@ -752,7 +768,7 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
                   <div className="flex flex-wrap items-center gap-2">
                     <div className="truncate text-sm font-bold text-slate-900">{(it as any).title}</div>
                     <Toggle
-                      value={!!(it as any).isPublished}
+                      value={getPublishedValue(it as any)}
                       onChange={async (v) => {
                         if (!token) return;
                         await update(token, it.id, { isPublished: v } as any);
@@ -813,7 +829,19 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
                       className="rounded-full bg-burgundy px-5 py-2.5 text-sm font-semibold text-white"
                       onClick={async () => {
                         if (!token) return;
-                        await update(token, it.id, { ...edit, isPublished: !!edit.isPublished } as any);
+                        const payload: Record<string, any> = { isPublished: !!edit.isPublished };
+                        for (const f of fields) {
+                          const raw = edit[f.key];
+                          const v = typeof raw === 'string' ? raw.trim() : raw;
+                          if (f.required) {
+                            payload[f.key] = v;
+                            continue;
+                          }
+                          if (v === undefined || v === null) continue;
+                          if (typeof v === 'string' && v.length === 0) continue;
+                          payload[f.key] = v;
+                        }
+                        await update(token, it.id, payload as any);
                         setEditingId(null);
                         await refresh();
                       }}

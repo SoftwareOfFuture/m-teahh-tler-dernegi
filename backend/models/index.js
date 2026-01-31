@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 // Postgres-only (Vercel Postgres / managed Postgres)
-const pgUrl =
+let pgUrl =
   process.env.DATABASE_URL ||
   process.env.POSTGRES_URL ||
   process.env.POSTGRES_URL_NON_POOLING;
@@ -13,12 +13,31 @@ if (!pgUrl || !pgUrl.startsWith('postgres')) {
   );
 }
 
+// Some managed Postgres providers add sslmode=require in the URL query.
+// pg-connection-string currently treats some sslmodes as verify-full; we prefer explicit ssl config.
+try {
+  const u = new URL(pgUrl);
+  if (u.searchParams.has('sslmode')) {
+    u.searchParams.delete('sslmode');
+    pgUrl = u.toString();
+  }
+} catch {
+  // If URL parsing fails, keep original string.
+}
+
 const needsSsl = !pgUrl.includes('localhost') && !pgUrl.includes('127.0.0.1');
 
 const sequelize = new Sequelize(pgUrl, {
   dialect: 'postgres',
   logging: false,
   dialectOptions: needsSsl ? { ssl: { require: true, rejectUnauthorized: false } } : {},
+  pool: {
+    // serverless-friendly defaults
+    max: 5,
+    min: 0,
+    acquire: 60000,
+    idle: 10000,
+  },
 });
 
 const db = {};
