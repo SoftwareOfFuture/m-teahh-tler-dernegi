@@ -88,7 +88,7 @@ export function Header() {
           {/* CTA */}
           <Link
             href="#"
-            className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-burgundy-dark hover:shadow-card-hover"
+            className="shrink-0 whitespace-nowrap rounded-full bg-burgundy px-3 py-1.5 text-xs font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-burgundy-dark hover:shadow-card-hover sm:px-4 sm:py-2 sm:text-sm"
           >
             ÜYE GİRİŞİ
           </Link>

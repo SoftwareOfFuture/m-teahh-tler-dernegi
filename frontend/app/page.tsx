@@ -19,7 +19,7 @@ export default function HomePage() {
 
         {/* Content + Sidebar (desktop) */}
         <section className="mt-10 w-full">
-          <div className="grid w-full min-w-0 grid-cols-1 gap-4 md:grid-cols-[1fr_280px] lg:gap-6 lg:grid-cols-[1fr_300px]">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-[1fr_280px] lg:gap-6 lg:grid-cols-[1fr_300px]">
             {/* Main content */}
             <div className="space-y-12">
               {/* Güncel Haberler */}
@@ -47,7 +47,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2">
                   {announcements.slice(0, 4).map((item) => (
                     <AnnouncementCard key={item.id} item={item} />
                   ))}
@@ -63,7 +63,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid min-w-0 grid-cols-1 gap-2.5">
+                <div className="grid grid-cols-1 gap-2.5">
                   {videoItems.slice(0, 3).map((item) => (
                     <VideoCard key={item.id} item={item} />
                   ))}
