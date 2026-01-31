@@ -22,8 +22,8 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full max-w-full border-b border-black/5 bg-white/90 backdrop-blur overflow-x-hidden" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-      <div className="mx-auto flex w-full min-w-0 max-w-4xl items-center justify-between gap-1.5 px-2 py-3 sm:gap-2 sm:px-3 md:px-4" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+    <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/90 backdrop-blur">
+      <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-1.5 px-2 py-3 sm:gap-2 sm:px-3 md:px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="grid size-10 place-items-center rounded-xl bg-burgundy text-white shadow-card">
@@ -36,7 +36,7 @@ export function Header() {
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="hidden items-center gap-4 lg:flex">
+        <nav className="hidden shrink-0 items-center gap-2 lg:flex xl:gap-2.5">
           {navItems.map((item) => (
             <Link
               key={item.label}
@@ -115,8 +115,8 @@ export function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="w-full border-t border-black/5 bg-white lg:hidden overflow-x-hidden" style={{ maxWidth: '100vw' }}>
-          <div className="mx-auto w-full min-w-0 max-w-4xl px-2 py-3 sm:px-3 md:px-4" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+        <div className="w-full border-t border-black/5 bg-white lg:hidden">
+          <div className="mx-auto w-full max-w-4xl px-2 py-3 sm:px-3 md:px-4">
             <nav className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link

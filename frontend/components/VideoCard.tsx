@@ -28,12 +28,12 @@ export function VideoCard({ item }: Props) {
           </div>
         </div>
       </div>
-      <div className="p-5">
-        <h3 className="text-base font-bold text-slate-900 transition-colors group-hover:text-burgundy line-clamp-2">
+      <div className="p-3">
+        <h3 className="text-xs font-bold text-slate-900 transition-colors group-hover:text-burgundy line-clamp-2 sm:text-sm">
           {item.title}
         </h3>
-        <p className="mt-2 text-sm text-slate-600 line-clamp-2">{item.excerpt}</p>
-        <p className="mt-3 text-xs text-slate-400">{item.date}</p>
+        <p className="mt-1 text-xs text-slate-600 line-clamp-2">{item.excerpt}</p>
+        <p className="mt-1.5 text-xs text-slate-400">{item.date}</p>
       </div>
     </Link>
   );

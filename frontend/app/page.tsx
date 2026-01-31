@@ -10,15 +10,15 @@ import { announcements, events, newsItems, partnerLogos, sliderItems, videoItems
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white" style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+    <div className="min-h-screen w-full bg-white">
       <Header />
 
-      <main className="mx-auto w-full max-w-4xl px-2 pb-16 pt-6 sm:px-3 md:px-4" style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+      <main className="mx-auto w-full max-w-4xl px-2 pb-16 pt-6 sm:px-3 md:px-4">
         {/* HERO / SLIDER */}
         <HeroSlider items={sliderItems} />
 
         {/* Content + Sidebar (desktop) */}
-        <section className="mt-10 w-full overflow-x-hidden">
+        <section className="mt-10 w-full">
           <div className="grid w-full min-w-0 grid-cols-1 gap-4 md:grid-cols-[1fr_280px] lg:gap-6 lg:grid-cols-[1fr_300px]">
             {/* Main content */}
             <div className="space-y-12">
@@ -93,7 +93,7 @@ export default function HomePage() {
         </section>
 
         {/* Footer-like minimal spacer */}
-        <div className="mt-14 w-full max-w-full rounded-3xl bg-slate-900 px-4 py-10 text-white sm:px-6" style={{ maxWidth: '100%' }}>
+        <div className="mt-14 w-full rounded-3xl bg-slate-900 px-4 py-10 text-white sm:px-6">
           <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
             <div>
               <p className="text-sm font-semibold text-white/90">Antalya Müteahhitler Derneği</p>
