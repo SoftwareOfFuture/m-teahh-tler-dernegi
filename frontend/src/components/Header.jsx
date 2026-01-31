@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { to: '/', label: 'Ana Sayfa' },
-  { to: '/news', label: 'Haberler' },
-  { to: '/announcements', label: 'Duyurular' },
-  { to: '/members', label: 'Üyeler' },
+  { to: '/#hakkimizda', label: 'Hakkımızda' },
+  { to: '/#duyurular', label: 'Duyurular' },
+  { to: '/#projeler', label: 'Projeler' },
+  { to: '/#uyelik', label: 'Üyelik' },
   { to: '/contact', label: 'İletişim' },
 ];
 

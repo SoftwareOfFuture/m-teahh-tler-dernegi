@@ -4,10 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#0B3D91',
-        'primary-dark': '#082a66',
+        primary: '#1e3a5f',
+        'primary-dark': '#152942',
+        navy: '#1e3a5f',
+        gold: '#d4a853',
+        'gold-light': '#e8c97a',
         'dark-gray': '#2B2B2B',
-        'light-gray': '#f5f5f5',
+        'light-gray': '#f9fafb',
       },
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],
