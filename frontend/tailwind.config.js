@@ -1,38 +1,31 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+module.exports = {
+  content: [
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './lib/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
   theme: {
     extend: {
       colors: {
-        primary: '#1e3a5f',
-        'primary-dark': '#152942',
-        navy: '#1e3a5f',
-        gold: '#d4a853',
-        'gold-light': '#e8c97a',
-        'sky-light': '#7dd3fc',
-        'dark-gray': '#2B2B2B',
-        'light-gray': '#f9fafb',
+        burgundy: '#7A0C1D',
+        'burgundy-dark': '#5E0815',
+        'soft-gray': '#F5F6F8',
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Source Sans 3', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'corp': '0 4px 20px rgba(11, 61, 145, 0.08)',
-        'corp-hover': '0 8px 30px rgba(11, 61, 145, 0.15)',
+        'card': '0 8px 30px rgba(15, 23, 42, 0.06)',
+        'card-hover': '0 14px 40px rgba(15, 23, 42, 0.10)',
       },
       animation: {
-        'fade-in': 'fadeIn 0.4s ease-out',
-        'slide-up': 'slideUp 0.4s ease-out',
+        'marquee': 'marquee 24s linear infinite',
       },
       keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        slideUp: {
-          '0%': { opacity: '0', transform: 'translateY(12px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
     },

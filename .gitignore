@@ -3,4 +3,6 @@ node_modules/
 backend/database.sqlite
 backend/uploads/
 dist/
+.next/
+frontend/.next/
 *.log
