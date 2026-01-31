@@ -15,8 +15,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM('admin', 'member'),
+      type: DataTypes.STRING(32),
       defaultValue: 'member',
+      allowNull: false,
     },
     passwordResetToken: {
       type: DataTypes.STRING(255),

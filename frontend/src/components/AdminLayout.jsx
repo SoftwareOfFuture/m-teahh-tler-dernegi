@@ -41,6 +41,7 @@ export default function AdminLayout() {
           ))}
         </nav>
         <div className="p-4 border-t border-gray-700">
+          <Link to="/demo" className="block px-4 py-2 text-sm text-gray-400 hover:text-white">Demo Gör</Link>
           <Link to="/" className="block px-4 py-2 text-sm text-gray-400 hover:text-white">Siteye Dön</Link>
           <button onClick={handleLogout} className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white mt-1">
             Çıkış

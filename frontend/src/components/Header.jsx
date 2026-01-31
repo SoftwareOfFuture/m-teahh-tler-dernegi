@@ -51,6 +51,9 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <Link to="/demo" className="text-sm font-medium text-primary hover:underline py-2 px-3 hidden sm:inline">
+              Demo Gör
+            </Link>
             {isAuthenticated ? (
               <div className="flex items-center gap-2">
                 {isAdmin && (
@@ -95,6 +98,9 @@ export default function Header() {
         {menuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100 animate-fade-in">
             <nav className="flex flex-col gap-1">
+              <Link to="/demo" onClick={() => setMenuOpen(false)} className="px-4 py-3 font-medium text-primary">
+                Demo Gör
+              </Link>
               {navItems.map(({ to, label }) => (
                 <NavLink
                   key={to}

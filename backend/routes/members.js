@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, query, param, validationResult } = require('express-validator');
 const db = require('../models');
-const { auth, adminOnly } = require('../middleware/auth');
+const { auth, adminOnly, platformAdminOnly } = require('../middleware/auth');
 const { Op, Sequelize } = require('sequelize');
 
 const router = express.Router();
@@ -120,7 +120,7 @@ router.post(
   }
 );
 
-// Admin: PUT member
+// Admin: PUT member (isApproved sadece platform_admin değiştirebilir)
 router.put(
   '/:id',
   auth,
@@ -140,21 +140,36 @@ router.put(
     try {
       const member = await db.Member.findByPk(req.params.id);
       if (!member) return res.status(404).json({ error: 'Member not found.' });
-      await member.update({
+      const updates = {
         ...(req.body.name !== undefined && { name: req.body.name }),
         ...(req.body.email !== undefined && { email: req.body.email }),
         ...(req.body.company !== undefined && { company: req.body.company }),
         ...(req.body.role !== undefined && { role: req.body.role }),
         ...(req.body.profileImageUrl !== undefined && { profileImageUrl: req.body.profileImageUrl }),
         ...(req.body.joinDate !== undefined && { joinDate: req.body.joinDate }),
-        ...(req.body.isApproved !== undefined && { isApproved: req.body.isApproved }),
-      });
+      };
+      if (req.body.isApproved !== undefined && req.user.role === 'platform_admin') {
+        updates.isApproved = req.body.isApproved;
+      }
+      await member.update(updates);
       res.json(member);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   }
 );
+
+// Platform Admin: Üye onayla (hızlı onay için)
+router.patch('/:id/approve', auth, platformAdminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
+  try {
+    const member = await db.Member.findByPk(req.params.id);
+    if (!member) return res.status(404).json({ error: 'Member not found.' });
+    await member.update({ isApproved: true });
+    res.json(member);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Admin: DELETE member
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {

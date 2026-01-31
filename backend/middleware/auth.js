@@ -25,11 +25,20 @@ const auth = async (req, res, next) => {
   }
 };
 
+// admin veya platform_admin (haber, duyuru, üye yönetimi)
 const adminOnly = (req, res, next) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'admin' && req.user.role !== 'platform_admin') {
     return res.status(403).json({ error: 'Admin access required.' });
   }
   next();
 };
 
-module.exports = { auth, adminOnly, JWT_SECRET };
+// sadece platform_admin (üye onaylama, tam yetki)
+const platformAdminOnly = (req, res, next) => {
+  if (req.user.role !== 'platform_admin') {
+    return res.status(403).json({ error: 'Platform admin access required.' });
+  }
+  next();
+};
+
+module.exports = { auth, adminOnly, platformAdminOnly, JWT_SECRET };

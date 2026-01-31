@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 import { membersApi } from '../../api/client';
 
 const AVATAR_PLACEHOLDER = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face';
@@ -71,6 +72,15 @@ export default function AdminMembers() {
       setError(err.message || 'Kaydedilemedi.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleApprove = async (id) => {
+    try {
+      await membersApi.approve(id);
+      load();
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -184,12 +194,14 @@ export default function AdminMembers() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Üyelik Tarihi</label>
                     <input type="date" value={form.joinDate} onChange={(e) => setForm((f) => ({ ...f, joinDate: e.target.value }))} className="input-field" />
                   </div>
-                  <div className="flex items-center pt-8">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={form.isApproved} onChange={(e) => setForm((f) => ({ ...f, isApproved: e.target.checked }))} className="rounded border-gray-300 text-primary focus:ring-primary" />
-                      <span className="text-sm text-gray-700">Onaylı (dizinde görünsün)</span>
-                    </label>
-                  </div>
+                  {isPlatformAdmin && (
+                    <div className="flex items-center pt-8">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" checked={form.isApproved} onChange={(e) => setForm((f) => ({ ...f, isApproved: e.target.checked }))} className="rounded border-gray-300 text-primary focus:ring-primary" />
+                        <span className="text-sm text-gray-700">Onaylı (dizinde görünsün)</span>
+                      </label>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2 pt-4">
                   <button type="submit" disabled={saving} className="btn-primary">{saving ? 'Kaydediliyor...' : 'Kaydet'}</button>

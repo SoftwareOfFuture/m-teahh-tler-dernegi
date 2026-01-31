@@ -10,7 +10,12 @@ async function seed() {
     await db.sequelize.sync({ alter: true });
     const existing = await db.User.findOne({ where: { email: ADMIN_EMAIL } });
     if (existing) {
-      console.log('Admin user already exists.');
+      if (existing.role !== 'platform_admin') {
+        await existing.update({ role: 'platform_admin' });
+        console.log('Admin upgraded to platform_admin:', ADMIN_EMAIL);
+      } else {
+        console.log('Admin user already exists.');
+      }
       process.exit(0);
       return;
     }
@@ -18,7 +23,7 @@ async function seed() {
     const user = await db.User.create({
       email: ADMIN_EMAIL,
       password: hashed,
-      role: 'admin',
+      role: 'platform_admin',
     });
     await db.Member.create({
       userId: user.id,

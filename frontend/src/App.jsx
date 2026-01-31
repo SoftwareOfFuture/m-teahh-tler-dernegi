@@ -12,6 +12,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Contact from './pages/Contact';
+import DemoPage from './pages/DemoPage';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminNews from './pages/admin/AdminNews';
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="forgot-password" element={<ForgotPassword />} />
         <Route path="reset-password" element={<ResetPassword />} />
         <Route path="contact" element={<Contact />} />
+        <Route path="demo" element={<DemoPage />} />
       </Route>
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
         <Route index element={<AdminDashboard />} />

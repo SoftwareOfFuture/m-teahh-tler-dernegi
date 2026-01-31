@@ -48,6 +48,7 @@ export const membersApi = {
   adminList: (page = 1) => api(`/members/admin/all?page=${page}&limit=20`),
   create: (body) => api('/members', { method: 'POST', body: JSON.stringify(body) }),
   update: (id, body) => api(`/members/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  approve: (id) => api(`/members/${id}/approve`, { method: 'PATCH' }),
   delete: (id) => api(`/members/${id}`, { method: 'DELETE' }),
 };
 

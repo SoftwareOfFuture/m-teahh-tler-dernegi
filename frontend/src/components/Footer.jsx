@@ -6,6 +6,7 @@ const links = [
   { to: '/announcements', label: 'Duyurular' },
   { to: '/members', label: 'Üyeler' },
   { to: '/contact', label: 'İletişim' },
+  { to: '/demo', label: 'Demo Gör' },
 ];
 
 export default function Footer() {
