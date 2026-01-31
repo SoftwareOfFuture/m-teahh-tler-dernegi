@@ -1,3 +1,6 @@
+// pg must be required explicitly for Vercel bundler (Sequelize dynamic require)
+require('pg');
+
 const app = require('../backend/app');
 
 module.exports = (req, res) => {
