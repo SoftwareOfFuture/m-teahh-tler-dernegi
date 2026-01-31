@@ -35,7 +35,7 @@ export function HeroSlider({ items }: Props) {
           priority
           className="object-cover"
         />
-        {/* Dark overlay like TMB + spec */}
+        {/* Dark overlay (corporate slider) */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/20" />
 
         {/* Left-bottom content */}

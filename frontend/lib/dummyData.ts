@@ -131,10 +131,10 @@ export const newsItems: NewsItem[] = [
 ];
 
 export const announcements: AnnouncementItem[] = [
-  { id: 'a1', code: 'TMB-2026-68', date: '30.01.2026', title: 'İnşaat Sektörü Analizi - Ocak 2026' },
-  { id: 'a2', code: 'TMB-2026-64', date: '30.01.2026', title: 'Ukrayna için Enerji Ekipmanları Destek Talebi' },
-  { id: 'a3', code: 'TMB-2026-66', date: '29.01.2026', title: 'Uluslararası Sulama Teknolojileri Fuarı Duyurusu' },
-  { id: 'a4', code: 'TMB-2026-60', date: '24.01.2026', title: 'Genel Kurul Toplantısı Bilgilendirmesi' },
+  { id: 'a1', code: 'AMD-2026-68', date: '30.01.2026', title: 'İnşaat Sektörü Analizi - Ocak 2026' },
+  { id: 'a2', code: 'AMD-2026-64', date: '30.01.2026', title: 'Ukrayna için Enerji Ekipmanları Destek Talebi' },
+  { id: 'a3', code: 'AMD-2026-66', date: '29.01.2026', title: 'Uluslararası Sulama Teknolojileri Fuarı Duyurusu' },
+  { id: 'a4', code: 'AMD-2026-60', date: '24.01.2026', title: 'Genel Kurul Toplantısı Bilgilendirmesi' },
 ];
 
 export const videoItems: VideoItem[] = [
