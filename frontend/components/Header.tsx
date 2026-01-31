@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getToken } from '../lib/api';
 
 type NavItem = { href: string; label: string };
 
@@ -20,6 +21,11 @@ export function Header() {
 
   const [lang, setLang] = useState<'TR' | 'EN'>('TR');
   const [open, setOpen] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
+
+  useEffect(() => {
+    setHasToken(!!getToken());
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/90 backdrop-blur">
@@ -87,10 +93,10 @@ export function Header() {
 
           {/* CTA */}
           <Link
-            href="/login"
+            href={hasToken ? '/profilim' : '/login'}
             className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-burgundy-dark hover:shadow-card-hover"
           >
-            ÜYE GİRİŞİ
+            {hasToken ? 'Profilim' : 'ÜYE GİRİŞİ'}
           </Link>
 
           {/* Mobile menu button */}

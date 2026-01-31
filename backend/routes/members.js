@@ -86,6 +86,36 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
   }
 });
 
+// Member: PATCH /api/members/me - update own profile (safe fields only)
+router.patch(
+  '/me',
+  auth,
+  [
+    body('name').optional().trim().isLength({ min: 2, max: 255 }),
+    body('company').optional({ nullable: true }).trim().isLength({ max: 255 }),
+    body('role').optional({ nullable: true }).trim().isLength({ max: 255 }),
+    body('profileImageUrl').optional({ nullable: true }).trim().isLength({ max: 500 }),
+  ],
+  validate,
+  async (req, res) => {
+    try {
+      const member = await db.Member.findOne({ where: { userId: req.user.id } });
+      if (!member) return res.status(404).json({ error: 'Member not found.' });
+
+      const updates = {};
+      if (req.body.name !== undefined) updates.name = req.body.name;
+      if (req.body.company !== undefined) updates.company = req.body.company || null;
+      if (req.body.role !== undefined) updates.role = req.body.role || null;
+      if (req.body.profileImageUrl !== undefined) updates.profileImageUrl = req.body.profileImageUrl || null;
+
+      await member.update(updates);
+      res.json(member);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
 // Admin: POST member
 router.post(
   '/',

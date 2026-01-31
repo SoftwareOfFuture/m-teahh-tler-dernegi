@@ -107,3 +107,14 @@ export async function approveMember(token: string, memberId: number) {
   });
 }
 
+export async function updateMyMember(
+  token: string,
+  updates: { name?: string; company?: string | null; role?: string | null; profileImageUrl?: string | null }
+) {
+  return await apiFetch('/api/members/me', {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(updates),
+  });
+}
+

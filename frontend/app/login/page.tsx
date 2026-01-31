@@ -31,7 +31,7 @@ export default function LoginPage() {
               try {
                 const res = await login(email.trim(), password);
                 setToken(res.token);
-                router.push('/uyelerimiz');
+                router.push('/profilim');
               } catch (err: any) {
                 setError(err?.message ?? 'Giriş başarısız.');
               } finally {
