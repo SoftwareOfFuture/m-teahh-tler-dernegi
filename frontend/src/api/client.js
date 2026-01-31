@@ -55,4 +55,7 @@ export const authApi = {
   login: (email, password) => api('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
   register: (body) => api('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
   me: () => api('/auth/me'),
+  forgotPassword: (email) => api('/auth/forgot-password', { method: 'POST', body: JSON.stringify({ email }) }),
+  resetPassword: (token, newPassword) =>
+    api('/auth/reset-password', { method: 'POST', body: JSON.stringify({ token, newPassword }) }),
 };

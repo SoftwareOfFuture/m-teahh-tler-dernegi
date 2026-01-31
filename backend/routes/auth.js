@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { body, validationResult } = require('express-validator');
 const db = require('../models');
 const { auth, JWT_SECRET } = require('../middleware/auth');
@@ -87,6 +88,65 @@ router.post(
         user: { id: user.id, email: user.email, role: user.role },
         member: member ? { id: member.id, name: member.name, company: member.company } : null,
       });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
+// POST /api/auth/forgot-password - create reset token; frontend sends email via EmailJS
+router.post(
+  '/forgot-password',
+  [body('email').isEmail().normalizeEmail()],
+  validate,
+  async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await db.User.findOne({ where: { email } });
+      if (!user) {
+        return res.json({ success: true });
+      }
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const expires = new Date(Date.now() + 60 * 60 * 1000);
+      await user.update({
+        passwordResetToken: resetToken,
+        passwordResetExpires: expires,
+      });
+      const baseUrl = req.protocol + '://' + req.get('host');
+      const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
+      res.json({ success: true, resetToken, resetLink, email: user.email });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
+// POST /api/auth/reset-password - set new password with token
+router.post(
+  '/reset-password',
+  [
+    body('token').trim().notEmpty(),
+    body('newPassword').isLength({ min: 6 }),
+  ],
+  validate,
+  async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      const user = await db.User.findOne({
+        where: {
+          passwordResetToken: token,
+        },
+      });
+      if (!user || !user.passwordResetExpires || new Date() > user.passwordResetExpires) {
+        return res.status(400).json({ error: 'Geçersiz veya süresi dolmuş link.' });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await user.update({
+        password: hashedPassword,
+        passwordResetToken: null,
+        passwordResetExpires: null,
+      });
+      res.json({ success: true });
     } catch (err) {
       res.status(500).json({ error: err.message });
     }

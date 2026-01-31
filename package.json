@@ -1,5 +1,9 @@
 {
   "name": "muteahhitler-dernegi",
   "private": true,
-  "description": "Müteahhitler Derneği — Kurumsal Web Sitesi"
+  "description": "Müteahhitler Derneği — Kurumsal Web Sitesi",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4"
+  }
 }

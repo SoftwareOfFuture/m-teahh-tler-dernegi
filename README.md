@@ -63,6 +63,8 @@ npm run dev
 
 Şablonda kullanılan değişkenler: `from_name`, `from_email`, `message`, `to_email`.
 
+**Şifremi unuttum (e-posta ile sıfırlama):** Aynı EmailJS hesabında ikinci bir şablon oluşturup `frontend/.env` içine `VITE_EMAILJS_TEMPLATE_ID_RESET` ekleyin. Şablonda kullanılacak değişkenler: `to_email`, `reset_link`, `user_email`.
+
 ## İsteğe bağlı: PostgreSQL (yerel)
 
 PostgreSQL kullanmak istersen: PostgreSQL’i kur, `muteahhitler_dernegi` veritabanını oluştur, `backend/.env` içine `DATABASE_URL=postgresql://kullanici:sifre@localhost:5432/muteahhitler_dernegi` ekle. Uygulama otomatik olarak PostgreSQL’e bağlanır; yoksa SQLite kullanmaya devam eder.

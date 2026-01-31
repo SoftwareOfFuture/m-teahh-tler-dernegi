@@ -61,6 +61,9 @@ export default function Login() {
                 placeholder="••••••••"
                 autoComplete="current-password"
               />
+              <p className="mt-1 text-right">
+                <Link to="/forgot-password" className="text-sm text-primary font-medium hover:underline">Şifremi unuttum</Link>
+              </p>
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full py-3 disabled:opacity-50">
               {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}

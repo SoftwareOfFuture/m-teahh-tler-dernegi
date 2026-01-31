@@ -18,6 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('admin', 'member'),
       defaultValue: 'member',
     },
+    passwordResetToken: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    passwordResetExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     tableName: 'users',
     timestamps: true,

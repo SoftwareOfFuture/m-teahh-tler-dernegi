@@ -9,6 +9,8 @@ import MembersDirectory from './pages/MembersDirectory';
 import MemberProfile from './pages/MemberProfile';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Contact from './pages/Contact';
 import AdminLayout from './components/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -38,6 +40,8 @@ export default function App() {
         <Route path="members/:id" element={<MemberProfile />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="forgot-password" element={<ForgotPassword />} />
+        <Route path="reset-password" element={<ResetPassword />} />
         <Route path="contact" element={<Contact />} />
       </Route>
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
