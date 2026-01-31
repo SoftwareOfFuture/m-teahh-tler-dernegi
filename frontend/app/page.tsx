@@ -21,7 +21,7 @@ export default function HomePage() {
         <section className="mt-10">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_360px]">
             {/* Main content */}
-            <div className="order-1 space-y-12">
+            <div className="space-y-12">
               {/* Güncel Haberler */}
               <div>
                 <div className="mb-5 flex items-center justify-between gap-3">
@@ -84,7 +84,7 @@ export default function HomePage() {
             </div>
 
             {/* Sidebar (desktop sticky) - mobile'da aşağı iner */}
-            <div className="order-2 lg:order-none">
+            <div>
               <div className="lg:sticky lg:top-24">
                 <Sidebar events={events} />
               </div>
