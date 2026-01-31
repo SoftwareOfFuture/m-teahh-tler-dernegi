@@ -13,13 +13,13 @@ export default function HomePage() {
     <div className="min-h-screen w-full bg-white">
       <Header />
 
-      <main className="mx-auto w-full max-w-4xl px-2 pb-16 pt-6 sm:px-3 md:px-4">
+      <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
         {/* HERO / SLIDER */}
         <HeroSlider items={sliderItems} />
 
         {/* Content + Sidebar (desktop) */}
         <section className="mt-10 w-full">
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-[1fr_280px] lg:gap-6 lg:grid-cols-[1fr_300px]">
+          <div className="grid w-full grid-cols-1 gap-10 lg:grid-cols-[1fr_360px]">
             {/* Main content */}
             <div className="space-y-12">
               {/* Güncel Haberler */}
@@ -31,7 +31,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid min-w-0 grid-cols-1 gap-2.5">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {newsItems.slice(0, 6).map((item) => (
                     <NewsCard key={item.id} item={item} />
                   ))}
@@ -47,7 +47,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {announcements.slice(0, 4).map((item) => (
                     <AnnouncementCard key={item.id} item={item} />
                   ))}
@@ -63,7 +63,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2.5">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {videoItems.slice(0, 3).map((item) => (
                     <VideoCard key={item.id} item={item} />
                   ))}
@@ -85,7 +85,7 @@ export default function HomePage() {
 
             {/* Sidebar (desktop sticky) - mobile'da aşağı iner */}
             <div>
-              <div className="md:sticky md:top-24">
+              <div className="lg:sticky lg:top-24">
                 <Sidebar events={events} />
               </div>
             </div>
