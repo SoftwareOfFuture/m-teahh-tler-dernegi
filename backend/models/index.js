@@ -29,6 +29,9 @@ db.User = require('./User')(sequelize, Sequelize);
 db.News = require('./News')(sequelize, Sequelize);
 db.Announcement = require('./Announcement')(sequelize, Sequelize);
 db.Member = require('./Member')(sequelize, Sequelize);
+db.HeroSlide = require('./HeroSlide')(sequelize, Sequelize);
+db.Video = require('./Video')(sequelize, Sequelize);
+db.Publication = require('./Publication')(sequelize, Sequelize);
 
 // Associations
 db.User.hasOne(db.Member, { foreignKey: 'userId' });

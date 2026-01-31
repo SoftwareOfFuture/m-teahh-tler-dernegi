@@ -7,6 +7,9 @@ const authRoutes = require('./routes/auth');
 const newsRoutes = require('./routes/news');
 const announcementsRoutes = require('./routes/announcements');
 const membersRoutes = require('./routes/members');
+const slidesRoutes = require('./routes/slides');
+const videosRoutes = require('./routes/videos');
+const publicationsRoutes = require('./routes/publications');
 
 const app = express();
 
@@ -25,6 +28,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/announcements', announcementsRoutes);
 app.use('/api/members', membersRoutes);
+app.use('/api/slides', slidesRoutes);
+app.use('/api/videos', videosRoutes);
+app.use('/api/publications', publicationsRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 

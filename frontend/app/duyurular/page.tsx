@@ -1,10 +1,55 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { AnnouncementCard } from '../../components/AnnouncementCard';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-import { announcements } from '../../lib/dummyData';
+import type { AnnouncementItem } from '../../lib/dummyData';
+import { announcements as dummyAnnouncements } from '../../lib/dummyData';
+import { listAnnouncementsPublic } from '../../lib/api';
 
 export default function AnnouncementsPage() {
+  const [items, setItems] = useState<AnnouncementItem[]>(dummyAnnouncements);
+  const [loading, setLoading] = useState(false);
+
+  const formatDot = useMemo(() => {
+    return (iso: string | null | undefined) => {
+      if (!iso) return '';
+      const parts = String(iso).split('-');
+      if (parts.length !== 3) return String(iso);
+      return `${parts[2]}.${parts[1]}.${parts[0]}`;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await listAnnouncementsPublic({ page: 1, limit: 50 });
+        if (cancelled) return;
+        if (res?.items?.length) {
+          setItems(
+            res.items.map((a) => ({
+              id: String(a.id),
+              code: a.code || `AMD-${String(a.publishDate || '').slice(0, 4) || '2026'}-${a.id}`,
+              date: formatDot(a.publishDate),
+              title: a.title,
+            }))
+          );
+        }
+      } finally {
+        if (cancelled) return;
+        setLoading(false);
+      }
+    }
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [formatDot]);
+
   return (
     <PageLayoutWithFooter>
       <PageHero title="Duyurular" subtitle="Güncel duyurular ve bilgilendirmeler." />
@@ -18,10 +63,12 @@ export default function AnnouncementsPage() {
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
-          {announcements.map((item) => (
+          {items.map((item) => (
             <AnnouncementCard key={item.id} item={item} />
           ))}
         </div>
+
+        {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
       </section>
     </PageLayoutWithFooter>
   );

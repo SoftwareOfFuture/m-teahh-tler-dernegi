@@ -9,6 +9,7 @@ type NavItem = { href: string; label: string };
 export function Header() {
   const navItems: NavItem[] = useMemo(
     () => [
+      { href: '/', label: 'Ana Sayfa' },
       { href: '/kurumsal', label: 'Kurumsal' },
       { href: '/uyelerimiz', label: 'Üyelerimiz' },
       { href: '/duyurular', label: 'Duyurular' },

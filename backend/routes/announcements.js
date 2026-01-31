@@ -100,6 +100,7 @@ router.post(
   auth,
   adminOnly,
   [
+    body('code').optional().trim().isLength({ max: 100 }),
     body('title').trim().notEmpty(),
     body('content').trim().notEmpty(),
     body('publishDate').optional().isDate(),
@@ -113,6 +114,7 @@ router.post(
     try {
       const publishDate = req.body.publishDate || new Date().toISOString().split('T')[0];
       const item = await db.Announcement.create({
+        code: req.body.code || null,
         title: req.body.title,
         content: req.body.content,
         excerpt: req.body.excerpt || req.body.content.slice(0, 200),
@@ -134,6 +136,7 @@ router.put(
   adminOnly,
   [
     param('id').isInt().toInt(),
+    body('code').optional().trim().isLength({ max: 100 }),
     body('title').optional().trim().notEmpty(),
     body('content').optional().trim().notEmpty(),
     body('publishDate').optional().isDate(),
@@ -148,6 +151,7 @@ router.put(
       const item = await db.Announcement.findByPk(req.params.id);
       if (!item) return res.status(404).json({ error: 'Announcement not found.' });
       await item.update({
+        ...(req.body.code !== undefined && { code: req.body.code }),
         ...(req.body.title !== undefined && { title: req.body.title }),
         ...(req.body.content !== undefined && { content: req.body.content }),
         ...(req.body.excerpt !== undefined && { excerpt: req.body.excerpt }),
