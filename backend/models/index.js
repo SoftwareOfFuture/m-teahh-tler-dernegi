@@ -1,21 +1,25 @@
 const { Sequelize } = require('sequelize');
-const path = require('path');
 require('dotenv').config();
 
-// Varsayılan: SQLite. PostgreSQL: .env'de DATABASE_URL veya POSTGRES_URL (Vercel Postgres) tanımla.
-const pgUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-const usePostgres = pgUrl && pgUrl.startsWith('postgres');
-const sequelize = usePostgres
-  ? new Sequelize(pgUrl, {
-      dialect: 'postgres',
-      logging: false,
-      dialectOptions: pgUrl.includes('sslmode') ? {} : { ssl: { require: true, rejectUnauthorized: false } },
-    })
-  : new Sequelize({
-      dialect: 'sqlite',
-      storage: path.join(__dirname, '..', 'database.sqlite'),
-      logging: false,
-    });
+// Postgres-only (Vercel Postgres / managed Postgres)
+const pgUrl =
+  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.POSTGRES_URL_NON_POOLING;
+
+if (!pgUrl || !pgUrl.startsWith('postgres')) {
+  throw new Error(
+    'PostgreSQL connection string is required. Please set DATABASE_URL (or POSTGRES_URL) to a postgres:// URL.'
+  );
+}
+
+const needsSsl = !pgUrl.includes('localhost') && !pgUrl.includes('127.0.0.1');
+
+const sequelize = new Sequelize(pgUrl, {
+  dialect: 'postgres',
+  logging: false,
+  dialectOptions: needsSsl ? { ssl: { require: true, rejectUnauthorized: false } } : {},
+});
 
 const db = {};
 db.Sequelize = Sequelize;

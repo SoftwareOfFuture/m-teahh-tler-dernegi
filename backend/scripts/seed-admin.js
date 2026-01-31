@@ -2,8 +2,12 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const db = require('../models');
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@muteahhitler.org';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin123!';
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
+  throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be set (required to seed platform_admin).');
+}
 
 async function seed() {
   try {
@@ -29,7 +33,7 @@ async function seed() {
       userId: user.id,
       name: 'Site Admin',
       email: ADMIN_EMAIL,
-      company: 'Müteahhitler Derneği',
+      company: 'Antalya Müteahhitler Derneği',
       role: 'Admin',
       joinDate: new Date().toISOString().split('T')[0],
       isApproved: true,
