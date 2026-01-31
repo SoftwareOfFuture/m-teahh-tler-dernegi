@@ -8,12 +8,12 @@ type NavItem = { href: string; label: string };
 export function Header() {
   const navItems: NavItem[] = useMemo(
     () => [
-      { href: '#', label: 'Kurumsal' },
-      { href: '#', label: 'Üyelerimiz' },
-      { href: '#', label: 'Duyurular' },
-      { href: '#', label: 'Haberler' },
-      { href: '#', label: 'Yayınlar' },
-      { href: '#', label: 'İletişim' },
+      { href: '/kurumsal', label: 'Kurumsal' },
+      { href: '/uyelerimiz', label: 'Üyelerimiz' },
+      { href: '/duyurular', label: 'Duyurular' },
+      { href: '/haberler', label: 'Haberler' },
+      { href: '/yayinlar', label: 'Yayınlar' },
+      { href: '/iletisim', label: 'İletişim' },
     ],
     []
   );
@@ -87,7 +87,7 @@ export function Header() {
 
           {/* CTA */}
           <Link
-            href="#"
+            href="/login"
             className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-burgundy-dark hover:shadow-card-hover"
           >
             ÜYE GİRİŞİ
