@@ -20,7 +20,7 @@
     { "source": "/api/(.*)", "destination": "/api" }
   ],
   "crons": [
-    { "path": "/api/ai-blog/run-due", "schedule": "*/5 * * * *" }
+    { "path": "/api/ai-blog/run-due", "schedule": "0 3 * * *" }
   ],
   "framework": null
 }
