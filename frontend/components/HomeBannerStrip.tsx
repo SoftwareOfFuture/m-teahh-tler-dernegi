@@ -36,11 +36,8 @@ export function HomeBannerStrip({ banner }: { banner: HomeBanner | null }) {
   }, [banner.id]);
 
   const content = (
-    <div
-      ref={rootRef}
-      className="group relative w-full overflow-hidden rounded-3xl bg-slate-900 shadow-card"
-    >
-      <div className="relative h-[120px] sm:h-[150px] md:h-[180px]">
+    <div ref={rootRef} className="group relative w-full overflow-hidden rounded-3xl bg-slate-900 shadow-card">
+      <div className="relative h-[140px] sm:h-[165px] md:h-[190px]">
         <Image
           src={banner.imageUrl}
           alt={banner.title}
@@ -50,7 +47,7 @@ export function HomeBannerStrip({ banner }: { banner: HomeBanner | null }) {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
         <div className="absolute inset-0 flex items-end p-4 sm:p-5">
-          <div className="rounded-full bg-black/35 px-3 py-1.5 text-xs font-semibold text-white/95 backdrop-blur">
+          <div className="max-w-[92%] truncate rounded-full bg-black/35 px-3 py-1.5 text-xs font-semibold text-white/95 backdrop-blur">
             {banner.title}
           </div>
         </div>
