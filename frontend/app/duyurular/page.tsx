@@ -6,11 +6,10 @@ import { AnnouncementCard } from '../../components/AnnouncementCard';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import type { AnnouncementItem } from '../../lib/dummyData';
-import { announcements as dummyAnnouncements } from '../../lib/dummyData';
 import { listAnnouncementsPublic } from '../../lib/api';
 
 export default function AnnouncementsPage() {
-  const [items, setItems] = useState<AnnouncementItem[]>(dummyAnnouncements);
+  const [items, setItems] = useState<AnnouncementItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const formatDot = useMemo(() => {
@@ -69,6 +68,11 @@ export default function AnnouncementsPage() {
         </div>
 
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
+        {!loading && items.length === 0 ? (
+          <div className="mt-6 rounded-3xl border border-black/5 bg-white px-4 py-3 text-sm text-slate-600">
+            Henüz duyuru eklenmemiş.
+          </div>
+        ) : null}
       </section>
     </PageLayoutWithFooter>
   );

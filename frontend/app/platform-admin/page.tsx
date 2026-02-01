@@ -1479,6 +1479,8 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<null | { done: number; total: number }>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [edit, setEdit] = useState<Record<string, any>>({});
   const [createForm, setCreateForm] = useState<Record<string, any>>({ isPublished: true });
@@ -1506,6 +1508,52 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
     <div>
       <h2 className="text-lg font-bold text-slate-900">{title}</h2>
       <p className="mt-1 text-sm text-slate-600">{subtitle}</p>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={refresh}
+          disabled={!token || loading || bulkDeleting}
+          className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+        >
+          Yenile
+        </button>
+        <button
+          type="button"
+          disabled={!token || loading || bulkDeleting || items.length === 0}
+          className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
+          onClick={async () => {
+            if (!token) return;
+            if (!confirm('Bu listedeki TÜM kayıtları silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) return;
+            setBulkDeleting(true);
+            setBulkProgress(null);
+            setError(null);
+            try {
+              const res = await list(token);
+              const all = res.items || [];
+              if (!all.length) {
+                await refresh();
+                return;
+              }
+              setBulkProgress({ done: 0, total: all.length });
+              let done = 0;
+              for (const it of all) {
+                await remove(token, it.id);
+                done += 1;
+                setBulkProgress({ done, total: all.length });
+              }
+              await refresh();
+            } catch (e: any) {
+              setError(e?.message ?? 'Toplu silme başarısız.');
+            } finally {
+              setBulkDeleting(false);
+              setBulkProgress(null);
+            }
+          }}
+        >
+          {bulkDeleting && bulkProgress ? `Siliniyor… ${bulkProgress.done}/${bulkProgress.total}` : 'Tümünü Sil'}
+        </button>
+      </div>
 
       <div className="mt-6 rounded-3xl bg-soft-gray p-5">
         <h3 className="text-sm font-bold text-slate-900">Yeni Kayıt Ekle</h3>

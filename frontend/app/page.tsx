@@ -13,13 +13,6 @@ import { LogoSlider } from '../components/LogoSlider';
 import { SiteFooter } from '../components/SiteFooter';
 import type { AnnouncementItem, EventItem, NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/dummyData';
 import {
-  announcements as dummyAnnouncements,
-  newsItems as dummyNews,
-  partnerLogos as dummyPartners,
-  sliderItems as dummySlides,
-  videoItems as dummyVideos,
-} from '../lib/dummyData';
-import {
   listAnnouncementsRecent,
   listBannersPublic,
   listEventsUpcoming,
@@ -33,16 +26,21 @@ import {
 } from '../lib/api';
 
 export default function HomePage() {
-  const [sliderItems, setSliderItems] = useState<SliderItem[]>(dummySlides);
+  const [sliderItems, setSliderItems] = useState<SliderItem[]>([]);
+  const [slidesLoading, setSlidesLoading] = useState(true);
   const [banner, setBanner] = useState<HomeBanner | null>(null);
   const [bannerLoading, setBannerLoading] = useState(true);
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(dummyNews);
-  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>(dummyAnnouncements);
-  const [videoItems, setVideoItems] = useState<VideoItem[]>(dummyVideos);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
+  const [announcementsLoading, setAnnouncementsLoading] = useState(true);
+  const [videoItems, setVideoItems] = useState<VideoItem[]>([]);
+  const [videosLoading, setVideosLoading] = useState(true);
   const [publications, setPublications] = useState<Publication[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
-  const [partnerLogos, setPartnerLogos] = useState<PartnerLogo[]>(dummyPartners);
+  const [partnerLogos, setPartnerLogos] = useState<PartnerLogo[]>([]);
+  const [partnersLoading, setPartnersLoading] = useState(true);
 
   const formatDot = useMemo(() => {
     return (iso: string | null | undefined) => {
@@ -105,7 +103,10 @@ export default function HomePage() {
               href: s.href || '#',
             }))
           );
+        } else {
+          setSliderItems([]);
         }
+        setSlidesLoading(false);
 
         if (Array.isArray(banners) && banners.length) {
           setBanner(banners[0] || null);
@@ -124,7 +125,10 @@ export default function HomePage() {
               imageUrl: n.imageUrl || 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1200&q=80',
             }))
           );
+        } else {
+          setNewsItems([]);
         }
+        setNewsLoading(false);
 
         if (Array.isArray(anns) && anns.length) {
           setAnnouncements(
@@ -135,7 +139,10 @@ export default function HomePage() {
               title: a.title,
             }))
           );
+        } else {
+          setAnnouncements([]);
         }
+        setAnnouncementsLoading(false);
 
         if (Array.isArray(vids) && vids.length) {
           setVideoItems(
@@ -148,10 +155,15 @@ export default function HomePage() {
               href: v.href || '#',
             }))
           );
+        } else {
+          setVideoItems([]);
         }
+        setVideosLoading(false);
 
         if (Array.isArray(pubs) && pubs.length) {
           setPublications(pubs);
+        } else {
+          setPublications([]);
         }
 
         if (Array.isArray(upcoming)) {
@@ -179,11 +191,25 @@ export default function HomePage() {
               logoText: p.logoText || p.title,
             }))
           );
+        } else {
+          setPartnerLogos([]);
         }
+        setPartnersLoading(false);
       } catch {
-        // Keep dummy content on any error (static layout remains unchanged)
+        // Do not show dummy content on errors.
+        setSliderItems([]);
+        setNewsItems([]);
+        setAnnouncements([]);
+        setVideoItems([]);
+        setPartnerLogos([]);
+        setPublications([]);
+        setSlidesLoading(false);
         setBannerLoading(false);
+        setNewsLoading(false);
+        setAnnouncementsLoading(false);
+        setVideosLoading(false);
         setEventsLoading(false);
+        setPartnersLoading(false);
       }
     }
 
@@ -199,7 +225,13 @@ export default function HomePage() {
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
         {/* HERO / SLIDER */}
-        <HeroSlider items={sliderItems} />
+        {slidesLoading ? (
+          <section className="relative w-full overflow-hidden rounded-3xl bg-soft-gray shadow-card">
+            <div className="h-[360px] animate-pulse md:h-[460px] lg:h-[520px]" />
+          </section>
+        ) : (
+          <HeroSlider items={sliderItems} />
+        )}
         <div className="mt-5">
           <HomeBannerStrip banner={banner} loading={bannerLoading} />
         </div>
@@ -223,6 +255,11 @@ export default function HomePage() {
                     <NewsCard key={item.id} item={item} />
                   ))}
                 </div>
+                {!newsLoading && newsItems.length === 0 ? (
+                  <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                    Henüz haber eklenmemiş.
+                  </div>
+                ) : null}
               </div>
 
               {/* Güncel Duyurular */}
@@ -239,6 +276,11 @@ export default function HomePage() {
                     <AnnouncementCard key={item.id} item={item} />
                   ))}
                 </div>
+                {!announcementsLoading && announcements.length === 0 ? (
+                  <div className="mt-4 rounded-3xl border border-black/5 bg-white px-4 py-3 text-sm text-slate-600">
+                    Henüz duyuru eklenmemiş.
+                  </div>
+                ) : null}
               </div>
 
               {/* Video Arşiv */}
@@ -255,6 +297,11 @@ export default function HomePage() {
                     <VideoCard key={item.id} item={item} />
                   ))}
                 </div>
+                {!videosLoading && videoItems.length === 0 ? (
+                  <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                    Henüz video eklenmemiş.
+                  </div>
+                ) : null}
               </div>
 
               {/* Yayınlar */}
@@ -301,6 +348,11 @@ export default function HomePage() {
                 </div>
 
                 <LogoSlider logos={partnerLogos} />
+                {!partnersLoading && partnerLogos.length === 0 ? (
+                  <div className="mt-4 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                    Henüz partner eklenmemiş.
+                  </div>
+                ) : null}
               </div>
             </div>
 

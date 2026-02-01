@@ -6,7 +6,6 @@ import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { VideoCard } from '../../components/VideoCard';
 import type { VideoItem } from '../../lib/dummyData';
-import { videoItems as dummyVideos } from '../../lib/dummyData';
 import { listVideosPublic } from '../../lib/api';
 
 function formatDot(iso: string | null | undefined) {
@@ -17,7 +16,7 @@ function formatDot(iso: string | null | undefined) {
 }
 
 export default function VideosPage() {
-  const [items, setItems] = useState<VideoItem[]>(dummyVideos);
+  const [items, setItems] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const load = useMemo(() => {
@@ -66,6 +65,11 @@ export default function VideosPage() {
         </div>
 
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
+        {!loading && items.length === 0 ? (
+          <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+            Henüz video eklenmemiş.
+          </div>
+        ) : null}
       </section>
     </PageLayoutWithFooter>
   );

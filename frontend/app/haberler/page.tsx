@@ -6,11 +6,10 @@ import { NewsCard } from '../../components/NewsCard';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import type { NewsItem } from '../../lib/dummyData';
-import { newsItems as dummyNews } from '../../lib/dummyData';
 import { listNewsPublic } from '../../lib/api';
 
 export default function NewsPage() {
-  const [items, setItems] = useState<NewsItem[]>(dummyNews);
+  const [items, setItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(false);
 
   const formatDot = useMemo(() => {
@@ -70,6 +69,11 @@ export default function NewsPage() {
         </div>
 
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
+        {!loading && items.length === 0 ? (
+          <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+            Henüz haber eklenmemiş.
+          </div>
+        ) : null}
       </section>
     </PageLayoutWithFooter>
   );
