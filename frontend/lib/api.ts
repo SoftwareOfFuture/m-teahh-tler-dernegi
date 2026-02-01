@@ -298,6 +298,50 @@ export function documentDownloadUrl(docId: number) {
   return `/api/members/documents/${docId}/download`;
 }
 
+function parseFilenameFromContentDisposition(cd: string | null): string | null {
+  if (!cd) return null;
+  const mStar = cd.match(/filename\*\s*=\s*UTF-8''([^;]+)/i);
+  if (mStar && mStar[1]) {
+    try {
+      return decodeURIComponent(mStar[1].trim().replace(/^"(.*)"$/, '$1'));
+    } catch {
+      return mStar[1].trim().replace(/^"(.*)"$/, '$1');
+    }
+  }
+  const m = cd.match(/filename\s*=\s*("?)([^"]+)\1/i);
+  if (m && m[2]) return m[2].trim();
+  return null;
+}
+
+async function apiFetchBlob(path: string, token: string): Promise<{ blob: Blob; filename: string; mimeType: string }> {
+  const res = await fetch(path, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({} as any));
+    const firstValidationMsg =
+      data && Array.isArray(data.errors) && data.errors.length ? String(data.errors[0]?.msg ?? '') : '';
+    const msg =
+      (data && (data.error || data.message)) ||
+      (firstValidationMsg ? firstValidationMsg : null) ||
+      `Request failed: ${res.status}`;
+    throw new Error(msg);
+  }
+
+  const blob = await res.blob();
+  const mimeType = res.headers.get('content-type') || blob.type || 'application/octet-stream';
+  const filename = parseFilenameFromContentDisposition(res.headers.get('content-disposition')) || 'document';
+  return { blob, filename, mimeType };
+}
+
+export async function getMemberDocumentBlob(token: string, docId: number) {
+  return await apiFetchBlob(`/api/members/documents/${docId}/download`, token);
+}
+
 export async function listMemberDocumentsAdmin(token: string, memberId: number) {
   return await apiFetch<{
     member: { id: number; name: string; email: string; isApproved: boolean; verificationStatus: string; verificationNote: string | null };

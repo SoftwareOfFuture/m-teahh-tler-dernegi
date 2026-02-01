@@ -33,7 +33,7 @@ import {
   me,
   deleteEvent,
   deletePartner,
-  documentDownloadUrl,
+  getMemberDocumentBlob,
   rejectMember,
   requestMemberResubmission,
   reviewMemberDocumentAdmin,
@@ -407,12 +407,15 @@ function MembersPanel({
   const [docsLoading, setDocsLoading] = useState(false);
   const [docsData, setDocsData] = useState<null | { member: any; requiredKinds: string[]; items: MemberDocument[] }>(null);
   const [memberActionNote, setMemberActionNote] = useState('');
+  const [docsActionError, setDocsActionError] = useState<string | null>(null);
+  const [docsActionLoadingId, setDocsActionLoadingId] = useState<number | null>(null);
 
   async function openDocs(memberId: number) {
     if (!token) return;
     setDocsOpen(true);
     setDocsLoading(true);
     setMemberActionNote('');
+    setDocsActionError(null);
     try {
       const res = await listMemberDocumentsAdmin(token, memberId);
       setDocsData({ member: res.member, requiredKinds: res.requiredKinds, items: res.items });
@@ -421,6 +424,43 @@ function MembersPanel({
       setError(e?.message ?? 'Belgeler yüklenemedi.');
     } finally {
       setDocsLoading(false);
+    }
+  }
+
+  async function previewDocument(docId: number) {
+    if (!token) return;
+    setDocsActionError(null);
+    setDocsActionLoadingId(docId);
+    try {
+      const { blob } = await getMemberDocumentBlob(token, docId);
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank', 'noopener,noreferrer');
+      setTimeout(() => URL.revokeObjectURL(url), 5 * 60 * 1000);
+    } catch (e: any) {
+      setDocsActionError(e?.message ?? 'Önizleme açılamadı.');
+    } finally {
+      setDocsActionLoadingId(null);
+    }
+  }
+
+  async function downloadDocument(docId: number) {
+    if (!token) return;
+    setDocsActionError(null);
+    setDocsActionLoadingId(docId);
+    try {
+      const { blob, filename } = await getMemberDocumentBlob(token, docId);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'document';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30 * 1000);
+    } catch (e: any) {
+      setDocsActionError(e?.message ?? 'İndirme başarısız.');
+    } finally {
+      setDocsActionLoadingId(null);
     }
   }
 
@@ -574,6 +614,9 @@ function MembersPanel({
             </div>
 
             <div className="max-h-[70vh] overflow-auto p-5">
+              {docsActionError ? (
+                <div className="mb-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{docsActionError}</div>
+              ) : null}
               {docsLoading ? (
                 <div className="text-sm text-slate-600">Yükleniyor…</div>
               ) : !docsData ? (
@@ -595,12 +638,24 @@ function MembersPanel({
                             </div>
                             <div className="flex flex-wrap items-center gap-2">
                               {doc ? (
-                                <a
-                                  href={documentDownloadUrl(doc.id)}
-                                  className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                                >
-                                  İndir
-                                </a>
+                                <>
+                                  <button
+                                    type="button"
+                                    className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                                    disabled={docsActionLoadingId === doc.id}
+                                    onClick={() => previewDocument(doc.id)}
+                                  >
+                                    Önizle
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                                    disabled={docsActionLoadingId === doc.id}
+                                    onClick={() => downloadDocument(doc.id)}
+                                  >
+                                    İndir
+                                  </button>
+                                </>
                               ) : null}
                               {doc ? (
                                 <>

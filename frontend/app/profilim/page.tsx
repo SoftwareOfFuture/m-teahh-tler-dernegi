@@ -6,8 +6,8 @@ import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import {
   clearToken,
-  documentDownloadUrl,
   getToken,
+  getMemberDocumentBlob,
   listMyDocuments,
   me,
   uploadMyDocument,
@@ -57,6 +57,38 @@ export default function MyProfilePage() {
   const [docsError, setDocsError] = useState<string | null>(null);
   const [docsInfo, setDocsInfo] = useState<null | { requiredKinds: string[]; verificationStatus: string; verificationNote: string | null; items: MemberDocument[] }>(null);
   const [uploadingKind, setUploadingKind] = useState<string | null>(null);
+
+  async function previewDocument(docId: number) {
+    if (!token) return;
+    setDocsError(null);
+    try {
+      const { blob } = await getMemberDocumentBlob(token, docId);
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank', 'noopener,noreferrer');
+      // Let the new tab load; revoke later.
+      setTimeout(() => URL.revokeObjectURL(url), 5 * 60 * 1000);
+    } catch (e: any) {
+      setDocsError(e?.message ?? 'Önizleme açılamadı.');
+    }
+  }
+
+  async function downloadDocument(docId: number) {
+    if (!token) return;
+    setDocsError(null);
+    try {
+      const { blob, filename } = await getMemberDocumentBlob(token, docId);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'document';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30 * 1000);
+    } catch (e: any) {
+      setDocsError(e?.message ?? 'İndirme başarısız.');
+    }
+  }
 
   useEffect(() => {
     const t = getToken();
@@ -265,12 +297,22 @@ export default function MyProfilePage() {
                           </div>
                           <div className="flex flex-wrap items-center gap-2">
                             {doc ? (
-                              <a
-                                href={documentDownloadUrl(doc.id)}
-                                className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                              >
-                                İndir
-                              </a>
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => previewDocument(doc.id)}
+                                  className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                                >
+                                  Önizle
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => downloadDocument(doc.id)}
+                                  className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                                >
+                                  İndir
+                                </button>
+                              </>
                             ) : null}
                             <label
                               htmlFor={`upload_${kind}`}
