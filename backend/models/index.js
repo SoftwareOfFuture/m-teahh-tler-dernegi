@@ -3,11 +3,10 @@ require('dotenv').config();
 
 // Postgres-only (Vercel Postgres / managed Postgres)
 //
-// Runtime should prefer the pooled URL (serverless friendly). Migration/sync scripts should override
-// env vars to use NON_POOLING (see scripts/sync-db.js and seed-* scripts).
+// Prefer direct (NON_POOLING) URL to avoid intermittent proxy/pooler upstream errors.
 let pgUrl =
-  process.env.POSTGRES_URL ||
   process.env.POSTGRES_URL_NON_POOLING ||
+  process.env.POSTGRES_URL ||
   process.env.DATABASE_URL ||
   process.env.POSTGRES_PRISMA_URL;
 
@@ -42,7 +41,7 @@ const sequelize = new Sequelize(pgUrl, {
   dialectOptions: needsSsl ? { ssl: { require: true, rejectUnauthorized: false } } : {},
   pool: {
     // serverless-friendly defaults
-    max: 5,
+    max: 2,
     min: 0,
     acquire: 60000,
     idle: 10000,

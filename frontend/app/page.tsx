@@ -36,6 +36,7 @@ import {
 export default function HomePage() {
   const [sliderItems, setSliderItems] = useState<SliderItem[]>(dummySlides);
   const [banner, setBanner] = useState<HomeBanner | null>(null);
+  const [bannerLoading, setBannerLoading] = useState(true);
   const [newsItems, setNewsItems] = useState<NewsItem[]>(dummyNews);
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>(dummyAnnouncements);
   const [videoItems, setVideoItems] = useState<VideoItem[]>(dummyVideos);
@@ -58,9 +59,23 @@ export default function HomePage() {
 
     async function load() {
       try {
-        const [slides, banners, news, anns, vids, pubs, upcoming, partners] = await Promise.all([
+        const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+        const fetchWithRetry = async <T,>(fn: () => Promise<T>, retries = 2) => {
+          let lastErr: any = null;
+          for (let i = 0; i <= retries; i++) {
+            try {
+              return await fn();
+            } catch (e) {
+              lastErr = e;
+              await sleep(400 + i * 600);
+            }
+          }
+          throw lastErr;
+        };
+
+        const results = await Promise.allSettled([
           listSlidesPublic({ limit: 8 }),
-          listBannersPublic({ limit: 1 }),
+          fetchWithRetry(() => listBannersPublic({ limit: 1 }), 2),
           listNewsPublic({ page: 1, limit: 6 }),
           listAnnouncementsRecent(),
           listVideosRecent({ limit: 3 }),
@@ -69,6 +84,15 @@ export default function HomePage() {
           listPartnersPublic({ limit: 50 }),
         ]);
         if (cancelled) return;
+
+        const slides = results[0].status === 'fulfilled' ? results[0].value : null;
+        const banners = results[1].status === 'fulfilled' ? results[1].value : null;
+        const news = results[2].status === 'fulfilled' ? results[2].value : null;
+        const anns = results[3].status === 'fulfilled' ? results[3].value : null;
+        const vids = results[4].status === 'fulfilled' ? results[4].value : null;
+        const pubs = results[5].status === 'fulfilled' ? results[5].value : null;
+        const upcoming = results[6].status === 'fulfilled' ? results[6].value : null;
+        const partners = results[7].status === 'fulfilled' ? results[7].value : null;
 
         if (Array.isArray(slides) && slides.length) {
           setSliderItems(
@@ -88,6 +112,7 @@ export default function HomePage() {
         } else {
           setBanner(null);
         }
+        setBannerLoading(false);
 
         if (news?.items?.length) {
           setNewsItems(
@@ -152,6 +177,7 @@ export default function HomePage() {
         }
       } catch {
         // Keep dummy content on any error (static layout remains unchanged)
+        setBannerLoading(false);
       }
     }
 
@@ -169,7 +195,7 @@ export default function HomePage() {
         {/* HERO / SLIDER */}
         <HeroSlider items={sliderItems} />
         <div className="mt-5">
-          <HomeBannerStrip banner={banner} />
+          <HomeBannerStrip banner={banner} loading={bannerLoading} />
         </div>
 
         {/* Content + Sidebar (desktop) */}

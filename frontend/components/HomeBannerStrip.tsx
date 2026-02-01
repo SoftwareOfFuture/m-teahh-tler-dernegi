@@ -9,7 +9,14 @@ function isInternalHref(href: string) {
   return href.startsWith('/');
 }
 
-export function HomeBannerStrip({ banner }: { banner: HomeBanner | null }) {
+export function HomeBannerStrip({ banner, loading }: { banner: HomeBanner | null; loading?: boolean }) {
+  if (!banner && loading) {
+    return (
+      <div className="relative w-full overflow-hidden rounded-3xl bg-soft-gray shadow-card">
+        <div className="h-[140px] animate-pulse sm:h-[165px] md:h-[190px]" />
+      </div>
+    );
+  }
   if (!banner) return null;
 
   const rootRef = useRef<HTMLDivElement | null>(null);
