@@ -20,6 +20,9 @@ export function SiteFooter() {
             <Link href="/sms-geri-bildirim" className="hover:text-white">
               SMS ile Geri Bildirim
             </Link>
+            <Link href="/blog" className="hover:text-white">
+              Blog
+            </Link>
           </div>
         </div>
 

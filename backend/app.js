@@ -14,6 +14,8 @@ const pagesRoutes = require('./routes/pages');
 const eventsRoutes = require('./routes/events');
 const partnersRoutes = require('./routes/partners');
 const smsFeedbackRoutes = require('./routes/sms-feedback');
+const blogRoutes = require('./routes/blog');
+const aiBlogRoutes = require('./routes/ai-blog');
 
 const app = express();
 
@@ -40,6 +42,8 @@ app.use('/api/pages', pagesRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/partners', partnersRoutes);
 app.use('/api/sms-feedback', smsFeedbackRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/ai-blog', aiBlogRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 

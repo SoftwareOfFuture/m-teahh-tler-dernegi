@@ -56,6 +56,8 @@ db.Event = require('./Event')(sequelize, Sequelize);
 db.Partner = require('./Partner')(sequelize, Sequelize);
 db.MemberDocument = require('./MemberDocument')(sequelize, Sequelize);
 db.SmsFeedback = require('./SmsFeedback')(sequelize, Sequelize);
+db.BlogPost = require('./BlogPost')(sequelize, Sequelize);
+db.AiBlogTask = require('./AiBlogTask')(sequelize, Sequelize);
 
 // Associations
 db.User.hasOne(db.Member, { foreignKey: 'userId' });
