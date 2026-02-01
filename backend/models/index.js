@@ -2,10 +2,12 @@ const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
 // Postgres-only (Vercel Postgres / managed Postgres)
+// IMPORTANT: Prefer NON_POOLING on Vercel. Some environments set DATABASE_URL to a Prisma/Proxy endpoint
+// which can fail with "Failed to connect to upstream database" when used with pg/sequelize.
 let pgUrl =
-  process.env.DATABASE_URL ||
+  process.env.POSTGRES_URL_NON_POOLING ||
   process.env.POSTGRES_URL ||
-  process.env.POSTGRES_URL_NON_POOLING;
+  process.env.DATABASE_URL;
 
 if (!pgUrl || !pgUrl.startsWith('postgres')) {
   throw new Error(
