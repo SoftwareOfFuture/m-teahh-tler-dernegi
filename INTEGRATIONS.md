@@ -14,7 +14,7 @@ Bu repo içinde iki seçenek vardır:
 ### Gerekli ortam değişkenleri (bu proje)
 
 - **`GOOGLE_AI_STUDIO_API_KEY`** (veya **`GEMINI_API_KEY`**): Blog içeriği üretimi için zorunlu.
-- **`GEMINI_MODEL`** (opsiyonel): Varsayılan `gemini-1.5-flash`.
+- **`GEMINI_MODEL`** (opsiyonel): Varsayılan `gemini-2.0-flash`.
 - **`CRON_SECRET`** (opsiyonel): Eğer Vercel Cron dışı bir cron ile çağıracaksanız ek güvenlik için.
 
 ### Cron endpoint

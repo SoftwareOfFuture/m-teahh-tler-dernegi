@@ -53,23 +53,48 @@ Keywords (optional): ${(prompt.keywords || []).join(', ')}
 
 Output JSON only.`;
 
-  const model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  function normalizeModelName(m) {
+    const s = String(m || '').trim();
+    if (!s) return '';
+    return s.startsWith('models/') ? s.slice('models/'.length) : s;
+  }
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: sys }] },
-      contents: [{ role: 'user', parts: [{ text: user }] }],
-      generationConfig: {
-        temperature: 0.7,
-        responseMimeType: 'application/json',
-      },
-    }),
-  });
+  async function generateWithModel(rawModel) {
+    const model = normalizeModelName(rawModel);
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: sys }] },
+        contents: [{ role: 'user', parts: [{ text: user }] }],
+        generationConfig: {
+          temperature: 0.7,
+          // v1beta supports forcing JSON responses in many accounts; if unsupported, Gemini will ignore.
+          responseMimeType: 'application/json',
+        },
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    return { res, data, model };
+  }
 
-  const data = await res.json().catch(() => ({}));
+  // Prefer a modern default that is listed in official examples.
+  const preferred = normalizeModelName(process.env.GEMINI_MODEL) || 'gemini-2.0-flash';
+  let { res, data, model } = await generateWithModel(preferred);
+
+  // If model is not found / not supported, retry once with a known-good fallback.
+  if (!res.ok) {
+    const msg = String(data?.error?.message || data?.error || data?.message || '');
+    const looksLikeModelError =
+      res.status === 404 ||
+      res.status === 400 ||
+      /not found|bulunamadı|does not exist|not supported/i.test(msg);
+    if (looksLikeModelError && model !== 'gemini-2.0-flash') {
+      ({ res, data, model } = await generateWithModel('gemini-2.0-flash'));
+    }
+  }
+
   if (!res.ok) {
     const msg =
       (data && (data.error?.message || data.error || data.message)) ||
