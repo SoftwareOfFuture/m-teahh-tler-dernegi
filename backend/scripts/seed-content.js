@@ -1,4 +1,11 @@
 require('dotenv').config();
+
+// Use NON_POOLING connection for schema sync/migrations.
+if (process.env.POSTGRES_URL_NON_POOLING) {
+  process.env.POSTGRES_URL = process.env.POSTGRES_URL_NON_POOLING;
+  process.env.DATABASE_URL = process.env.POSTGRES_URL_NON_POOLING;
+}
+
 const db = require('../models');
 
 // Default content seeding is optional.
