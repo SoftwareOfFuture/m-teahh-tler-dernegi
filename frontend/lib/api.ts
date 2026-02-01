@@ -78,6 +78,17 @@ export type HeroSlide = {
   updatedAt?: string;
 };
 
+export type HomeBanner = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  href: string;
+  sortOrder: number;
+  isPublished: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type Video = {
   id: number;
   title: string;
@@ -490,6 +501,12 @@ export async function listSlidesPublic(params?: { limit?: number }) {
   return await apiFetch<HeroSlide[]>(`/api/slides${qs.toString() ? `?${qs.toString()}` : ''}`, { method: 'GET' });
 }
 
+export async function listBannersPublic(params?: { limit?: number }) {
+  const qs = new URLSearchParams();
+  if (params?.limit) qs.set('limit', String(params.limit));
+  return await apiFetch<HomeBanner[]>(`/api/banners${qs.toString() ? `?${qs.toString()}` : ''}`, { method: 'GET' });
+}
+
 export async function listNewsPublic(params?: { page?: number; limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.page) qs.set('page', String(params.page));
@@ -555,6 +572,39 @@ export async function listSlidesAdminAll(token: string, params?: { page?: number
   if (params?.limit) qs.set('limit', String(params.limit));
   return await apiFetch<PagedResponse<HeroSlide>>(`/api/slides/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`, {
     method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function listBannersAdminAll(token: string, params?: { page?: number; limit?: number }) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  return await apiFetch<PagedResponse<HomeBanner>>(`/api/banners/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createBanner(token: string, payload: Partial<HomeBanner> & { title: string; imageUrl: string; href: string }) {
+  return await apiFetch<HomeBanner>('/api/banners', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateBanner(token: string, id: number, payload: Partial<HomeBanner>) {
+  return await apiFetch<HomeBanner>(`/api/banners/${id}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteBanner(token: string, id: number) {
+  return await apiFetch<{ success: true }>(`/api/banners/${id}`, {
+    method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });
 }

@@ -7,12 +7,14 @@ import {
   approveMember,
   clearToken,
   createAnnouncement,
+  createBanner,
   createNews,
   createAiBlogTask,
   createPublication,
   createSlide,
   createVideo,
   deleteAnnouncement,
+  deleteBanner,
   deleteAiBlogTask,
   deleteMember,
   deleteNews,
@@ -25,6 +27,7 @@ import {
   createEvent,
   createPartner,
   listAnnouncementsAdminAll,
+  listBannersAdminAll,
   listAiBlogTasksAdminAll,
   listBlogAdminAll,
   listEventsAdminAll,
@@ -42,6 +45,7 @@ import {
   requestMemberResubmission,
   reviewMemberDocumentAdmin,
   runAiBlogNow,
+  updateBanner,
   updateEvent,
   updatePartner,
   upsertPageAdmin,
@@ -55,6 +59,7 @@ import {
   type BlogPost,
   type Event,
   type HeroSlide,
+  type HomeBanner,
   type News,
   type PageContent,
   type MemberDocument,
@@ -69,7 +74,7 @@ export default function PlatformAdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [tab, setTab] = useState<
-    'members' | 'slides' | 'news' | 'announcements' | 'videos' | 'publications' | 'events' | 'partners' | 'kurumsal' | 'ai_blog'
+    'members' | 'slides' | 'banners' | 'news' | 'announcements' | 'videos' | 'publications' | 'events' | 'partners' | 'kurumsal' | 'ai_blog'
   >('members');
 
   const [items, setItems] = useState<any[]>([]);
@@ -144,6 +149,7 @@ export default function PlatformAdminPage() {
           <div className="flex flex-wrap gap-2">
             <TabButton active={tab === 'members'} onClick={() => setTab('members')}>Üyeler</TabButton>
             <TabButton active={tab === 'slides'} onClick={() => setTab('slides')}>Slider</TabButton>
+            <TabButton active={tab === 'banners'} onClick={() => setTab('banners')}>Banner</TabButton>
             <TabButton active={tab === 'news'} onClick={() => setTab('news')}>Haberler</TabButton>
             <TabButton active={tab === 'announcements'} onClick={() => setTab('announcements')}>Duyurular</TabButton>
             <TabButton active={tab === 'videos'} onClick={() => setTab('videos')}>Videolar</TabButton>
@@ -167,6 +173,8 @@ export default function PlatformAdminPage() {
               />
             ) : tab === 'slides' ? (
               <SlidesPanel token={token} />
+            ) : tab === 'banners' ? (
+              <BannersPanel token={token} />
             ) : tab === 'news' ? (
               <NewsPanel token={token} />
             ) : tab === 'announcements' ? (
@@ -1304,6 +1312,26 @@ function SlidesPanel({ token }: { token: string | null }) {
         {!loading && items.length === 0 ? <div className="text-sm text-slate-600">Slayt bulunamadı.</div> : null}
       </div>
     </div>
+  );
+}
+
+function BannersPanel({ token }: { token: string | null }) {
+  return (
+    <GenericContentPanel<HomeBanner>
+      token={token}
+      title="Banner Yönetimi"
+      subtitle="Ana sayfada slider’ın hemen altındaki yatay tıklanabilir banner alanı buradan yönetilir. Yayında olan ilk kayıt (sıralamaya göre) gösterilir."
+      list={(t) => listBannersAdminAll(t, { page: 1, limit: 200 })}
+      create={(t, p) => createBanner(t, p as any)}
+      update={(t, id, p) => updateBanner(t, id, p as any)}
+      remove={(t, id) => deleteBanner(t, id)}
+      fields={[
+        { key: 'title', label: 'Başlık (Alt yazı)', type: 'text', required: true },
+        { key: 'imageUrl', label: 'Banner Görsel URL', type: 'text', required: true },
+        { key: 'href', label: 'Tıklayınca gideceği link', type: 'text', required: true },
+        { key: 'sortOrder', label: 'Sıralama', type: 'text' },
+      ]}
+    />
   );
 }
 

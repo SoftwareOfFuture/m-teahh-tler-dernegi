@@ -16,6 +16,7 @@ const partnersRoutes = require('./routes/partners');
 const smsFeedbackRoutes = require('./routes/sms-feedback');
 const blogRoutes = require('./routes/blog');
 const aiBlogRoutes = require('./routes/ai-blog');
+const bannersRoutes = require('./routes/banners');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/publications', publicationsRoutes);
 app.use('/api/pages', pagesRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/partners', partnersRoutes);
+app.use('/api/banners', bannersRoutes);
 app.use('/api/sms-feedback', smsFeedbackRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/ai-blog', aiBlogRoutes);

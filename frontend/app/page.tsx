@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { Header } from '../components/Header';
 import { HeroSlider } from '../components/HeroSlider';
+import { HomeBannerStrip } from '../components/HomeBannerStrip';
 import { Sidebar } from '../components/Sidebar';
 import { NewsCard } from '../components/NewsCard';
 import { AnnouncementCard } from '../components/AnnouncementCard';
@@ -21,17 +22,20 @@ import {
 } from '../lib/dummyData';
 import {
   listAnnouncementsRecent,
+  listBannersPublic,
   listEventsUpcoming,
   listNewsPublic,
   listPartnersPublic,
   listPublicationsRecent,
   listSlidesPublic,
   listVideosRecent,
+  type HomeBanner,
   type Publication,
 } from '../lib/api';
 
 export default function HomePage() {
   const [sliderItems, setSliderItems] = useState<SliderItem[]>(dummySlides);
+  const [banner, setBanner] = useState<HomeBanner | null>(null);
   const [newsItems, setNewsItems] = useState<NewsItem[]>(dummyNews);
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>(dummyAnnouncements);
   const [videoItems, setVideoItems] = useState<VideoItem[]>(dummyVideos);
@@ -54,8 +58,9 @@ export default function HomePage() {
 
     async function load() {
       try {
-        const [slides, news, anns, vids, pubs, upcoming, partners] = await Promise.all([
+        const [slides, banners, news, anns, vids, pubs, upcoming, partners] = await Promise.all([
           listSlidesPublic({ limit: 8 }),
+          listBannersPublic({ limit: 1 }),
           listNewsPublic({ page: 1, limit: 6 }),
           listAnnouncementsRecent(),
           listVideosRecent({ limit: 3 }),
@@ -76,6 +81,12 @@ export default function HomePage() {
               href: s.href || '#',
             }))
           );
+        }
+
+        if (Array.isArray(banners) && banners.length) {
+          setBanner(banners[0] || null);
+        } else {
+          setBanner(null);
         }
 
         if (news?.items?.length) {
@@ -157,6 +168,9 @@ export default function HomePage() {
       <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
         {/* HERO / SLIDER */}
         <HeroSlider items={sliderItems} />
+        <div className="mt-5">
+          <HomeBannerStrip banner={banner} />
+        </div>
 
         {/* Content + Sidebar (desktop) */}
         <section className="mt-10 w-full">
