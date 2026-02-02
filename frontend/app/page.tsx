@@ -9,6 +9,7 @@ import { Sidebar } from '../components/Sidebar';
 import { NewsCard } from '../components/NewsCard';
 import { AnnouncementCard } from '../components/AnnouncementCard';
 import { VideoCard } from '../components/VideoCard';
+import { VideoPlayerModal } from '../components/VideoPlayerModal';
 import { LogoSlider } from '../components/LogoSlider';
 import { SiteFooter } from '../components/SiteFooter';
 import type { AnnouncementItem, EventItem, NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/dummyData';
@@ -36,6 +37,7 @@ export default function HomePage() {
   const [announcementsLoading, setAnnouncementsLoading] = useState(true);
   const [videoItems, setVideoItems] = useState<VideoItem[]>([]);
   const [videosLoading, setVideosLoading] = useState(true);
+  const [videoPreview, setVideoPreview] = useState<{ url: string; title: string } | null>(null);
   const [publications, setPublications] = useState<Publication[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
@@ -291,7 +293,14 @@ export default function HomePage() {
 
                 <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {videoItems.slice(0, 3).map((item) => (
-                    <VideoCard key={item.id} item={item} />
+                    <VideoCard
+                      key={item.id}
+                      item={item}
+                      onOpen={(it) => {
+                        if (!it.href || it.href === '#') return;
+                        setVideoPreview({ url: it.href, title: it.title });
+                      }}
+                    />
                   ))}
                 </div>
                 {!videosLoading && videoItems.length === 0 ? (
@@ -358,6 +367,13 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        <VideoPlayerModal
+          open={!!videoPreview}
+          url={videoPreview?.url ?? null}
+          title={videoPreview?.title}
+          onClose={() => setVideoPreview(null)}
+        />
 
         <SiteFooter />
       </main>

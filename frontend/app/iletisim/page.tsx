@@ -5,6 +5,40 @@ import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { getPagePublic, type PageContent } from '../../lib/api';
 
+function toMapsEmbedSrc(input: string | null | undefined, addressFallback: string | null | undefined): string | null {
+  const raw = String(input ?? '').trim();
+  const addr = String(addressFallback ?? '').trim();
+
+  // If user didn't provide any link, embed from address as a convenience
+  if (!raw) {
+    if (!addr) return null;
+    return `https://www.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
+  }
+
+  // If user provided plain address text
+  if (!raw.startsWith('http://') && !raw.startsWith('https://')) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(raw)}&output=embed`;
+  }
+
+  // If already an embed URL
+  if (raw.includes('/maps/embed') || raw.includes('output=embed')) return raw;
+
+  // Try to convert common Google Maps URLs into embeddable form
+  try {
+    const u = new URL(raw);
+    if (u.hostname.includes('google.') && u.pathname.startsWith('/maps')) {
+      u.searchParams.set('output', 'embed');
+      return u.toString();
+    }
+  } catch {
+    // ignore
+  }
+
+  // Fallback: embed from address if we have it; still show the raw link as "Haritada aç"
+  if (addr) return `https://www.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
+  return null;
+}
+
 export default function ContactPage() {
   const fallback = useMemo(
     () => ({
@@ -25,6 +59,7 @@ export default function ContactPage() {
   const contactEmail = page?.contactEmail || fallback.contactEmail;
   const contactPhone = page?.contactPhone || fallback.contactPhone;
   const mapEmbedUrl = page?.mapEmbedUrl || fallback.mapEmbedUrl;
+  const embedSrc = useMemo(() => toMapsEmbedSrc(mapEmbedUrl, contactAddress), [mapEmbedUrl, contactAddress]);
 
   useEffect(() => {
     let cancelled = false;
@@ -61,21 +96,34 @@ export default function ContactPage() {
             <p>Telefon: {contactPhone}</p>
           </div>
 
-          {mapEmbedUrl ? (
+          {embedSrc ? (
             <div className="mt-6 overflow-hidden rounded-3xl border border-black/5 bg-soft-gray">
               <div className="relative aspect-[16/10] w-full sm:aspect-[16/9]">
                 <iframe
                   title="Google Maps"
-                  src={mapEmbedUrl}
+                  src={embedSrc}
                   className="absolute inset-0 h-full w-full"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
+              {mapEmbedUrl ? (
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-black/5 bg-white px-4 py-3">
+                  <div className="text-xs text-slate-500">Harita linki:</div>
+                  <a
+                    href={mapEmbedUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-semibold text-burgundy hover:text-burgundy-dark"
+                  >
+                    Haritada aç →
+                  </a>
+                </div>
+              ) : null}
             </div>
           ) : (
             <div className="mt-6 rounded-3xl bg-soft-gray p-6 text-sm text-slate-700">
-              Harita henüz eklenmedi. Platform Admin &gt; İletişim bölümünden Google Maps embed URL ekleyebilirsiniz.
+              Harita henüz eklenmedi. Platform Admin &gt; İletişim bölümünden Google Maps linki veya adres ekleyebilirsiniz.
             </div>
           )}
         </div>

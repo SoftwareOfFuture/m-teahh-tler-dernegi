@@ -390,16 +390,16 @@ function IletisimPanel({ token }: { token: string | null }) {
         </Field>
 
         <div className="md:col-span-2">
-          <Field label="Google Maps Embed URL (iframe src)">
+          <Field label="Google Maps Linki (normal link veya embed)">
             <TextArea
               rows={3}
               value={String(form.mapEmbedUrl ?? '')}
               onChange={(e) => setForm((s) => ({ ...s, mapEmbedUrl: e.target.value }))}
-              placeholder='Google Maps > "Harita paylaş" > "Haritayı yerleştir" bölümündeki iframe src'
+              placeholder='Google Maps linki yapıştırın (ör: https://www.google.com/maps?... veya https://www.google.com/maps/embed?pb=...)'
             />
           </Field>
           <p className="mt-2 text-xs text-slate-500">
-            Not: Buraya sadece embed (iframe) URL’si girin. Örn: https://www.google.com/maps/embed?pb=...
+            Not: Embed ile uğraşmak istemezseniz normal Google Maps linki de olur. Eğer link embedlenemezse, sayfada adres üzerinden harita gösterilir ve link “Haritada aç” olarak çalışır.
           </p>
         </div>
       </div>
