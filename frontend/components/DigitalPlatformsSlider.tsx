@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 export type DigitalPlatformItem = {
   id: string;
@@ -142,178 +142,75 @@ export function DigitalPlatformsSlider({
     ];
   }, [items]);
 
-  const layerARef = useRef<HTMLDivElement | null>(null);
-  const layerBRef = useRef<HTMLDivElement | null>(null);
-  const activeLayerRef = useRef<'a' | 'b'>('a');
-  const idxRef = useRef(0);
-  const animatingRef = useRef(false);
-
-  const [activeLayer, setActiveLayer] = useState<'a' | 'b'>('a');
-  const [layerA, setLayerA] = useState<DigitalPlatformItem>(() => list[0]);
-  const [layerB, setLayerB] = useState<DigitalPlatformItem>(() => list[0]);
-  const [paused, setPaused] = useState(false);
-
-  const activeItem = activeLayer === 'a' ? layerA : layerB;
+  const itemElsRef = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     if (!list.length) return;
-    idxRef.current = 0;
-    activeLayerRef.current = 'a';
-    setActiveLayer('a');
-    setLayerA(list[0]);
-    setLayerB(list[0]);
+
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      return;
+    }
+
+    let obs: IntersectionObserver | null = null;
+    let disconnected = false;
+
+    const els = itemElsRef.current.filter(Boolean) as HTMLDivElement[];
+    if (!els.length) return;
+
     (async () => {
       try {
         const mod: any = await import('gsap');
         const gsap = mod?.gsap || mod?.default || mod;
         if (!gsap) return;
-        if (layerARef.current) gsap.set(layerARef.current, { opacity: 1, zIndex: 2, clipPath: 'inset(0 0% 0 0)', scale: 1 });
-        if (layerBRef.current) gsap.set(layerBRef.current, { opacity: 0, zIndex: 1, clipPath: 'inset(0 0% 0 0)', scale: 1 });
+
+        // Start hidden; reveal as user scrolls down.
+        gsap.set(els, { opacity: 0, y: 18 });
+
+        obs = new IntersectionObserver(
+          (entries) => {
+            if (disconnected) return;
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              const el = entry.target as HTMLDivElement;
+              gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
+              obs?.unobserve(el);
+            }
+          },
+          { threshold: 0.18, rootMargin: '0px 0px -10% 0px' }
+        );
+
+        for (const el of els) obs.observe(el);
       } catch {
       }
     })();
+
+    return () => {
+      disconnected = true;
+      obs?.disconnect();
+    };
   }, [list]);
-
-  const goTo = useCallback(async (nextIndex: number) => {
-    const len = list.length;
-    if (len <= 1) return;
-    const target = ((nextIndex % len) + len) % len;
-    if (target === idxRef.current) return;
-    if (animatingRef.current) return;
-    animatingRef.current = true;
-
-    const fromLayer = activeLayerRef.current;
-    const toLayer = fromLayer === 'a' ? 'b' : 'a';
-    const nextItem = list[target];
-
-    if (toLayer === 'a') setLayerA(nextItem);
-    else setLayerB(nextItem);
-
-    setActiveLayer(toLayer);
-    activeLayerRef.current = toLayer;
-    idxRef.current = target;
-
-    try {
-      const mod: any = await import('gsap');
-      const gsap = mod?.gsap || mod?.default || mod;
-      if (!gsap) {
-        animatingRef.current = false;
-        return;
-      }
-
-      const activeEl = fromLayer === 'a' ? layerARef.current : layerBRef.current;
-      const nextEl = toLayer === 'a' ? layerARef.current : layerBRef.current;
-      if (!activeEl || !nextEl) {
-        animatingRef.current = false;
-        return;
-      }
-
-      // Marvel-like wipe: new slide reveals while old dims & scales slightly.
-      gsap.set(nextEl, { opacity: 1, zIndex: 3, clipPath: 'inset(0 100% 0 0)', scale: 1.03 });
-      gsap.set(activeEl, { opacity: 1, zIndex: 2, clipPath: 'inset(0 0% 0 0)', scale: 1 });
-
-      gsap.timeline({
-        onComplete: () => {
-          gsap.set(activeEl, { opacity: 0, zIndex: 1, clipPath: 'inset(0 0% 0 0)', scale: 1 });
-          gsap.set(nextEl, { opacity: 1, zIndex: 2, clipPath: 'inset(0 0% 0 0)', scale: 1 });
-          animatingRef.current = false;
-        },
-      })
-        .to(activeEl, { opacity: 0.55, duration: 0.45, ease: 'power2.out' }, 0)
-        .to(activeEl, { scale: 1.02, duration: 0.55, ease: 'power2.out' }, 0)
-        .to(nextEl, { clipPath: 'inset(0 0% 0 0)', scale: 1, duration: 0.75, ease: 'power3.inOut' }, 0);
-    } catch {
-      animatingRef.current = false;
-    }
-  }, [list]);
-
-  useEffect(() => {
-    if (list.length <= 1) return;
-    if (paused) return;
-    const t = setInterval(() => {
-      void goTo(idxRef.current + 1);
-    }, 6500);
-    return () => clearInterval(t);
-  }, [goTo, list.length, paused]);
 
   if (!list.length) return null;
 
   return (
-    <section
-      className="w-full"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      aria-label="Dijital platformlar"
-    >
+    <section className="w-full" aria-label="Dijital platformlar">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
         <h2 className="text-lg font-bold text-slate-900">{title}</h2>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            className="grid size-9 place-items-center rounded-full border border-black/10 bg-white text-slate-700 transition-colors hover:bg-soft-gray"
-            aria-label="Önceki"
-            onClick={() => void goTo(idxRef.current - 1)}
-          >
-            <ArrowLeft />
-          </button>
-          <button
-            type="button"
-            className="grid size-9 place-items-center rounded-full border border-black/10 bg-white text-slate-700 transition-colors hover:bg-soft-gray"
-            aria-label="Sonraki"
-            onClick={() => void goTo(idxRef.current + 1)}
-          >
-            <ArrowRight />
-          </button>
-        </div>
       </div>
 
-      <div className="relative w-full overflow-hidden rounded-3xl">
-        <div ref={layerARef} className={`absolute inset-0 ${activeLayer === 'a' ? 'z-20 opacity-100' : 'z-10 opacity-0'}`}>
-          <PlatformCard item={layerA} />
-        </div>
-        <div ref={layerBRef} className={`absolute inset-0 ${activeLayer === 'b' ? 'z-20 opacity-100' : 'z-10 opacity-0'}`}>
-          <PlatformCard item={layerB} />
-        </div>
-        {/* Height keeper */}
-        <div className="invisible">
-          <PlatformCard item={activeItem} />
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          {list.map((it, i) => {
-            const active = i === idxRef.current;
-            return (
-              <button
-                key={it.id}
-                type="button"
-                aria-label={`${it.title} seç`}
-                onClick={() => void goTo(i)}
-                className={`h-2.5 rounded-full transition-all ${active ? 'w-9 bg-burgundy' : 'w-2.5 bg-slate-300 hover:bg-slate-400'}`}
-              />
-            );
-          })}
-        </div>
-        <div className="text-xs font-semibold text-slate-500">Otomatik geçiş {paused ? 'duraklatıldı' : 'açık'}</div>
+      <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:gap-7">
+        {list.map((item, idx) => (
+          <div
+            key={item.id}
+            ref={(el) => {
+              itemElsRef.current[idx] = el;
+            }}
+          >
+            <PlatformCard item={item} />
+          </div>
+        ))}
       </div>
     </section>
-  );
-}
-
-function ArrowLeft() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function ArrowRight() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 
