@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-import { listEventsUpcoming, type Event } from '../../lib/api';
+import { listEventsPublic, type Event } from '../../lib/api';
 
 function formatDot(iso: string | null | undefined) {
   if (!iso) return '';
@@ -16,13 +16,18 @@ function formatDot(iso: string | null | undefined) {
 export default function EventsPage() {
   const [items, setItems] = useState<Event[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useMemo(() => {
     return async () => {
       setLoading(true);
+      setError(null);
       try {
-        const res = await listEventsUpcoming({ limit: 50 });
-        if (Array.isArray(res)) setItems(res);
+        const res = await listEventsPublic({ page: 1, limit: 50 });
+        setItems(res?.items || []);
+      } catch (e: any) {
+        setItems([]);
+        setError(e?.message ?? 'Etkinlikler yüklenemedi.');
       } finally {
         setLoading(false);
       }
@@ -46,6 +51,10 @@ export default function EventsPage() {
         </div>
 
         <div className="mt-6 space-y-3">
+          {error ? (
+            <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+          ) : null}
+
           {items.map((e) => (
             <div key={e.id} className="rounded-3xl bg-white p-5 shadow-card">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -63,7 +72,7 @@ export default function EventsPage() {
             </div>
           ))}
 
-          {!loading && items.length === 0 ? (
+          {!loading && !error && items.length === 0 ? (
             <div className="rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
               Henüz etkinlik eklenmemiş.
             </div>

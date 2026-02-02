@@ -805,6 +805,13 @@ export async function listEventsUpcoming(params?: { limit?: number }) {
   return await apiFetch<Event[]>(`/api/events/upcoming${qs.toString() ? `?${qs.toString()}` : ''}`, { method: 'GET' });
 }
 
+export async function listEventsPublic(params?: { page?: number; limit?: number }) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  return await apiFetch<PagedResponse<Event>>(`/api/events${qs.toString() ? `?${qs.toString()}` : ''}`, { method: 'GET' });
+}
+
 export async function listEventsAdminAll(token: string, params?: { page?: number; limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.page) qs.set('page', String(params.page));
