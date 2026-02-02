@@ -5,14 +5,14 @@ import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 
 type Props = {
   item: VideoItem;
+  onOpen?: (item: VideoItem) => void;
 };
 
-export function VideoCard({ item }: Props) {
-  return (
-    <Link
-      href={item.href}
-      className="group overflow-hidden rounded-3xl bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
-    >
+export function VideoCard({ item, onOpen }: Props) {
+  const clickable = typeof onOpen === 'function' && item.href && item.href !== '#';
+
+  const content = (
+    <>
       <div className="relative aspect-[21/9] overflow-hidden">
         <Image
           src={normalizeImageSrc(item.thumbnailUrl)}
@@ -36,6 +36,24 @@ export function VideoCard({ item }: Props) {
         <p className="mt-1 text-xs text-slate-600 line-clamp-2">{item.excerpt}</p>
         <p className="mt-1.5 text-xs text-slate-400">{item.date}</p>
       </div>
+    </>
+  );
+
+  if (clickable) {
+    return (
+      <button
+        type="button"
+        onClick={() => onOpen(item)}
+        className="group w-full overflow-hidden rounded-3xl bg-white text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link href={item.href} className="group overflow-hidden rounded-3xl bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover">
+      {content}
     </Link>
   );
 }

@@ -152,6 +152,10 @@ export type PageContent = {
   aboutParagraph2: string | null;
   aboutPdfTitle?: string | null;
   aboutPdfUrl?: string | null;
+  contactAddress?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  mapEmbedUrl?: string | null;
   quickInfo: string | null; // newline separated
   mission: string | null;
   vision: string | null;

@@ -33,6 +33,19 @@ module.exports = (sequelize, DataTypes) => {
       aboutPdfUrl: {
         type: DataTypes.STRING(500),
       },
+      contactAddress: {
+        type: DataTypes.STRING(500),
+      },
+      contactEmail: {
+        type: DataTypes.STRING(255),
+      },
+      contactPhone: {
+        type: DataTypes.STRING(64),
+      },
+      mapEmbedUrl: {
+        // Google Maps "Embed a map" iframe src
+        type: DataTypes.STRING(2000),
+      },
       quickInfo: {
         // newline-separated bullet lines
         type: DataTypes.TEXT,

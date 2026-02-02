@@ -67,7 +67,17 @@ export default function PlatformAdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [tab, setTab] = useState<
-    'members' | 'slides' | 'banners' | 'news' | 'announcements' | 'videos' | 'publications' | 'events' | 'partners' | 'kurumsal'
+    | 'members'
+    | 'slides'
+    | 'banners'
+    | 'news'
+    | 'announcements'
+    | 'videos'
+    | 'publications'
+    | 'events'
+    | 'partners'
+    | 'kurumsal'
+    | 'iletisim'
   >('members');
 
   const [items, setItems] = useState<any[]>([]);
@@ -150,6 +160,7 @@ export default function PlatformAdminPage() {
             <TabButton active={tab === 'events'} onClick={() => setTab('events')}>Etkinlikler</TabButton>
             <TabButton active={tab === 'partners'} onClick={() => setTab('partners')}>Partnerler</TabButton>
             <TabButton active={tab === 'kurumsal'} onClick={() => setTab('kurumsal')}>Kurumsal</TabButton>
+            <TabButton active={tab === 'iletisim'} onClick={() => setTab('iletisim')}>İletişim</TabButton>
           </div>
 
           <div className="mt-6">
@@ -179,6 +190,8 @@ export default function PlatformAdminPage() {
               <EventsPanel token={token} />
             ) : tab === 'partners' ? (
               <PartnersPanel token={token} />
+            ) : tab === 'iletisim' ? (
+              <IletisimPanel token={token} />
             ) : (
               <KurumsalPanel token={token} />
             )}
@@ -253,6 +266,145 @@ function getPublishedValue(obj: any): boolean {
   if (typeof obj.isPublished === 'boolean') return obj.isPublished;
   if (typeof obj.is_published === 'boolean') return obj.is_published;
   return Boolean(obj.isPublished ?? obj.is_published);
+}
+
+function IletisimPanel({ token }: { token: string | null }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
+
+  const [form, setForm] = useState<Partial<PageContent>>({
+    heroTitle: 'İletişim',
+    heroSubtitle: 'Bize ulaşın. Mesajınızı iletin, en kısa sürede dönüş yapalım.',
+    contactAddress: 'Antalya / Türkiye',
+    contactEmail: 'info@ornek-dernek.org',
+    contactPhone: '+90 (000) 000 00 00',
+    mapEmbedUrl: '',
+    isPublished: true,
+  });
+
+  async function load() {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    setSavedMsg(null);
+    try {
+      const res = await getPageAdmin(token, 'iletisim');
+      if (res) setForm(res);
+    } catch (e: any) {
+      setError(e?.message ?? 'İletişim içeriği yüklenemedi.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  return (
+    <div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">İletişim Sayfası</h2>
+          <p className="mt-1 text-sm text-slate-600">`/iletisim` sayfasındaki iletişim bilgileri ve Google Maps alanını buradan yönetebilirsiniz.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={load}
+            disabled={!token || loading}
+            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          >
+            Yenile
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              if (!token) return;
+              setLoading(true);
+              setError(null);
+              setSavedMsg(null);
+              try {
+                await upsertPageAdmin(token, 'iletisim', {
+                  heroTitle: (form.heroTitle ?? '').toString().trim() || null,
+                  heroSubtitle: (form.heroSubtitle ?? '').toString().trim() || null,
+                  contactAddress: (form.contactAddress ?? '').toString().trim() || null,
+                  contactEmail: (form.contactEmail ?? '').toString().trim() || null,
+                  contactPhone: (form.contactPhone ?? '').toString().trim() || null,
+                  mapEmbedUrl: (form.mapEmbedUrl ?? '').toString().trim() || null,
+                  isPublished: !!form.isPublished,
+                });
+                setSavedMsg('Kaydedildi.');
+              } catch (e: any) {
+                setError(e?.message ?? 'Kaydetme başarısız.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={!token || loading}
+            className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+
+      {error ? <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+      {savedMsg ? <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{savedMsg}</div> : null}
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Field label="Hero Başlık">
+          <TextInput value={String(form.heroTitle ?? '')} onChange={(e) => setForm((s) => ({ ...s, heroTitle: e.target.value }))} />
+        </Field>
+        <Field label="Hero Alt Başlık">
+          <TextInput value={String(form.heroSubtitle ?? '')} onChange={(e) => setForm((s) => ({ ...s, heroSubtitle: e.target.value }))} />
+        </Field>
+
+        <Field label="Adres">
+          <TextInput
+            value={String(form.contactAddress ?? '')}
+            onChange={(e) => setForm((s) => ({ ...s, contactAddress: e.target.value }))}
+            placeholder="Antalya / Türkiye"
+          />
+        </Field>
+        <Field label="Telefon">
+          <TextInput
+            value={String(form.contactPhone ?? '')}
+            onChange={(e) => setForm((s) => ({ ...s, contactPhone: e.target.value }))}
+            placeholder="+90 ..."
+          />
+        </Field>
+
+        <Field label="E-posta">
+          <TextInput
+            value={String(form.contactEmail ?? '')}
+            onChange={(e) => setForm((s) => ({ ...s, contactEmail: e.target.value }))}
+            placeholder="info@..."
+          />
+        </Field>
+
+        <Field label="Durum">
+          <Toggle value={!!form.isPublished} onChange={(v) => setForm((s) => ({ ...s, isPublished: v }))} />
+        </Field>
+
+        <div className="md:col-span-2">
+          <Field label="Google Maps Embed URL (iframe src)">
+            <TextArea
+              rows={3}
+              value={String(form.mapEmbedUrl ?? '')}
+              onChange={(e) => setForm((s) => ({ ...s, mapEmbedUrl: e.target.value }))}
+              placeholder='Google Maps > "Harita paylaş" > "Haritayı yerleştir" bölümündeki iframe src'
+            />
+          </Field>
+          <p className="mt-2 text-xs text-slate-500">
+            Not: Buraya sadece embed (iframe) URL’si girin. Örn: https://www.google.com/maps/embed?pb=...
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function KurumsalPanel({ token }: { token: string | null }) {

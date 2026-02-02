@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { VideoCard } from '../../components/VideoCard';
+import { VideoPlayerModal } from '../../components/VideoPlayerModal';
 import type { VideoItem } from '../../lib/dummyData';
 import { listVideosPublic } from '../../lib/api';
 
@@ -18,6 +19,7 @@ function formatDot(iso: string | null | undefined) {
 export default function VideosPage() {
   const [items, setItems] = useState<VideoItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState<{ url: string; title: string } | null>(null);
 
   const load = useMemo(() => {
     return async () => {
@@ -60,7 +62,14 @@ export default function VideosPage() {
 
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => (
-            <VideoCard key={item.id} item={item} />
+            <VideoCard
+              key={item.id}
+              item={item}
+              onOpen={(it) => {
+                if (!it.href || it.href === '#') return;
+                setPreview({ url: it.href, title: it.title });
+              }}
+            />
           ))}
         </div>
 
@@ -71,6 +80,13 @@ export default function VideosPage() {
           </div>
         ) : null}
       </section>
+
+      <VideoPlayerModal
+        open={!!preview}
+        url={preview?.url ?? null}
+        title={preview?.title}
+        onClose={() => setPreview(null)}
+      />
     </PageLayoutWithFooter>
   );
 }
