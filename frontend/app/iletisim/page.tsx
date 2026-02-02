@@ -39,6 +39,20 @@ function toMapsEmbedSrc(input: string | null | undefined, addressFallback: strin
   return null;
 }
 
+function toMapsOpenHref(input: string | null | undefined, addressFallback: string | null | undefined): string | null {
+  const raw = String(input ?? '').trim();
+  const addr = String(addressFallback ?? '').trim();
+  if (!raw) {
+    if (!addr) return null;
+    return `https://www.google.com/maps?q=${encodeURIComponent(addr)}`;
+  }
+  if (!raw.startsWith('http://') && !raw.startsWith('https://')) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(raw)}`;
+  }
+  // If it's an embed link, keep it as open href too (still works in new tab)
+  return raw;
+}
+
 export default function ContactPage() {
   const fallback = useMemo(
     () => ({
@@ -60,6 +74,7 @@ export default function ContactPage() {
   const contactPhone = page?.contactPhone || fallback.contactPhone;
   const mapEmbedUrl = page?.mapEmbedUrl || fallback.mapEmbedUrl;
   const embedSrc = useMemo(() => toMapsEmbedSrc(mapEmbedUrl, contactAddress), [mapEmbedUrl, contactAddress]);
+  const openHref = useMemo(() => toMapsOpenHref(mapEmbedUrl, contactAddress), [mapEmbedUrl, contactAddress]);
 
   useEffect(() => {
     let cancelled = false;
@@ -107,11 +122,11 @@ export default function ContactPage() {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               </div>
-              {mapEmbedUrl ? (
+              {openHref ? (
                 <div className="flex flex-wrap items-center justify-between gap-2 border-t border-black/5 bg-white px-4 py-3">
                   <div className="text-xs text-slate-500">Harita linki:</div>
                   <a
-                    href={mapEmbedUrl}
+                    href={openHref}
                     target="_blank"
                     rel="noreferrer"
                     className="text-xs font-semibold text-burgundy hover:text-burgundy-dark"
