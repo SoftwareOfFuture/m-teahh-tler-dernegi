@@ -25,7 +25,6 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
 
   const activeBanner = (activeLayer === 'a' ? layerA : layerB) ?? list[0] ?? null;
 
-  // Reset when list changes (e.g., admin updates banners)
   useEffect(() => {
     if (!list.length) return;
     activeLayerRef.current = 'a';
@@ -33,7 +32,6 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
     setActiveLayer('a');
     setLayerA(list[0]);
     setLayerB(list[0]);
-    // Reset layer visibility
     (async () => {
       try {
         const mod: any = await import('gsap');
@@ -42,11 +40,9 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
         if (layerARef.current) gsap.set(layerARef.current, { opacity: 1, zIndex: 2, clipPath: 'inset(0 0% 0 0)', scale: 1 });
         if (layerBRef.current) gsap.set(layerBRef.current, { opacity: 0, zIndex: 1, clipPath: 'inset(0 0% 0 0)', scale: 1 });
       } catch {
-        // ignore
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [list.length]);
+  }, [list]);
 
   useEffect(() => {
     const len = list.length;

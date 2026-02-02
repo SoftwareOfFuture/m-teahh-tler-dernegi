@@ -113,35 +113,6 @@ export type Publication = {
   updatedAt?: string;
 };
 
-export type BlogPost = {
-  id: number;
-  title: string;
-  slug: string;
-  excerpt: string | null;
-  content: string;
-  coverImageUrl: string | null;
-  publishDate: string; // YYYY-MM-DD
-  isPublished: boolean;
-  author: string | null;
-  source: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-export type AiBlogTask = {
-  id: number;
-  title: string;
-  publishAt: string; // ISO
-  status: 'scheduled' | 'running' | 'published' | 'failed';
-  lastError: string | null;
-  settingsJson: string | null;
-  generatedPostId: number | null;
-  startedAt: string | null;
-  finishedAt: string | null;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
 export type PageContent = {
   id: number;
   slug: string;
@@ -340,10 +311,6 @@ export async function uploadMyDocument(token: string, payload: { kind: string; f
   });
 }
 
-export function documentDownloadUrl(docId: number) {
-  return `/api/members/documents/${docId}/download`;
-}
-
 function parseFilenameFromContentDisposition(cd: string | null): string | null {
   if (!cd) return null;
   const mStar = cd.match(/filename\*\s*=\s*UTF-8''([^;]+)/i);
@@ -386,70 +353,6 @@ async function apiFetchBlob(path: string, token: string): Promise<{ blob: Blob; 
 
 export async function getMemberDocumentBlob(token: string, docId: number) {
   return await apiFetchBlob(`/api/members/documents/${docId}/download`, token);
-}
-
-// --- Blog (public) ---
-
-export async function listBlogPublic(params?: { page?: number; limit?: number }) {
-  const qs = new URLSearchParams();
-  if (params?.page) qs.set('page', String(params.page));
-  if (params?.limit) qs.set('limit', String(params.limit));
-  return await apiFetch<PagedResponse<BlogPost>>(`/api/blog${qs.toString() ? `?${qs.toString()}` : ''}`, { method: 'GET' });
-}
-
-export async function getBlogBySlug(slug: string) {
-  return await apiFetch<BlogPost>(`/api/blog/by-slug/${encodeURIComponent(slug)}`, { method: 'GET' });
-}
-
-// --- Blog (admin) ---
-
-export async function listBlogAdminAll(token: string, params?: { page?: number; limit?: number }) {
-  const qs = new URLSearchParams();
-  if (params?.page) qs.set('page', String(params.page));
-  if (params?.limit) qs.set('limit', String(params.limit));
-  return await apiFetch<PagedResponse<BlogPost>>(`/api/blog/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
-  });
-}
-
-// --- AI Blog (platform admin) ---
-
-export async function listAiBlogTasksAdminAll(token: string, params?: { page?: number; limit?: number }) {
-  const qs = new URLSearchParams();
-  if (params?.page) qs.set('page', String(params.page));
-  if (params?.limit) qs.set('limit', String(params.limit));
-  return await apiFetch<PagedResponse<AiBlogTask>>(`/api/ai-blog/tasks/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
-  });
-}
-
-export async function createAiBlogTask(
-  token: string,
-  payload: { title: string; publishAt: string; settings?: { language?: string; tone?: string; maxWords?: number; keywords?: string[] } }
-) {
-  return await apiFetch<AiBlogTask>('/api/ai-blog/tasks', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body: JSON.stringify(payload),
-  });
-}
-
-export async function deleteAiBlogTask(token: string, taskId: number) {
-  return await apiFetch<{ success: true }>(`/api/ai-blog/tasks/${taskId}`, {
-    method: 'DELETE',
-    headers: { Authorization: `Bearer ${token}` },
-  });
-}
-
-export async function runAiBlogNow(token: string, max?: number) {
-  const qs = new URLSearchParams();
-  if (max) qs.set('max', String(max));
-  return await apiFetch<{ ok: true; processed: number; results: any[] }>(`/api/ai-blog/run-now${qs.toString() ? `?${qs.toString()}` : ''}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-  });
 }
 
 export async function listMemberDocumentsAdmin(token: string, memberId: number) {
@@ -797,8 +700,6 @@ export async function upsertPageAdmin(token: string, slug: string, payload: Part
   });
 }
 
-// --- Events (Etkinlikler) ---
-
 export async function listEventsUpcoming(params?: { limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.limit) qs.set('limit', String(params.limit));
@@ -844,8 +745,6 @@ export async function deleteEvent(token: string, id: number) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
-
-// --- Partners (Partnerler) ---
 
 export async function listPartnersPublic(params?: { limit?: number }) {
   const qs = new URLSearchParams();

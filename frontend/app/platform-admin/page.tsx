@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import {
@@ -111,13 +111,12 @@ export default function PlatformAdminPage() {
     };
   }, [token]);
 
-  async function refreshMembers() {
+  const refreshMembers = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
     try {
       const res = await listMembersAdminAll(token, { page: 1, limit: 200 });
-      // Unapproved first
       const unapproved = (res.items || []).filter((m: any) => m.isApproved === false);
       const approved = (res.items || []).filter((m: any) => m.isApproved !== false);
       setItems([...unapproved, ...approved]);
@@ -126,13 +125,12 @@ export default function PlatformAdminPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
 
   useEffect(() => {
     if (!authorized) return;
     refreshMembers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authorized]);
+  }, [authorized, refreshMembers]);
 
   return (
     <PageLayoutWithFooter>
@@ -283,7 +281,7 @@ function IletisimPanel({ token }: { token: string | null }) {
     isPublished: true,
   });
 
-  async function load() {
+  const load = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
@@ -296,12 +294,11 @@ function IletisimPanel({ token }: { token: string | null }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [load]);
 
   return (
     <div>
@@ -426,7 +423,7 @@ function KurumsalPanel({ token }: { token: string | null }) {
     isPublished: true,
   });
 
-  async function load() {
+  const load = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
@@ -439,12 +436,11 @@ function KurumsalPanel({ token }: { token: string | null }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [load]);
 
   return (
     <div>
@@ -974,7 +970,7 @@ function SlidesPanel({ token }: { token: string | null }) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [edit, setEdit] = useState<Partial<HeroSlide>>({});
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
@@ -986,12 +982,11 @@ function SlidesPanel({ token }: { token: string | null }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [token]);
 
   useEffect(() => {
     refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [refresh]);
 
   return (
     <div>
@@ -1018,7 +1013,6 @@ function SlidesPanel({ token }: { token: string | null }) {
               setLoading(true);
               setError(null);
               try {
-                // delete sequentially to keep it simple
                 for (const it of items) {
                   await deleteSlide(token, it.id);
                 }
@@ -1415,7 +1409,7 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
   const [edit, setEdit] = useState<Record<string, any>>({});
   const [createForm, setCreateForm] = useState<Record<string, any>>({ isPublished: true });
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setError(null);
@@ -1427,12 +1421,11 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
     } finally {
       setLoading(false);
     }
-  }
+  }, [token, list]);
 
   useEffect(() => {
     refresh();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [refresh]);
 
   return (
     <div>

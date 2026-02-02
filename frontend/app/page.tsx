@@ -12,7 +12,7 @@ import { VideoCard } from '../components/VideoCard';
 import { VideoPlayerModal } from '../components/VideoPlayerModal';
 import { LogoSlider } from '../components/LogoSlider';
 import { SiteFooter } from '../components/SiteFooter';
-import type { AnnouncementItem, EventItem, NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/dummyData';
+import type { AnnouncementItem, EventItem, NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/types';
 import {
   listAnnouncementsRecent,
   listBannersPublic,
@@ -223,7 +223,6 @@ export default function HomePage() {
       <Header />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">
-        {/* HERO / SLIDER */}
         {slidesLoading ? (
           <section className="relative w-full overflow-hidden rounded-3xl bg-soft-gray shadow-card">
             <div className="h-[300px] animate-pulse sm:h-[360px] md:h-[460px] lg:h-[520px]" />
@@ -235,12 +234,9 @@ export default function HomePage() {
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
         </div>
 
-        {/* Content + Sidebar (desktop) */}
         <section className="mt-8 w-full sm:mt-10">
           <div className="grid w-full grid-cols-1 gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
-            {/* Main content */}
             <div className="space-y-10 sm:space-y-12">
-              {/* Güncel Haberler */}
               <div>
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
                   <h2 className="text-lg font-bold text-slate-900">Güncel Haberler</h2>
@@ -261,7 +257,6 @@ export default function HomePage() {
                 ) : null}
               </div>
 
-              {/* Güncel Duyurular */}
               <div className="w-full rounded-3xl bg-soft-gray p-4 sm:p-5">
                 <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
                   <h2 className="text-lg font-bold text-slate-900">Güncel Duyurular</h2>
@@ -282,7 +277,6 @@ export default function HomePage() {
                 ) : null}
               </div>
 
-              {/* Video Arşiv */}
               <div>
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
                   <h2 className="text-lg font-bold text-slate-900">Video Arşiv</h2>
@@ -310,7 +304,6 @@ export default function HomePage() {
                 ) : null}
               </div>
 
-              {/* Yayınlar */}
               <div className="w-full rounded-3xl bg-white p-4 shadow-card sm:p-5">
                 <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
                   <h2 className="text-lg font-bold text-slate-900">Yayınlar</h2>
@@ -344,7 +337,6 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Üyelikler / Partner Logoları */}
               <div>
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
                   <h2 className="text-lg font-bold text-slate-900">Üyelikler / Partnerler</h2>
@@ -359,7 +351,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Sidebar (desktop sticky) - mobile'da aşağı iner */}
             <div>
               <div className="lg:sticky lg:top-24">
                 <Sidebar events={events} loadingEvents={eventsLoading} />

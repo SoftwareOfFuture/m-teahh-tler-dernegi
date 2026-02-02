@@ -14,8 +14,6 @@ const pagesRoutes = require('./routes/pages');
 const eventsRoutes = require('./routes/events');
 const partnersRoutes = require('./routes/partners');
 const smsFeedbackRoutes = require('./routes/sms-feedback');
-const blogRoutes = require('./routes/blog');
-const aiBlogRoutes = require('./routes/ai-blog');
 const bannersRoutes = require('./routes/banners');
 
 const app = express();
@@ -24,7 +22,6 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || true,
   credentials: true,
 }));
-// NOTE: We allow larger JSON bodies to support base64 document uploads.
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -44,8 +41,6 @@ app.use('/api/events', eventsRoutes);
 app.use('/api/partners', partnersRoutes);
 app.use('/api/banners', bannersRoutes);
 app.use('/api/sms-feedback', smsFeedbackRoutes);
-app.use('/api/blog', blogRoutes);
-app.use('/api/ai-blog', aiBlogRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 

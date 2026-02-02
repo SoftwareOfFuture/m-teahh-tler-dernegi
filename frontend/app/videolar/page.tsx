@@ -6,7 +6,7 @@ import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { VideoCard } from '../../components/VideoCard';
 import { VideoPlayerModal } from '../../components/VideoPlayerModal';
-import type { VideoItem } from '../../lib/dummyData';
+import type { VideoItem } from '../../lib/types';
 import { listVideosPublic } from '../../lib/api';
 
 function formatDot(iso: string | null | undefined) {

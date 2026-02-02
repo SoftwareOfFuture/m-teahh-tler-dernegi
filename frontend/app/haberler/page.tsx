@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { NewsCard } from '../../components/NewsCard';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-import type { NewsItem } from '../../lib/dummyData';
+import type { NewsItem } from '../../lib/types';
 import { listNewsPublic } from '../../lib/api';
 
 export default function NewsPage() {

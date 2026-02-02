@@ -1,6 +1,6 @@
 'use client';
 
-import type { PartnerLogo } from '../lib/dummyData';
+import type { PartnerLogo } from '../lib/types';
 
 type Props = {
   logos: PartnerLogo[];

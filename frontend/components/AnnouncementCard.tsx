@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { AnnouncementItem } from '../lib/dummyData';
+import type { AnnouncementItem } from '../lib/types';
 
 type Props = {
   item: AnnouncementItem;

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import type { SliderItem } from '../lib/dummyData';
+import type { SliderItem } from '../lib/types';
 import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 
 type Props = {
@@ -17,7 +17,6 @@ export function HeroSlider({ items }: Props) {
   const len = safeItems.length;
   const current = len ? safeItems[idx % len] : null;
 
-  // Autoplay (soft transitions)
   useEffect(() => {
     if (len <= 1) return;
     const t = setInterval(() => setIdx((v) => (v + 1) % len), 6500);
@@ -36,10 +35,8 @@ export function HeroSlider({ items }: Props) {
           priority
           className="object-cover"
         />
-        {/* Dark overlay (corporate slider) */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/40 to-black/20" />
 
-        {/* Left-bottom content */}
         <div className="absolute inset-0 flex items-end">
           <div className="w-full p-4 sm:p-6 md:p-10">
             <p className="text-xs font-medium text-white/80 md:text-sm">{current.date}</p>
@@ -61,7 +58,6 @@ export function HeroSlider({ items }: Props) {
           </div>
         </div>
 
-        {/* Arrows */}
         <button
           type="button"
           onClick={() => setIdx((v) => (v - 1 + len) % len)}
@@ -79,7 +75,6 @@ export function HeroSlider({ items }: Props) {
           <ChevronRight />
         </button>
 
-        {/* Dots */}
         <div className="absolute bottom-3 left-1/2 -translate-x-1/2 sm:bottom-4">
           <div className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 backdrop-blur sm:py-2">
             {safeItems.map((it, i) => (

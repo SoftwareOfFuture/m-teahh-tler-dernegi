@@ -11,7 +11,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/events/upcoming - public list for sidebar
 router.get('/upcoming', async (req, res) => {
   try {
     const limit = Number(req.query.limit || 5);
@@ -30,7 +29,6 @@ router.get('/upcoming', async (req, res) => {
       limit: Math.min(Math.max(limit, 1), 20),
     });
 
-    // Filter out past events when eventDate exists
     const filtered = items.filter((e) => !e.eventDate || String(e.eventDate) >= today);
     res.json(filtered.slice(0, Math.min(Math.max(limit, 1), 20)));
   } catch (err) {
@@ -38,7 +36,6 @@ router.get('/upcoming', async (req, res) => {
   }
 });
 
-// GET /api/events - public list with pagination (optional)
 router.get(
   '/',
   [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -61,7 +58,6 @@ router.get(
   }
 );
 
-// GET /api/events/admin/all - admin list
 router.get(
   '/admin/all',
   auth,
@@ -85,7 +81,6 @@ router.get(
   }
 );
 
-// POST /api/events - admin create
 router.post(
   '/',
   auth,
@@ -118,7 +113,6 @@ router.post(
   }
 );
 
-// PUT /api/events/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -154,7 +148,6 @@ router.put(
   }
 );
 
-// DELETE /api/events/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Event.findByPk(req.params.id);

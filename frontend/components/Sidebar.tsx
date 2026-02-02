@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import type { EventItem } from '../lib/dummyData';
+import type { EventItem } from '../lib/types';
 import { listMembersPublic } from '../lib/api';
 
 type Props = {

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AnnouncementCard } from '../../components/AnnouncementCard';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-import type { AnnouncementItem } from '../../lib/dummyData';
+import type { AnnouncementItem } from '../../lib/types';
 import { listAnnouncementsPublic } from '../../lib/api';
 
 export default function AnnouncementsPage() {
