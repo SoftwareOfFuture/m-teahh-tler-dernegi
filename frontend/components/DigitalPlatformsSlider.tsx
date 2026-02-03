@@ -66,10 +66,20 @@ function PlatformBlock({
   item,
   align = 'left',
   contentRef,
+  pillRef,
+  titleRef,
+  subtitleRef,
+  descRef,
+  buttonRef,
 }: {
   item: DigitalPlatformItem;
   align?: 'left' | 'right';
   contentRef?: (el: HTMLDivElement | null) => void;
+  pillRef?: (el: HTMLDivElement | null) => void;
+  titleRef?: (el: HTMLDivElement | null) => void;
+  subtitleRef?: (el: HTMLDivElement | null) => void;
+  descRef?: (el: HTMLParagraphElement | null) => void;
+  buttonRef?: (el: HTMLSpanElement | null) => void;
 }) {
   const t = themeClasses(item.accent);
   const cta = item.ctaLabel || 'SİSTEME GİRİŞ';
@@ -99,16 +109,37 @@ function PlatformBlock({
             ref={contentRef}
             className={`w-full ${align === 'right' ? 'text-right' : 'text-left'}`}
           >
-            <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold ${t.pill}`}>
+            <div
+              ref={pillRef}
+              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold ${t.pill}`}
+            >
               DİJİTAL PLATFORM
             </div>
 
-            <h3 className={`mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl ${t.text}`}>{item.title}</h3>
-            <div className={`mt-4 text-lg font-semibold sm:text-xl ${t.subText}`}>{item.subtitle}</div>
-            <p className={`mt-4 text-sm leading-relaxed sm:text-base ${t.subText}`}>{item.description}</p>
+            <h3
+              ref={titleRef}
+              className={`mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl ${t.text}`}
+            >
+              {item.title}
+            </h3>
+            <div
+              ref={subtitleRef}
+              className={`mt-4 text-lg font-semibold sm:text-xl ${t.subText}`}
+            >
+              {item.subtitle}
+            </div>
+            <p
+              ref={descRef}
+              className={`mt-4 text-sm leading-relaxed sm:text-base ${t.subText}`}
+            >
+              {item.description}
+            </p>
 
             <div className={`mt-7 flex flex-wrap items-center gap-3 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
-              <span className={`inline-flex items-center rounded-md border px-5 py-3 text-sm font-bold tracking-wide ${t.button}`}>
+              <span
+                ref={buttonRef}
+                className={`inline-flex items-center rounded-md border px-5 py-3 text-sm font-bold tracking-wide ${t.button}`}
+              >
                 {cta}
               </span>
             </div>
@@ -194,6 +225,11 @@ export function DigitalPlatformsSlider({
   }, [items]);
 
   const contentElsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const pillElsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const titleElsRef = useRef<Array<HTMLHeadingElement | null>>([]);
+  const subtitleElsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const descElsRef = useRef<Array<HTMLParagraphElement | null>>([]);
+  const buttonElsRef = useRef<Array<HTMLSpanElement | null>>([]);
 
   useEffect(() => {
     if (!list.length) return;
@@ -205,8 +241,8 @@ export function DigitalPlatformsSlider({
     let obs: IntersectionObserver | null = null;
     let disconnected = false;
 
-    const els = contentElsRef.current.filter(Boolean) as HTMLDivElement[];
-    if (!els.length) return;
+    const containerEls = contentElsRef.current.filter(Boolean) as HTMLDivElement[];
+    if (!containerEls.length) return;
 
     (async () => {
       try {
@@ -214,10 +250,66 @@ export function DigitalPlatformsSlider({
         const gsap = mod?.gsap || mod?.default || mod;
         if (!gsap) return;
 
-        // Start hidden; reveal text as user scrolls down (zigzag direction).
-        els.forEach((el) => {
-          const dir = el.getAttribute('data-anim-dir') === 'right' ? 1 : -1;
-          gsap.set(el, { opacity: 0, x: 42 * dir, y: 10 });
+        // Initialize all elements as hidden with modern effects
+        containerEls.forEach((containerEl, idx) => {
+          const dir = containerEl.getAttribute('data-anim-dir') === 'right' ? 1 : -1;
+          
+          // Container animation (smooth entrance)
+          gsap.set(containerEl, {
+            opacity: 0,
+            x: 60 * dir,
+            y: 20,
+            scale: 0.95,
+            filter: 'blur(8px)',
+          });
+
+          // Individual text elements with stagger-ready setup
+          const pill = pillElsRef.current[idx];
+          const title = titleElsRef.current[idx];
+          const subtitle = subtitleElsRef.current[idx];
+          const desc = descElsRef.current[idx];
+          const button = buttonElsRef.current[idx];
+
+          if (pill) {
+            gsap.set(pill, {
+              opacity: 0,
+              y: 20,
+              scale: 0.8,
+              filter: 'blur(4px)',
+            });
+          }
+          if (title) {
+            gsap.set(title, {
+              opacity: 0,
+              y: 30,
+              scale: 0.9,
+              filter: 'blur(6px)',
+            });
+          }
+          if (subtitle) {
+            gsap.set(subtitle, {
+              opacity: 0,
+              y: 25,
+              scale: 0.92,
+              filter: 'blur(5px)',
+            });
+          }
+          if (desc) {
+            gsap.set(desc, {
+              opacity: 0,
+              y: 20,
+              scale: 0.95,
+              filter: 'blur(4px)',
+            });
+          }
+          if (button) {
+            gsap.set(button, {
+              opacity: 0,
+              y: 15,
+              scale: 0.85,
+              filter: 'blur(3px)',
+            });
+          }
         });
 
         obs = new IntersectionObserver(
@@ -225,15 +317,113 @@ export function DigitalPlatformsSlider({
             if (disconnected) return;
             for (const entry of entries) {
               if (!entry.isIntersecting) continue;
-              const el = entry.target as HTMLDivElement;
-              gsap.to(el, { opacity: 1, x: 0, y: 0, duration: 0.85, ease: 'power3.out' });
-              obs?.unobserve(el);
+              const containerEl = entry.target as HTMLDivElement;
+              const idx = Array.from(containerEls).indexOf(containerEl);
+              if (idx === -1) continue;
+
+              const dir = containerEl.getAttribute('data-anim-dir') === 'right' ? 1 : -1;
+              
+              // Get individual elements
+              const pill = pillElsRef.current[idx];
+              const title = titleElsRef.current[idx];
+              const subtitle = subtitleElsRef.current[idx];
+              const desc = descElsRef.current[idx];
+              const button = buttonElsRef.current[idx];
+
+              // Create timeline for smooth sequential animation
+              const tl = gsap.timeline({
+                defaults: { ease: 'power3.out' },
+              });
+
+              // Container entrance (smooth)
+              tl.to(containerEl, {
+                opacity: 1,
+                x: 0,
+                y: 0,
+                scale: 1,
+                filter: 'blur(0px)',
+                duration: 0.9,
+              });
+
+              // Stagger text elements with modern effects
+              if (pill) {
+                tl.to(
+                  pill,
+                  {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    duration: 0.6,
+                  },
+                  '-=0.7'
+                );
+              }
+
+              if (title) {
+                tl.to(
+                  title,
+                  {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    duration: 0.75,
+                  },
+                  '-=0.5'
+                );
+              }
+
+              if (subtitle) {
+                tl.to(
+                  subtitle,
+                  {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    duration: 0.65,
+                  },
+                  '-=0.4'
+                );
+              }
+
+              if (desc) {
+                tl.to(
+                  desc,
+                  {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    duration: 0.7,
+                  },
+                  '-=0.3'
+                );
+              }
+
+              if (button) {
+                tl.to(
+                  button,
+                  {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    filter: 'blur(0px)',
+                    duration: 0.6,
+                    ease: 'back.out(1.2)',
+                  },
+                  '-=0.2'
+                );
+              }
+
+              obs?.unobserve(containerEl);
             }
           },
-          { threshold: 0.22, rootMargin: '0px 0px -12% 0px' }
+          { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
         );
 
-        for (const el of els) obs.observe(el);
+        for (const el of containerEls) obs.observe(el);
       } catch {
       }
     })();
@@ -260,13 +450,28 @@ export function DigitalPlatformsSlider({
           const animDir: 'left' | 'right' = align === 'left' ? 'left' : 'right';
           return (
             <div key={item.id}>
-              {idx > 0 ? <div className="h-2 w-full bg-slate-950" /> : null}
+              {idx > 0 ? <div className="h-2 w-full bg-red-950" /> : null}
               <PlatformBlock
                 item={item}
                 align={align}
                 contentRef={(el) => {
                   if (el) el.setAttribute('data-anim-dir', animDir);
                   contentElsRef.current[idx] = el;
+                }}
+                pillRef={(el) => {
+                  pillElsRef.current[idx] = el;
+                }}
+                titleRef={(el) => {
+                  titleElsRef.current[idx] = el;
+                }}
+                subtitleRef={(el) => {
+                  subtitleElsRef.current[idx] = el;
+                }}
+                descRef={(el) => {
+                  descElsRef.current[idx] = el;
+                }}
+                buttonRef={(el) => {
+                  buttonElsRef.current[idx] = el;
                 }}
               />
             </div>
