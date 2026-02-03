@@ -6,10 +6,20 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-import { listMembersPublic, type MembersListResponse } from '../../lib/api';
+import { listMembersPublic, listPartnersPublic, type MembersListResponse, type Partner } from '../../lib/api';
 import { normalizeImageSrc } from '../../lib/normalizeImageSrc';
 
 type PublicMember = MembersListResponse['items'][number];
+
+type CombinedItem = {
+  id: string;
+  type: 'partner' | 'member';
+  name: string;
+  company: string;
+  person?: string;
+  logoUrl: string | null;
+  websiteUrl: string | null;
+};
 
 function normalizeWebsiteUrl(raw: string | null | undefined): string | null {
   const v = String(raw || '').trim();
@@ -37,7 +47,7 @@ function MembersPageInner() {
 
   const [search, setSearch] = useState(urlSearch);
   const [page, setPage] = useState(1);
-  const [items, setItems] = useState<PublicMember[]>([]);
+  const [items, setItems] = useState<CombinedItem[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,11 +63,70 @@ function MembersPageInner() {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    listMembersPublic({ page, limit: 12, search: effectiveSearch || undefined })
-      .then((res) => {
+    
+    // Fetch both partners and members
+    Promise.all([
+      listPartnersPublic({ limit: 200 }),
+      listMembersPublic({ page: 1, limit: 200, search: effectiveSearch || undefined }),
+    ])
+      .then(([partnersRes, membersRes]) => {
         if (cancelled) return;
-        setItems(res.items);
-        setTotalPages(res.totalPages || 1);
+        
+        const combined: CombinedItem[] = [];
+        
+        // Add partners
+        if (Array.isArray(partnersRes)) {
+          partnersRes.forEach((p: Partner) => {
+            combined.push({
+              id: `partner-${p.id}`,
+              type: 'partner',
+              name: p.title,
+              company: p.title,
+              logoUrl: p.logoUrl || null,
+              websiteUrl: null,
+            });
+          });
+        }
+        
+        // Add approved members (exclude admin accounts)
+        if (membersRes?.items) {
+          membersRes.items.forEach((m: PublicMember) => {
+            // Exclude admin accounts
+            if (m.role === 'platform_admin' || m.role === 'admin') return;
+            
+            const company = (m.company || m.name || '').trim();
+            if (!company) return;
+            
+            // Apply search filter if needed
+            if (effectiveSearch) {
+              const searchLower = effectiveSearch.toLowerCase();
+              const matchesCompany = company.toLowerCase().includes(searchLower);
+              const matchesName = (m.name || '').toLowerCase().includes(searchLower);
+              const matchesRole = (m.role || '').toLowerCase().includes(searchLower);
+              if (!matchesCompany && !matchesName && !matchesRole) return;
+            }
+            
+            combined.push({
+              id: `member-${m.id}`,
+              type: 'member',
+              name: company,
+              company: company,
+              person: m.company ? m.name : m.role || undefined,
+              logoUrl: m.profileImageUrl || null,
+              websiteUrl: m.websiteUrl || null,
+            });
+          });
+        }
+        
+        // Pagination
+        const itemsPerPage = 12;
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedItems = combined.slice(startIndex, endIndex);
+        const calculatedTotalPages = Math.ceil(combined.length / itemsPerPage);
+        
+        setItems(paginatedItems);
+        setTotalPages(Math.max(1, calculatedTotalPages));
       })
       .catch((err: any) => {
         if (cancelled) return;
@@ -108,17 +177,12 @@ function MembersPageInner() {
                   <div className="h-full animate-pulse" />
                 </div>
               ))
-            : items
-                .filter((m) => {
-                  // Exclude admin accounts from public listing
-                  return m.role !== 'platform_admin' && m.role !== 'admin';
-                })
-                .map((m) => {
-                  const href = normalizeWebsiteUrl(m.websiteUrl);
-                  const company = (m.company || m.name || '—').trim();
-                  const person = (m.company ? m.name : m.role) || '—';
+            : items.map((item) => {
+                  const href = normalizeWebsiteUrl(item.websiteUrl);
+                  const company = item.company || item.name;
+                  const person = item.person || '—';
 
-                  const logoSrc = normalizeImageSrc(m.profileImageUrl);
+                  const logoSrc = normalizeImageSrc(item.logoUrl);
                 const Card = (
                   <div className="group h-[260px] rounded bg-white shadow-card ring-1 ring-black/10 transition-transform hover:-translate-y-0.5">
                     <div className="flex h-full flex-col p-5">
@@ -138,7 +202,9 @@ function MembersPageInner() {
                       </div>
                       <div className="mt-4 text-center">
                         <div className="truncate text-sm font-extrabold uppercase tracking-wide text-slate-700">{company}</div>
-                        <div className="mt-1 truncate text-sm font-semibold text-slate-500">{person}</div>
+                        {item.type === 'member' && person !== '—' ? (
+                          <div className="mt-1 truncate text-sm font-semibold text-slate-500">{person}</div>
+                        ) : null}
                       </div>
                       <div className="mt-4 text-center text-xs font-semibold text-slate-400">
                         {href ? <span className="text-burgundy group-hover:text-burgundy-dark">Web Sitesi →</span> : 'Web sitesi yok'}
@@ -147,9 +213,9 @@ function MembersPageInner() {
                   </div>
                 );
 
-                if (!href) return <div key={m.id}>{Card}</div>;
+                if (!href) return <div key={item.id}>{Card}</div>;
                 return (
-                  <a key={m.id} href={href} target="_blank" rel="noreferrer" className="block">
+                  <a key={item.id} href={href} target="_blank" rel="noreferrer" className="block">
                     {Card}
                   </a>
                 );
