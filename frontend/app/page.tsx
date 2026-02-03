@@ -216,30 +216,30 @@ export default function HomePage() {
 
       <main className="w-full max-w-full overflow-x-hidden px-4 pb-16 pt-6 sm:px-6 lg:px-8">
         {slidesLoading ? (
-          <section className="relative w-full overflow-hidden rounded-3xl bg-soft-gray shadow-card">
-            <div className="h-[300px] animate-pulse sm:h-[360px] md:h-[460px] lg:h-[520px]" />
+          <section className="relative w-full overflow-hidden rounded-2xl bg-soft-gray shadow-card sm:rounded-3xl">
+            <div className="h-[280px] animate-pulse sm:h-[360px] md:h-[460px] lg:h-[520px]" />
           </section>
         ) : (
           <HeroSlider items={sliderItems} />
         )}
-        <div className="mt-5">
+        <div className="mt-4 sm:mt-5">
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
         </div>
 
-        <section className="mt-8 w-full sm:mt-10">
-          <div className="grid w-full grid-cols-1 gap-8 lg:gap-10">
-            <div className="space-y-10 sm:space-y-12">
+        <section className="mt-6 w-full sm:mt-10">
+          <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 lg:gap-10">
+            <div className="space-y-8 sm:space-y-12">
               <DigitalPlatformsSlider title="AMD DİJİTAL PLATFORMLAR" />
 
               <div>
-                <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-                  <h2 className="text-lg font-bold text-slate-900">Güncel Haberler</h2>
-                  <Link href="/haberler" className="text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">
+                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Güncel Haberler</h2>
+                  <Link href="/haberler" className="shrink-0 text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {newsItems.slice(0, 6).map((item) => (
                     <NewsCard key={item.id} item={item} />
                   ))}
@@ -252,14 +252,14 @@ export default function HomePage() {
               </div>
 
               <div>
-                <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-                  <h2 className="text-lg font-bold text-slate-900">Video Arşiv</h2>
-                  <Link href="/videolar" className="text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">
+                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Video Arşiv</h2>
+                  <Link href="/videolar" className="shrink-0 text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {videoItems.slice(0, 3).map((item) => (
                     <VideoCard
                       key={item.id}
@@ -272,21 +272,21 @@ export default function HomePage() {
                   ))}
                 </div>
                 {!videosLoading && videoItems.length === 0 ? (
-                  <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                  <div className="mt-4 rounded-2xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600 sm:mt-6 sm:rounded-3xl">
                     Henüz video eklenmemiş.
                   </div>
                 ) : null}
               </div>
 
-              <div className="w-full rounded-3xl bg-white p-4 shadow-card sm:p-5">
-                <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-                  <h2 className="text-lg font-bold text-slate-900">Yayınlar</h2>
-                  <Link href="/yayinlar" className="text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
+              <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-card sm:rounded-3xl sm:p-5">
+                <div className="mb-3 flex flex-wrap items-end justify-between gap-2 sm:mb-4">
+                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Yayınlar</h2>
+                  <Link href="/yayinlar" className="shrink-0 text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
                   {(publications.length ? publications : []).slice(0, 4).map((p) => (
                     <a
                       key={p.id}
@@ -312,13 +312,13 @@ export default function HomePage() {
               </div>
 
               <div>
-                <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
-                  <h2 className="text-lg font-bold text-slate-900">Üyelikler / Partnerler</h2>
+                <div className="mb-4 sm:mb-5">
+                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Üyelikler / Partnerler</h2>
                 </div>
 
                 <LogoSlider logos={partnerLogos} />
                 {!partnersLoading && partnerLogos.length === 0 ? (
-                  <div className="mt-4 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                  <div className="mt-4 rounded-2xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600 sm:rounded-3xl">
                     Henüz partner eklenmemiş.
                   </div>
                 ) : null}

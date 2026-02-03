@@ -76,9 +76,9 @@ export function VideoPlayerModal({
         aria-modal="true"
         aria-labelledby="video-modal-title"
         aria-describedby="video-modal-description"
-        className="absolute left-1/2 top-1/2 w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-card"
+        className="absolute left-1/2 top-1/2 w-[calc(100vw-16px)] max-w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-white shadow-card sm:rounded-3xl"
       >
-        <div className="flex items-center justify-between gap-3 border-b border-black/10 px-4 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/10 px-3 py-3 sm:gap-3 sm:px-4">
           <div className="min-w-0">
             <h2 id="video-modal-title" className="truncate text-sm font-bold text-slate-900">
               {title || 'Video'}
@@ -87,19 +87,19 @@ export function VideoPlayerModal({
               {url}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <a
               href={url}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-soft-gray"
+              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-slate-700 active:scale-[0.98] hover:bg-soft-gray"
             >
               Yeni sekmede aç
             </a>
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full bg-burgundy px-3 py-1.5 text-xs font-semibold text-white hover:bg-burgundy-dark"
+              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-burgundy px-3 py-2 text-xs font-semibold text-white active:scale-[0.98] hover:bg-burgundy-dark"
             >
               Kapat
             </button>

@@ -21,17 +21,15 @@ export function LogoSlider({ logos }: Props) {
   const doubled = [...logos, ...logos];
 
   return (
-    <div className="w-full overflow-hidden rounded-3xl bg-white p-4 shadow-card sm:p-6">
-      {/* Keep marquee out of normal flow to avoid page width expansion */}
-      <div className="relative h-[140px] w-full overflow-hidden sm:h-[160px]">
-        {/* NOTE: avoid fixed 200% widths; animate only inside the clipped area */}
-        <div className="absolute left-0 top-0 inline-flex h-full animate-marquee gap-4 will-change-transform sm:gap-6">
+    <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-3 shadow-card sm:rounded-3xl sm:p-6">
+      <div className="relative h-[120px] w-full overflow-hidden sm:h-[140px] md:h-[160px]">
+        <div className="absolute left-0 top-0 inline-flex h-full animate-marquee gap-3 will-change-transform sm:gap-6">
           {doubled.map((logo, idx) => {
             const logoSrc = normalizeImageSrc(logo.logoUrl);
             const websiteUrl = normalizeWebsiteUrl(logo.websiteUrl);
             
             const CardContent = (
-              <div className="group grid h-full w-[170px] shrink-0 flex-col place-items-center rounded-2xl border border-black/5 bg-white px-4 py-3 text-center transition-all hover:bg-soft-gray hover:shadow-md">
+              <div className="group grid h-full w-[140px] shrink-0 flex-col place-items-center rounded-xl border border-black/5 bg-white px-3 py-2 text-center transition-all hover:bg-soft-gray hover:shadow-md sm:w-[170px] sm:rounded-2xl sm:px-4 sm:py-3">
                 {/* Logo image or fallback */}
                 <div className="flex h-[80px] w-full items-center justify-center">
                   {logoSrc ? (
@@ -49,8 +47,8 @@ export function LogoSlider({ logos }: Props) {
                   )}
                 </div>
                 {/* Company name below logo */}
-                <div className="mt-2 w-full">
-                  <div className="truncate text-xs font-bold text-slate-700">{logo.name}</div>
+                <div className="mt-1.5 w-full overflow-hidden sm:mt-2">
+                  <div className="truncate text-[11px] font-bold text-slate-700 sm:text-xs">{logo.name}</div>
                 </div>
               </div>
             );

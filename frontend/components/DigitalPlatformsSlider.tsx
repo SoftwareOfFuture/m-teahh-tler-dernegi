@@ -96,7 +96,7 @@ function PlatformBlock({
     'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=2400&q=70';
 
   const inner = (
-    <div ref={cardRef} className="relative w-full">
+    <div ref={cardRef} className="relative min-h-[220px] w-full sm:min-h-[280px]">
       <div ref={imageRef} className="absolute inset-0 overflow-hidden">
         <Image
           src={bg}
@@ -111,42 +111,42 @@ function PlatformBlock({
         <div ref={gradientRef} className="absolute inset-0 bg-gradient-to-r from-red-950/40 via-red-900/20 to-red-800/30" />
       </div>
 
-      <div className="relative w-full min-w-0 px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <div className="relative w-full min-w-0 px-3 py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className={`flex w-full min-w-0 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
           <div
             ref={contentRef}
-            className={`min-w-0 flex-1 ${align === 'right' ? 'text-right' : 'text-left'}`}
+            className={`min-w-0 max-w-full flex-1 ${align === 'right' ? 'text-right' : 'text-left'}`}
           >
             <div
               ref={pillRef}
-              className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold ${t.pill}`}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-semibold sm:gap-2 sm:px-4 sm:py-2 sm:text-xs ${t.pill}`}
             >
               DİJİTAL PLATFORM
             </div>
 
             <h3
               ref={titleRef}
-              className={`mt-5 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl ${t.text}`}
+              className={`mt-3 line-clamp-2 text-xl font-extrabold leading-tight tracking-tight sm:line-clamp-none sm:mt-5 sm:text-4xl lg:text-5xl ${t.text}`}
             >
               {item.title}
             </h3>
             <div
               ref={subtitleRef}
-              className={`mt-4 text-lg font-semibold sm:text-xl ${t.subText}`}
+              className={`mt-2 line-clamp-2 text-sm font-semibold sm:line-clamp-none sm:mt-4 sm:text-xl ${t.subText}`}
             >
               {item.subtitle}
             </div>
             <p
               ref={descRef}
-              className={`mt-4 text-sm leading-relaxed sm:text-base ${t.subText}`}
+              className={`mt-2 line-clamp-3 text-xs leading-relaxed sm:line-clamp-none sm:mt-4 sm:text-base ${t.subText}`}
             >
               {item.description}
             </p>
 
-            <div className={`mt-7 flex flex-wrap items-center gap-3 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`mt-5 flex flex-wrap items-center gap-2 sm:mt-7 sm:gap-3 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
               <span
                 ref={buttonRef}
-                className={`inline-flex items-center rounded-md border px-5 py-3 text-sm font-bold tracking-wide ${t.button}`}
+                className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border px-4 py-3 text-xs font-bold tracking-wide active:scale-[0.98] sm:px-5 sm:text-sm ${t.button}`}
               >
                 {cta}
               </span>
@@ -564,13 +564,13 @@ export function DigitalPlatformsSlider({
 
   return (
     <section className="w-full max-w-full overflow-hidden" aria-label="Dijital platformlar">
-      <div className="mb-6">
-        <h2 className="text-center text-xl font-extrabold tracking-wide text-slate-900 sm:text-2xl lg:text-3xl">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-center text-lg font-extrabold tracking-wide text-slate-900 sm:text-2xl lg:text-3xl">
           {title}
         </h2>
       </div>
 
-      <div className="w-full overflow-hidden rounded-3xl ring-1 ring-red-900/30">
+      <div className="w-full overflow-hidden rounded-2xl ring-1 ring-red-900/30 sm:rounded-3xl">
         {list.map((item, idx) => {
           const align: 'left' | 'right' = idx % 2 === 0 ? 'left' : 'right';
           const animDir: 'left' | 'right' = align === 'left' ? 'left' : 'right';

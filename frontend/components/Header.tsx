@@ -29,8 +29,8 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/90 backdrop-blur">
-      <div className="flex w-full items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/90 backdrop-blur safe-area-inset-top">
+      <div className="flex w-full items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="relative size-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-card ring-1 ring-black/5">
@@ -75,18 +75,16 @@ export function Header() {
             </IconButton>
           </div>
 
-          {/* CTA */}
           <Link
             href={hasToken ? '/profilim' : '/login'}
-            className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white shadow-card transition-all hover:-translate-y-0.5 hover:bg-burgundy-dark hover:shadow-card-hover"
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-burgundy px-3 py-2 text-xs font-semibold text-white shadow-card transition-all active:scale-[0.98] hover:bg-burgundy-dark sm:px-4 sm:text-sm lg:hover:-translate-y-0.5 lg:hover:shadow-card-hover"
           >
             {hasToken ? 'Profilim' : 'ÜYE GİRİŞİ'}
           </Link>
 
-          {/* Mobile menu button */}
           <button
             type="button"
-            className="grid size-10 place-items-center rounded-xl border border-black/10 bg-white text-slate-800 transition-colors hover:bg-soft-gray lg:hidden"
+            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-xl border border-black/10 bg-white text-slate-800 transition-colors active:scale-95 hover:bg-soft-gray lg:hidden"
             aria-label="Menü"
             onClick={() => setOpen((v) => !v)}
           >
@@ -106,13 +104,13 @@ export function Header() {
       {/* Mobile menu */}
       {open && (
         <div className="w-full border-t border-black/5 bg-white lg:hidden">
-          <div className="w-full px-4 py-3 sm:px-6 lg:px-8">
-            <nav className="flex flex-col gap-2">
+          <div className="w-full px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
+            <nav className="flex flex-col gap-0.5">
               {navItems.map((item) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-soft-gray hover:text-burgundy"
+                  className="min-h-[44px] rounded-xl px-3 py-3 text-sm font-medium text-slate-700 active:bg-soft-gray hover:bg-soft-gray hover:text-burgundy"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}

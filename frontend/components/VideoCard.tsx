@@ -13,28 +13,28 @@ export function VideoCard({ item, onOpen }: Props) {
 
   const content = (
     <>
-      <div className="relative aspect-[21/9] overflow-hidden">
+      <div className="relative aspect-[21/9] min-h-[100px] overflow-hidden">
         <Image
           src={normalizeImageSrc(item.thumbnailUrl)}
           alt={item.title}
           fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {/* Play overlay */}
         <div className="absolute inset-0 grid place-items-center bg-gradient-to-t from-black/35 via-black/10 to-transparent">
-          <div className="grid size-10 place-items-center rounded-full bg-white/20 text-white backdrop-blur transition-colors group-hover:bg-white/30">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <div className="grid size-12 min-h-[44px] min-w-[44px] place-items-center rounded-full bg-white/25 text-white backdrop-blur transition-colors group-hover:bg-white/35 sm:size-10">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="ml-0.5">
               <path d="M8 5v14l11-7z" />
             </svg>
           </div>
         </div>
       </div>
-      <div className="p-3">
-        <h3 className="text-xs font-bold text-slate-900 transition-colors group-hover:text-burgundy line-clamp-2 sm:text-sm">
+      <div className="min-w-0 p-3 sm:p-4">
+        <h3 className="line-clamp-2 text-xs font-bold text-slate-900 transition-colors group-hover:text-burgundy sm:text-sm">
           {item.title}
         </h3>
-        <p className="mt-1 text-xs text-slate-600 line-clamp-2">{item.excerpt}</p>
-        <p className="mt-1.5 text-xs text-slate-400">{item.date}</p>
+        <p className="mt-1 line-clamp-2 text-xs text-slate-600">{item.excerpt}</p>
+        <p className="mt-1.5 text-[11px] text-slate-400 sm:text-xs">{item.date}</p>
       </div>
     </>
   );
@@ -44,7 +44,7 @@ export function VideoCard({ item, onOpen }: Props) {
       <button
         type="button"
         onClick={() => onOpen(item)}
-        className="group w-full overflow-hidden rounded-3xl bg-white text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover"
+        className="group w-full min-w-0 overflow-hidden rounded-2xl bg-white text-left shadow-card transition-all active:scale-[0.99] hover:-translate-y-0.5 hover:shadow-card-hover sm:rounded-3xl"
       >
         {content}
       </button>
@@ -52,7 +52,7 @@ export function VideoCard({ item, onOpen }: Props) {
   }
 
   return (
-    <Link href={item.href} className="group overflow-hidden rounded-3xl bg-white shadow-card transition-all hover:-translate-y-1 hover:shadow-card-hover">
+    <Link href={item.href} className="group block min-w-0 overflow-hidden rounded-2xl bg-white shadow-card transition-all hover:-translate-y-0.5 hover:shadow-card-hover sm:rounded-3xl">
       {content}
     </Link>
   );
