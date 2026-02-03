@@ -37,7 +37,7 @@ router.get(
   '/',
   [
     query('page').optional().isInt({ min: 1 }).toInt(),
-    query('limit').optional().isInt({ min: 1, max: 50 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 500 }).toInt(),
     query('search').optional().trim(),
     query('company').optional().trim(),
   ],

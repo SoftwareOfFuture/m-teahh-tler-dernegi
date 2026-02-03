@@ -80,8 +80,8 @@ export default function HomePage() {
         const r2 = await Promise.allSettled([
           fetchWithRetry(() => listVideosRecent({ limit: 3 }), 1),
           fetchWithRetry(() => listPublicationsRecent({ limit: 3 }), 1),
-          fetchWithRetry(() => listPartnersPublic({ limit: 50 }), 1),
-          fetchWithRetry(() => listMembersPublic({ page: 1, limit: 100 }), 1),
+          fetchWithRetry(() => listPartnersPublic({ limit: 500 }), 1),
+          fetchWithRetry(() => listMembersPublic({ page: 1, limit: 500 }), 1),
         ]);
         if (cancelled) return;
 

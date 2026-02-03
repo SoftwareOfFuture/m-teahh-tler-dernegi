@@ -66,8 +66,8 @@ function MembersPageInner() {
     
     // Fetch both partners and members
     Promise.all([
-      listPartnersPublic({ limit: 200 }),
-      listMembersPublic({ page: 1, limit: 200, search: effectiveSearch || undefined }),
+      listPartnersPublic({ limit: 500 }),
+      listMembersPublic({ page: 1, limit: 500, search: effectiveSearch || undefined }),
     ])
       .then(([partnersRes, membersRes]) => {
         if (cancelled) return;
