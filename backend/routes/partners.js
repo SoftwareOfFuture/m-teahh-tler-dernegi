@@ -14,7 +14,7 @@ const validate = (req, res, next) => {
 // GET /api/partners - public list for logo slider
 router.get(
   '/',
-  [query('limit').optional().isInt({ min: 1, max: 200 }).toInt()],
+  [query('limit').optional().isInt({ min: 1, max: 500 }).toInt()],
   validate,
   async (req, res) => {
     try {
