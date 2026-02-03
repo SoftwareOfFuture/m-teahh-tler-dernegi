@@ -93,7 +93,7 @@ export default function KentselDonusumPage() {
             Kentsel Dönüşüm
           </h1>
 
-          <div className="mx-auto mt-8 w-full max-w-6xl">
+          <div className="mt-8 w-full">
             <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-6">
               {CARDS.map((c, idx) => (
                 <div

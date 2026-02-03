@@ -29,7 +29,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="flex w-full items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="grid size-10 place-items-center rounded-xl bg-burgundy text-white shadow-card">
@@ -99,7 +99,7 @@ export function Header() {
       {/* Mobile menu */}
       {open && (
         <div className="w-full border-t border-black/5 bg-white lg:hidden">
-          <div className="mx-auto w-full max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+          <div className="w-full px-4 py-3 sm:px-6 lg:px-8">
             <nav className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <Link

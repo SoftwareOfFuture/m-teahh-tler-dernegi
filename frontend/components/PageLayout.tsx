@@ -9,7 +9,7 @@ export function PageLayout({ children }: Props) {
   return (
     <div className="min-h-screen w-full bg-white">
       <Header />
-      <main className="mx-auto w-full max-w-7xl px-4 pb-16 pt-6 sm:px-6 lg:px-8">{children}</main>
+      <main className="w-full px-4 pb-16 pt-6 sm:px-6 lg:px-8">{children}</main>
     </div>
   );
 }

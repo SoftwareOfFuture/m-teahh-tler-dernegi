@@ -93,11 +93,11 @@ function PlatformBlock({
         <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-black/20" />
       </div>
 
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <div className="relative w-full px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className={`flex w-full ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
           <div
             ref={contentRef}
-            className={`w-full max-w-xl ${align === 'right' ? 'text-right' : 'text-left'}`}
+            className={`w-full ${align === 'right' ? 'text-right' : 'text-left'}`}
           >
             <div className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold ${t.pill}`}>
               DİJİTAL PLATFORM
