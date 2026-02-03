@@ -143,7 +143,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
         <div className="absolute inset-0 flex items-end p-4 sm:p-5">
-          <div className="max-w-[92%] truncate rounded-full bg-black/35 px-3 py-1.5 text-xs font-semibold text-white/95 backdrop-blur">
+          <div className="w-full truncate rounded-full bg-black/35 px-3 py-1.5 text-xs font-semibold text-white/95 backdrop-blur">
             {activeBanner.title}
           </div>
         </div>

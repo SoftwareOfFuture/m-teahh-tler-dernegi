@@ -40,10 +40,10 @@ export function HeroSlider({ items }: Props) {
         <div className="absolute inset-0 flex items-end">
           <div className="w-full p-4 sm:p-6 md:p-10">
             <p className="text-xs font-medium text-white/80 md:text-sm">{current.date}</p>
-            <h1 className="mt-2 max-w-3xl text-xl font-bold text-white sm:text-2xl md:text-3xl lg:text-4xl">
+            <h1 className="mt-2 text-xl font-bold text-white sm:text-2xl md:text-3xl lg:text-4xl">
               {current.title}
             </h1>
-            <p className="mt-3 max-w-2xl text-sm text-white/90 line-clamp-3 sm:line-clamp-none md:text-base">
+            <p className="mt-3 text-sm text-white/90 line-clamp-3 sm:line-clamp-none md:text-base">
               {current.description}
             </p>
 

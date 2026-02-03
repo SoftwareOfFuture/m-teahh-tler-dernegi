@@ -102,7 +102,7 @@ export default function ContactPage() {
     <PageLayoutWithFooter>
       <PageHero title={heroTitle} subtitle={heroSubtitle} />
 
-      <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_420px]">
+      <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="rounded-3xl bg-white p-6 shadow-card">
           <h2 className="text-lg font-bold text-slate-900">İletişim Bilgileri</h2>
           <div className="mt-4 space-y-2 text-sm text-slate-600">

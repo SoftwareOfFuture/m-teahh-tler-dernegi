@@ -18,7 +18,7 @@ export default function LoginPage() {
     <PageLayoutWithFooter>
       <PageHero title="Üye Girişi" subtitle="Üye paneline giriş yapın." />
 
-      <section className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_420px]">
+      <section className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div className="rounded-3xl bg-white p-6 shadow-card">
           <h2 className="text-lg font-bold text-slate-900">Giriş</h2>
           <p className="mt-1 text-sm text-slate-600">E-posta ve şifrenizle giriş yapın.</p>
