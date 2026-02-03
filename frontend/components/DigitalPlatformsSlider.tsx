@@ -20,44 +20,44 @@ function isInternalHref(href: string) {
 }
 
 function themeClasses(accent: DigitalPlatformItem['accent']) {
+  // Tüm accent'ler için bordo-kırmızı tema
   switch (accent) {
     case 'emerald':
-      // Warm (gold) overlay like the reference second block.
       return {
-        overlay: 'bg-amber-300/70',
-        text: 'text-slate-900',
-        subText: 'text-slate-900/90',
-        pill: 'bg-white/70 text-slate-900',
-        button: 'border-slate-900/60 text-slate-900 hover:bg-black/5',
-        buttonFill: 'bg-slate-900 text-white hover:bg-slate-950',
+        overlay: 'bg-red-900/75',
+        text: 'text-white',
+        subText: 'text-white/90',
+        pill: 'bg-white/20 text-white',
+        button: 'border-white/70 text-white hover:bg-white/15',
+        buttonFill: 'bg-white/95 text-red-900 hover:bg-white',
       };
     case 'sky':
       return {
-        overlay: 'bg-sky-950/55',
+        overlay: 'bg-red-950/70',
         text: 'text-white',
         subText: 'text-white/90',
-        pill: 'bg-white/15 text-white',
-        button: 'border-white/60 text-white hover:bg-white/10',
-        buttonFill: 'bg-white/90 text-slate-900 hover:bg-white',
+        pill: 'bg-white/20 text-white',
+        button: 'border-white/70 text-white hover:bg-white/15',
+        buttonFill: 'bg-white/95 text-red-900 hover:bg-white',
       };
     case 'slate':
       return {
-        overlay: 'bg-slate-950/60',
+        overlay: 'bg-red-800/75',
         text: 'text-white',
         subText: 'text-white/90',
-        pill: 'bg-white/15 text-white',
-        button: 'border-white/60 text-white hover:bg-white/10',
-        buttonFill: 'bg-white/90 text-slate-900 hover:bg-white',
+        pill: 'bg-white/20 text-white',
+        button: 'border-white/70 text-white hover:bg-white/15',
+        buttonFill: 'bg-white/95 text-red-900 hover:bg-white',
       };
     case 'burgundy':
     default:
       return {
-        overlay: 'bg-slate-950/58',
+        overlay: 'bg-red-950/75',
         text: 'text-white',
         subText: 'text-white/90',
-        pill: 'bg-white/15 text-white',
-        button: 'border-white/60 text-white hover:bg-white/10',
-        buttonFill: 'bg-white/90 text-slate-900 hover:bg-white',
+        pill: 'bg-white/20 text-white',
+        button: 'border-white/70 text-white hover:bg-white/15',
+        buttonFill: 'bg-white/95 text-red-900 hover:bg-white',
       };
   }
 }
@@ -90,7 +90,7 @@ function PlatformBlock({
           priority={false}
         />
         <div className={`absolute inset-0 backdrop-blur-[2px] ${t.overlay}`} />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-black/10 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-red-950/40 via-red-900/20 to-red-800/30" />
       </div>
 
       <div className="relative w-full px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
@@ -254,7 +254,7 @@ export function DigitalPlatformsSlider({
         </h2>
       </div>
 
-      <div className="w-full overflow-hidden rounded-3xl ring-1 ring-black/10">
+      <div className="w-full overflow-hidden rounded-3xl ring-1 ring-red-900/30">
         {list.map((item, idx) => {
           const align: 'left' | 'right' = idx % 2 === 0 ? 'left' : 'right';
           const animDir: 'left' | 'right' = align === 'left' ? 'left' : 'right';
