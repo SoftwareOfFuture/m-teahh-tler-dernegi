@@ -63,7 +63,7 @@ router.post(
   [
     body('title').trim().notEmpty().isLength({ max: 255 }),
     body('logoText').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
-    body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000000 }),
     body('websiteUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('sortOrder').optional().isInt().toInt(),
     body('isPublished').optional().isBoolean(),
@@ -95,7 +95,7 @@ router.put(
     param('id').isInt().toInt(),
     body('title').optional().trim().notEmpty().isLength({ max: 255 }),
     body('logoText').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
-    body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000000 }),
     body('websiteUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('sortOrder').optional().isInt().toInt(),
     body('isPublished').optional().isBoolean(),

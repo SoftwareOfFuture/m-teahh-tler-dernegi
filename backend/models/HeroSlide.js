@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
       },
       imageUrl: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.TEXT,
       },
       href: {
         type: DataTypes.STRING(500),

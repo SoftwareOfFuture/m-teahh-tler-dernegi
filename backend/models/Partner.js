@@ -17,8 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(255),
       },
       logoUrl: {
-        // optional future: show image instead of text
-        type: DataTypes.STRING(500),
+        type: DataTypes.TEXT,
       },
       websiteUrl: {
         // partner website URL

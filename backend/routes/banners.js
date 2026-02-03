@@ -62,7 +62,7 @@ router.post(
   adminOnly,
   [
     body('title').trim().notEmpty().isLength({ max: 255 }),
-    body('imageUrl').trim().notEmpty().isLength({ max: 500 }),
+    body('imageUrl').trim().notEmpty().isLength({ max: 2000000 }),
     body('href').trim().notEmpty().isLength({ max: 500 }),
     body('sortOrder').optional({ checkFalsy: true }).isInt().toInt(),
     body('isPublished').optional().isBoolean(),
@@ -92,7 +92,7 @@ router.put(
   [
     param('id').isInt().toInt(),
     body('title').optional().trim().notEmpty().isLength({ max: 255 }),
-    body('imageUrl').optional().trim().isLength({ max: 500 }),
+    body('imageUrl').optional().trim().isLength({ max: 2000000 }),
     body('href').optional().trim().isLength({ max: 500 }),
     body('sortOrder').optional({ checkFalsy: true }).isInt().toInt(),
     body('isPublished').optional().isBoolean(),

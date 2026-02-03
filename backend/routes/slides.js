@@ -63,7 +63,7 @@ router.post(
   [
     body('title').trim().notEmpty(),
     body('description').optional().trim(),
-    body('imageUrl').optional().trim().isLength({ max: 500 }),
+    body('imageUrl').optional().trim().isLength({ max: 2000000 }),
     body('href').optional().trim().isLength({ max: 500 }),
     body('dateText').optional().trim().isLength({ max: 100 }),
     body('sortOrder').optional().isInt().toInt(),
@@ -97,7 +97,7 @@ router.put(
     param('id').isInt().toInt(),
     body('title').optional().trim().notEmpty(),
     body('description').optional().trim(),
-    body('imageUrl').optional().trim().isLength({ max: 500 }),
+    body('imageUrl').optional().trim().isLength({ max: 2000000 }),
     body('href').optional().trim().isLength({ max: 500 }),
     body('dateText').optional().trim().isLength({ max: 100 }),
     body('sortOrder').optional().isInt().toInt(),

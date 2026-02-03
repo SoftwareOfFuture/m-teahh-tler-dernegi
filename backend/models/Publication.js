@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
       },
       coverImageUrl: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.TEXT,
       },
       fileUrl: {
         type: DataTypes.STRING(500),
