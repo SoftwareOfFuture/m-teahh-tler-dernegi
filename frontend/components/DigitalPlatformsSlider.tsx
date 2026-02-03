@@ -420,7 +420,7 @@ export function DigitalPlatformsSlider({
               obs?.unobserve(containerEl);
             }
           },
-          { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
+          { threshold: 0.4, rootMargin: '0px 0px -25% 0px' }
         );
 
         for (const el of containerEls) obs.observe(el);
