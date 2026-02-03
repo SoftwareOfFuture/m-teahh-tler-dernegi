@@ -14,6 +14,7 @@ import { SiteFooter } from '../components/SiteFooter';
 import type { NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/types';
 import {
   listBannersPublic,
+  listMembersPublic,
   listNewsPublic,
   listPartnersPublic,
   listPublicationsRecent,
@@ -22,6 +23,7 @@ import {
   type HomeBanner,
   type Publication,
 } from '../lib/api';
+import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 
 export default function HomePage() {
   const [sliderItems, setSliderItems] = useState<SliderItem[]>([]);
@@ -36,6 +38,7 @@ export default function HomePage() {
   const [publications, setPublications] = useState<Publication[]>([]);
   const [partnerLogos, setPartnerLogos] = useState<PartnerLogo[]>([]);
   const [partnersLoading, setPartnersLoading] = useState(true);
+  const [membersForPartners, setMembersForPartners] = useState<any[]>([]);
 
   const formatDot = useMemo(() => {
     return (iso: string | null | undefined) => {
@@ -78,6 +81,7 @@ export default function HomePage() {
           fetchWithRetry(() => listVideosRecent({ limit: 3 }), 1),
           fetchWithRetry(() => listPublicationsRecent({ limit: 3 }), 1),
           fetchWithRetry(() => listPartnersPublic({ limit: 50 }), 1),
+          fetchWithRetry(() => listMembersPublic({ page: 1, limit: 100 }), 1),
         ]);
         if (cancelled) return;
 
@@ -88,6 +92,7 @@ export default function HomePage() {
         const vids = r2[0].status === 'fulfilled' ? r2[0].value : null;
         const pubs = r2[1].status === 'fulfilled' ? r2[1].value : null;
         const partners = r2[2].status === 'fulfilled' ? r2[2].value : null;
+        const membersRes = r2[3]?.status === 'fulfilled' ? r2[3].value : null;
 
         if (Array.isArray(slides) && slides.length) {
           setSliderItems(
@@ -146,17 +151,43 @@ export default function HomePage() {
           setPublications([]);
         }
 
+        // Combine partners and approved members (exclude admin accounts)
+        const allLogos: PartnerLogo[] = [];
+        
+        // Add partners
         if (Array.isArray(partners)) {
-          setPartnerLogos(
-            partners.map((p) => ({
-              id: String(p.id),
+          partners.forEach((p) => {
+            allLogos.push({
+              id: `partner-${p.id}`,
               name: p.title,
               logoText: p.logoText || p.title,
-            }))
-          );
-        } else {
-          setPartnerLogos([]);
+              logoUrl: p.logoUrl || null,
+              websiteUrl: null,
+            });
+          });
         }
+        
+        // Add approved members (exclude platform_admin role)
+        if (membersRes?.items) {
+          membersRes.items.forEach((m: any) => {
+            // Exclude admin accounts
+            if (m.role === 'platform_admin' || m.role === 'admin') return;
+            if (!m.isApproved) return;
+            
+            const company = (m.company || m.name || '').trim();
+            if (!company) return;
+            
+            allLogos.push({
+              id: `member-${m.id}`,
+              name: company,
+              logoText: company,
+              logoUrl: m.profileImageUrl || null,
+              websiteUrl: m.websiteUrl || null,
+            });
+          });
+        }
+        
+        setPartnerLogos(allLogos);
         setPartnersLoading(false);
       } catch {
         // Do not show dummy content on errors.

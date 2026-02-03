@@ -108,12 +108,17 @@ function MembersPageInner() {
                   <div className="h-full animate-pulse" />
                 </div>
               ))
-            : items.map((m) => {
-                const href = normalizeWebsiteUrl(m.websiteUrl);
-                const company = (m.company || m.name || '—').trim();
-                const person = (m.company ? m.name : m.role) || '—';
+            : items
+                .filter((m) => {
+                  // Exclude admin accounts from public listing
+                  return m.role !== 'platform_admin' && m.role !== 'admin';
+                })
+                .map((m) => {
+                  const href = normalizeWebsiteUrl(m.websiteUrl);
+                  const company = (m.company || m.name || '—').trim();
+                  const person = (m.company ? m.name : m.role) || '—';
 
-                const logoSrc = normalizeImageSrc(m.profileImageUrl);
+                  const logoSrc = normalizeImageSrc(m.profileImageUrl);
                 const Card = (
                   <div className="group h-[260px] rounded bg-white shadow-card ring-1 ring-black/10 transition-transform hover:-translate-y-0.5">
                     <div className="flex h-full flex-col p-5">

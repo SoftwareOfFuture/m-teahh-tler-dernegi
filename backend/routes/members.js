@@ -49,7 +49,10 @@ router.get(
       const offset = (page - 1) * limit;
       const search = req.query.search || '';
       const company = req.query.company || '';
-      const where = { isApproved: true };
+      const where = {
+        isApproved: true,
+        role: { [Op.notIn]: ['platform_admin', 'admin'] },
+      };
       if (search) {
         const s = `%${search.toLowerCase()}%`;
         where[Op.or] = [

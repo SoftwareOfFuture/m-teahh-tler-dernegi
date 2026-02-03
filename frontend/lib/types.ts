@@ -37,6 +37,8 @@ export type PartnerLogo = {
   id: string;
   name: string;
   logoText: string;
+  logoUrl?: string | null;
+  websiteUrl?: string | null;
 };
 
 export type EventItem = {
