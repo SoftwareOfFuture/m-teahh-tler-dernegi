@@ -1381,6 +1381,7 @@ function PartnersPanel({ token }: { token: string | null }) {
         { key: 'title', label: 'Partner Adı', type: 'text', required: true },
         { key: 'logoText', label: 'Logo Yazısı (UI)', type: 'text' },
         { key: 'logoUrl', label: 'Logo URL (opsiyonel)', type: 'text' },
+        { key: 'websiteUrl', label: 'Web Sitesi URL (opsiyonel)', type: 'text' },
         { key: 'sortOrder', label: 'Sıralama', type: 'text' },
       ]}
     />

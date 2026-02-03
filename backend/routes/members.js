@@ -99,11 +99,34 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
 router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const member = await db.Member.findByPk(req.params.id, {
-      attributes: ['id', 'name', 'email', 'company', 'role', 'profileImageUrl', 'websiteUrl', 'joinDate'],
+      attributes: ['id', 'name', 'email', 'company', 'role', 'profileImageUrl', 'websiteUrl', 'joinDate', 'phoneCountryCode', 'phoneNumber', 'phoneE164'],
     });
     if (!member) return res.status(404).json({ error: 'Member not found.' });
     if (!member.isApproved) return res.status(404).json({ error: 'Member not found.' });
     res.json(member);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/members/:id/documents/public - public approved documents for approved members
+router.get('/:id/documents/public', [param('id').isInt().toInt()], validate, async (req, res) => {
+  try {
+    const member = await db.Member.findByPk(req.params.id, {
+      attributes: ['id', 'isApproved'],
+    });
+    if (!member) return res.status(404).json({ error: 'Member not found.' });
+    if (!member.isApproved) return res.status(404).json({ error: 'Member not found.' });
+    
+    const docs = await db.MemberDocument.findAll({
+      where: { 
+        memberId: member.id,
+        status: 'approved', // Only show approved documents publicly
+      },
+      order: [['updatedAt', 'DESC'], ['id', 'DESC']],
+      attributes: ['id', 'kind', 'filename', 'mimeType', 'sizeBytes', 'createdAt', 'updatedAt'],
+    });
+    res.json({ items: docs });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

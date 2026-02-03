@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         // optional future: show image instead of text
         type: DataTypes.STRING(500),
       },
+      websiteUrl: {
+        // partner website URL
+        type: DataTypes.STRING(500),
+      },
       sortOrder: {
         type: DataTypes.INTEGER,
         defaultValue: 0,

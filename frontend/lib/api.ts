@@ -155,6 +155,7 @@ export type Partner = {
   title: string; // partner name
   logoText: string | null;
   logoUrl: string | null;
+  websiteUrl: string | null;
   sortOrder: number;
   isPublished: boolean;
   createdAt?: string;
@@ -356,6 +357,36 @@ async function apiFetchBlob(path: string, token: string): Promise<{ blob: Blob; 
 
 export async function getMemberDocumentBlob(token: string, docId: number) {
   return await apiFetchBlob(`/api/members/documents/${docId}/download`, token);
+}
+
+export async function getMemberPublic(memberId: number) {
+  return await apiFetch<{
+    id: number;
+    name: string;
+    email: string;
+    company: string | null;
+    role: string | null;
+    profileImageUrl: string | null;
+    websiteUrl: string | null;
+    joinDate: string;
+    phoneCountryCode: string | null;
+    phoneNumber: string | null;
+    phoneE164: string | null;
+  }>(`/api/members/${memberId}`);
+}
+
+export async function listMemberDocumentsPublic(memberId: number) {
+  return await apiFetch<{
+    items: Array<{
+      id: number;
+      kind: string;
+      filename: string | null;
+      mimeType: string | null;
+      sizeBytes: number;
+      createdAt?: string;
+      updatedAt?: string;
+    }>;
+  }>(`/api/members/${memberId}/documents/public`);
 }
 
 export async function listMemberDocumentsAdmin(token: string, memberId: number) {

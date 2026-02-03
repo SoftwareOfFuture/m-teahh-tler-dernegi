@@ -162,7 +162,7 @@ export default function HomePage() {
               name: p.title,
               logoText: p.logoText || p.title,
               logoUrl: p.logoUrl || null,
-              websiteUrl: null,
+              websiteUrl: p.websiteUrl || null,
             });
           });
         }

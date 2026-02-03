@@ -6,6 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
+import { MemberPartnerModal } from '../../components/MemberPartnerModal';
 import { listMembersPublic, listPartnersPublic, type MembersListResponse, type Partner } from '../../lib/api';
 import { normalizeImageSrc } from '../../lib/normalizeImageSrc';
 
@@ -51,6 +52,8 @@ function MembersPageInner() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CombinedItem | null>(null);
+  const [partnersMap, setPartnersMap] = useState<Map<number, Partner>>(new Map());
 
   const effectiveSearch = useMemo(() => search.trim(), [search]);
 
@@ -152,7 +155,7 @@ function MembersPageInner() {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-lg font-bold text-slate-900">Üye Dizini</h2>
-            <p className="mt-1 text-sm text-slate-600">Üyenin kartına tıklayınca web sitesi açılır.</p>
+            <p className="mt-1 text-sm text-slate-600">Üyenin kartına tıklayınca detaylı bilgiler görüntülenir.</p>
           </div>
 
           <div className="flex w-full gap-2 sm:w-auto">
@@ -244,6 +247,15 @@ function MembersPageInner() {
           </button>
         </div>
       </section>
+
+      {/* Modal */}
+      {selectedItem && (
+        <MemberPartnerModal
+          item={selectedItem}
+          partner={selectedItem.type === 'partner' ? partnersMap.get(parseInt(selectedItem.id.replace('partner-', ''), 10)) || null : null}
+          onClose={() => setSelectedItem(null)}
+        />
+      )}
     </PageLayoutWithFooter>
   );
 }

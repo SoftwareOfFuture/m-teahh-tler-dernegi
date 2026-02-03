@@ -64,6 +64,7 @@ router.post(
     body('title').trim().notEmpty().isLength({ max: 255 }),
     body('logoText').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('websiteUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('sortOrder').optional().isInt().toInt(),
     body('isPublished').optional().isBoolean(),
   ],
@@ -74,6 +75,7 @@ router.post(
         title: req.body.title,
         logoText: req.body.logoText || null,
         logoUrl: req.body.logoUrl || null,
+        websiteUrl: req.body.websiteUrl || null,
         sortOrder: req.body.sortOrder ?? 0,
         isPublished: req.body.isPublished !== false,
       });
@@ -94,6 +96,7 @@ router.put(
     body('title').optional().trim().notEmpty().isLength({ max: 255 }),
     body('logoText').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('websiteUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('sortOrder').optional().isInt().toInt(),
     body('isPublished').optional().isBoolean(),
   ],
@@ -106,6 +109,7 @@ router.put(
         ...(req.body.title !== undefined && { title: req.body.title }),
         ...(req.body.logoText !== undefined && { logoText: req.body.logoText }),
         ...(req.body.logoUrl !== undefined && { logoUrl: req.body.logoUrl }),
+        ...(req.body.websiteUrl !== undefined && { websiteUrl: req.body.websiteUrl }),
         ...(req.body.sortOrder !== undefined && { sortOrder: req.body.sortOrder }),
         ...(req.body.isPublished !== undefined && { isPublished: req.body.isPublished }),
       });
