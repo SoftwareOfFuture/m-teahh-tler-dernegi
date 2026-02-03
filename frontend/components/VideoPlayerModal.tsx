@@ -71,11 +71,21 @@ export function VideoPlayerModal({
     <div className="fixed inset-0 z-[80]">
       <button type="button" className="absolute inset-0 bg-black/60" aria-label="Kapat" onClick={onClose} />
 
-      <div className="absolute left-1/2 top-1/2 w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-card">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="video-modal-title"
+        aria-describedby="video-modal-description"
+        className="absolute left-1/2 top-1/2 w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-card"
+      >
         <div className="flex items-center justify-between gap-3 border-b border-black/10 px-4 py-3">
           <div className="min-w-0">
-            <div className="truncate text-sm font-bold text-slate-900">{title || 'Video'}</div>
-            <div className="truncate text-xs text-slate-500">{url}</div>
+            <h2 id="video-modal-title" className="truncate text-sm font-bold text-slate-900">
+              {title || 'Video'}
+            </h2>
+            <p id="video-modal-description" className="truncate text-xs text-slate-500">
+              {url}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <a

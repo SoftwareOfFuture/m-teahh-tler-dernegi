@@ -776,13 +776,21 @@ function MembersPanel({
 
       {docsOpen ? (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
-          <div className="w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-card">
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="docs-modal-title"
+            aria-describedby="docs-modal-description"
+            className="w-full max-w-3xl overflow-hidden rounded-3xl bg-white shadow-card"
+          >
             <div className="flex items-center justify-between border-b border-black/5 px-5 py-4">
               <div>
-                <div className="text-sm font-bold text-slate-900">Belge İnceleme</div>
-                <div className="mt-0.5 text-xs text-slate-500">
+                <h2 id="docs-modal-title" className="text-sm font-bold text-slate-900">
+                  Belge İnceleme
+                </h2>
+                <p id="docs-modal-description" className="mt-0.5 text-xs text-slate-500">
                   {docsData?.member?.name ? `${docsData.member.name} • ${docsData.member.email}` : '—'}
-                </div>
+                </p>
               </div>
               <button
                 type="button"
@@ -1517,9 +1525,25 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
                 const payload: Record<string, any> = { isPublished: !!createForm.isPublished };
                 for (const f of fields) {
                   const raw = createForm[f.key];
-                  const v = typeof raw === 'string' ? raw.trim() : raw;
+                  let v = typeof raw === 'string' ? raw.trim() : raw;
+                  
+                  // Handle sortOrder as integer
+                  if (f.key === 'sortOrder') {
+                    if (v === undefined || v === null || v === '') {
+                      v = 0;
+                    } else {
+                      const parsed = parseInt(String(v), 10);
+                      v = isNaN(parsed) ? 0 : parsed;
+                    }
+                  }
+                  
                   if (f.required) {
-                    payload[f.key] = typeof v === 'string' ? v : v;
+                    if (v === undefined || v === null || (typeof v === 'string' && v.length === 0)) {
+                      setError(`${f.label} alanı zorunludur.`);
+                      setLoading(false);
+                      return;
+                    }
+                    payload[f.key] = v;
                     continue;
                   }
                   if (v === undefined || v === null) continue;
@@ -1618,8 +1642,23 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
                         const payload: Record<string, any> = { isPublished: !!edit.isPublished };
                         for (const f of fields) {
                           const raw = edit[f.key];
-                          const v = typeof raw === 'string' ? raw.trim() : raw;
+                          let v = typeof raw === 'string' ? raw.trim() : raw;
+                          
+                          // Handle sortOrder as integer
+                          if (f.key === 'sortOrder') {
+                            if (v === undefined || v === null || v === '') {
+                              v = 0;
+                            } else {
+                              const parsed = parseInt(String(v), 10);
+                              v = isNaN(parsed) ? 0 : parsed;
+                            }
+                          }
+                          
                           if (f.required) {
+                            if (v === undefined || v === null || (typeof v === 'string' && v.length === 0)) {
+                              setError(`${f.label} alanı zorunludur.`);
+                              return;
+                            }
                             payload[f.key] = v;
                             continue;
                           }

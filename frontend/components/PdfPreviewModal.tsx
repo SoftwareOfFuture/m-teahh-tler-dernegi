@@ -33,11 +33,21 @@ export function PdfPreviewModal({
         onClick={onClose}
       />
 
-      <div className="absolute left-1/2 top-1/2 w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-card">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pdf-modal-title"
+        aria-describedby="pdf-modal-description"
+        className="absolute left-1/2 top-1/2 w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-card"
+      >
         <div className="flex items-center justify-between gap-3 border-b border-black/10 px-4 py-3">
           <div className="min-w-0">
-            <div className="truncate text-sm font-bold text-slate-900">{title || 'PDF Önizleme'}</div>
-            <div className="truncate text-xs text-slate-500">{url}</div>
+            <h2 id="pdf-modal-title" className="truncate text-sm font-bold text-slate-900">
+              {title || 'PDF Önizleme'}
+            </h2>
+            <p id="pdf-modal-description" className="truncate text-xs text-slate-500">
+              {url}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <a
