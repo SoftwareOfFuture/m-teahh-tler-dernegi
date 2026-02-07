@@ -59,8 +59,8 @@ export default function ContactPage() {
       heroTitle: 'İletişim',
       heroSubtitle: 'Bize ulaşın. Mesajınızı iletin, en kısa sürede dönüş yapalım.',
       contactAddress: 'Antalya / Türkiye',
-      contactEmail: 'info@ornek-dernek.org',
-      contactPhone: '+90 (000) 000 00 00',
+      contactEmail: 'info@antmutder.org',
+      contactPhone: '+90 (242) 000 00 00',
       mapEmbedUrl: '',
     }),
     []

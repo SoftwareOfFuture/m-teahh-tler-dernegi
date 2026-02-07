@@ -10,15 +10,15 @@ export default function CorporatePage() {
   const fallback = useMemo(
     () => ({
       heroTitle: 'Kurumsal',
-      heroSubtitle: 'Derneğimizin vizyonu, misyonu ve kurumsal yapısına dair genel bilgiler.',
+      heroSubtitle: 'Antalya İnşaat Müteahhitleri Derneği vizyonu, misyonu ve kurumsal yapısı.',
       aboutTitle: 'Hakkımızda',
       aboutParagraph1:
-        'Antalya İnşaat Müteahhitleri Derneği; üyeler arasında dayanışmayı güçlendirmek, sektörel bilgi paylaşımını artırmak ve mesleki standartların gelişimine katkı sağlamak amacıyla çalışmalar yürütür.',
+        'Antalya İnşaat Müteahhitleri Derneği (ANTMUTDER); inşaat firmaları, mimarlar, mühendisler, müteahhitler ve inşaat sektörü profesyonellerinin bir araya geldiği bir dernek olarak, üyeler arasında dayanışmayı güçlendirmek, sektörel bilgi paylaşımını artırmak ve mesleki standartların gelişimine katkı sağlamak amacıyla çalışmalar yürütür.',
       aboutParagraph2:
-        'Bu sayfa, ana sayfadaki tasarım dili ile hazırlanmış bir kurumsal içerik şablonudur. İçerikler sonradan gerçek verilerle güncellenebilir.',
-      quickInfo: ['Kuruluş: 20XX', 'Merkez: Antalya', 'Çalışma Alanı: İnşaat ve müteahhitlik', 'Üyelik: Başvuru + Onay'],
-      mission: 'Üyelerimizin mesleki gelişimini desteklemek ve sektörde ortak aklı büyütmek.',
-      vision: 'Sürdürülebilir ve kaliteli yapı üretiminde öncü bir kurumsal yapı olmak.',
+        'Derneğimiz; sektöre yönelik konferans, seminer ve atölye çalışmaları düzenlemekte, networking etkinlikleri ile iş ağlarını geliştirmekte, üyelerine sürekli eğitim sunmakta, sektördeki önemli fuarlarda temsil sağlamakta, kaçak müteahhitlik ile ilgili ihbar hattı oluşturmakta ve yapı müteahhitlerinin sınıflandırılması konusunda bilgilendirme toplantıları düzenlemektedir.',
+      quickInfo: ['Merkez: Antalya', 'Çalışma Alanı: İnşaat ve müteahhitlik', 'Üyelik: Başvuru + Onay', 'Temsil: İnşaat firmaları, mimarlar, mühendisler, müteahhitler'],
+      mission: 'Üyelerimizin mesleki gelişimini desteklemek, sektörde ortak aklı büyütmek ve mesleki standartların yükseltilmesine katkı sağlamak.',
+      vision: 'Sürdürülebilir ve kaliteli yapı üretiminde Antalya ve Türkiye genelinde öncü bir kurumsal yapı olmak.',
     }),
     []
   );

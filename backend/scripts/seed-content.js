@@ -8,13 +8,8 @@ if (process.env.POSTGRES_URL_NON_POOLING) {
 
 const db = require('../models');
 
-// Default content seeding is optional.
-// If you want to seed baseline demo content, set:
-//   SEED_DEFAULT_CONTENT=true
-if (String(process.env.SEED_DEFAULT_CONTENT || '').toLowerCase() !== 'true') {
-  console.log('seed-content: skipped (SEED_DEFAULT_CONTENT is not true)');
-  process.exit(0);
-}
+// PageContent (kurumsal, iletisim) - always seed/update antmutder.org themed baseline
+// Other content (slides, news, etc.) - only when SEED_DEFAULT_CONTENT=true
 
 function isoFromDotDate(dot) {
   // "30.01.2026" -> "2026-01-30"
@@ -24,13 +19,13 @@ function isoFromDotDate(dot) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-async function seedMissingByKey(model, rows, name, getKey) {
+async function seedMissingByKey(model, rows, name, getKey, attrs = ['id', 'title', 'code']) {
   if (!rows.length) {
     console.log(`${name}: skip (no seed rows)`);
     return;
   }
 
-  const existing = await model.findAll({ attributes: ['id', 'title', 'code'] }).catch(() => []);
+  const existing = await model.findAll(attrs ? { attributes: attrs } : {}).catch(() => []);
   const existingKeys = new Set(
     (existing || [])
       .map((r) => {
@@ -54,36 +49,86 @@ async function seedMissingByKey(model, rows, name, getKey) {
   console.log(`${name}: inserted ${toInsert.length} missing rows`);
 }
 
+async function seedPageContent(pages) {
+  for (const p of pages) {
+    const existing = await db.PageContent.findOne({ where: { slug: p.slug } });
+    if (existing) {
+      await existing.update(p);
+      console.log(`PageContent [${p.slug}]: updated`);
+    } else {
+      await db.PageContent.create(p);
+      console.log(`PageContent [${p.slug}]: created`);
+    }
+  }
+}
+
 async function seed() {
   try {
     await db.sequelize.sync({ alter: true });
 
-    // HERO SLIDER
+    // PAGE CONTENT - Antalya İnşaat Müteahhitleri Derneği (antmutder.org) - always seed/update
+    const pageContents = [
+      {
+        slug: 'kurumsal',
+        heroTitle: 'Kurumsal',
+        heroSubtitle: 'Antalya İnşaat Müteahhitleri Derneği vizyonu, misyonu ve kurumsal yapısı.',
+        aboutTitle: 'Hakkımızda',
+        aboutParagraph1:
+          'Antalya İnşaat Müteahhitleri Derneği (ANTMUTDER); inşaat firmaları, mimarlar, mühendisler, müteahhitler ve inşaat sektörü profesyonellerinin bir araya geldiği bir dernek olarak, üyeler arasında dayanışmayı güçlendirmek, sektörel bilgi paylaşımını artırmak ve mesleki standartların gelişimine katkı sağlamak amacıyla çalışmalar yürütür.',
+        aboutParagraph2:
+          'Derneğimiz; sektöre yönelik konferans, seminer ve atölye çalışmaları düzenlemekte, networking etkinlikleri ile iş ağlarını geliştirmekte, üyelerine sürekli eğitim sunmakta, sektördeki önemli fuarlarda temsil sağlamakta, kaçak müteahhitlik ile ilgili ihbar hattı oluşturmakta ve yapı müteahhitlerinin sınıflandırılması konusunda bilgilendirme toplantıları düzenlemektedir.',
+        quickInfo:
+          'Merkez: Antalya\nÇalışma Alanı: İnşaat ve müteahhitlik\nÜyelik: Başvuru + Onay\nTemsil: İnşaat firmaları, mimarlar, mühendisler, müteahhitler',
+        mission:
+          'Üyelerimizin mesleki gelişimini desteklemek, sektörde ortak aklı büyütmek ve mesleki standartların yükseltilmesine katkı sağlamak.',
+        vision: 'Sürdürülebilir ve kaliteli yapı üretiminde Antalya ve Türkiye genelinde öncü bir kurumsal yapı olmak.',
+        isPublished: true,
+      },
+      {
+        slug: 'iletisim',
+        heroTitle: 'İletişim',
+        heroSubtitle: 'Bize ulaşın. Mesajınızı iletin, en kısa sürede dönüş yapalım.',
+        contactAddress: 'Antalya / Türkiye',
+        contactEmail: 'info@antmutder.org',
+        contactPhone: '+90 (242) 000 00 00',
+        mapEmbedUrl: '',
+        isPublished: true,
+      },
+    ];
+    await seedPageContent(pageContents);
+
+    const seedDefault = String(process.env.SEED_DEFAULT_CONTENT || '').toLowerCase() === 'true';
+    if (!seedDefault) {
+      console.log('seed-content: slides/news/etc. skipped (SEED_DEFAULT_CONTENT is not true)');
+      process.exit(0);
+    }
+
+    // HERO SLIDER - antmutder.org teması
     const slides = [
       {
-        title: 'Yurt Dışı Müteahhitlik Hizmetleri Ödül Töreni',
-        description: '“Dünyanın En Büyük 250 Uluslararası Müteahhidi” listesinde yer alan firmalar ödüllerini aldı.',
+        title: 'Antalya İnşaat Müteahhitleri Derneği',
+        description: 'Üyeler arasında dayanışma, sektörel bilgi paylaşımı ve mesleki standartların gelişimi.',
         imageUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1600&q=80',
-        href: '#',
-        dateText: '27 Ocak 2026',
+        href: '/kurumsal/',
+        dateText: 'Antalya',
         sortOrder: 1,
         isPublished: true,
       },
       {
-        title: 'Ortadoğu ve Kuzey Afrika Bölgesi Bülteni Yayında',
-        description: 'Üyelerimizin bölgesel gelişmeleri takip edebilmesi amacıyla yeni bülten yayınlandı.',
+        title: 'Konferans, Seminer ve Atölye Çalışmaları',
+        description: 'Sektöre yönelik eğitim ve bilgilendirme etkinlikleriyle üyelerimizi destekliyoruz.',
         imageUrl: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=80',
-        href: '#',
-        dateText: '28 Ocak 2026',
+        href: '/etkinlikler/',
+        dateText: 'Eğitim',
         sortOrder: 2,
         isPublished: true,
       },
       {
-        title: 'Öne Çıkan Etkinlikler',
-        description: 'Yüz yüze ve dijital platformlar üzerinden yürütülen etkinliklerden seçkiler.',
+        title: 'Yapı Müteahhitlerinin Sınıflandırılması',
+        description: 'Mevzuat bilgilendirme toplantıları ve danışmanlık hizmetleriyle yanınızdayız.',
         imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1600&q=80',
-        href: '#',
-        dateText: '05 Ocak 2026',
+        href: '/kurumsal/',
+        dateText: 'Mevzuat',
         sortOrder: 3,
         isPublished: true,
       },
@@ -147,37 +192,37 @@ async function seed() {
       },
     ];
 
-    // ANNOUNCEMENTS
+    // ANNOUNCEMENTS - ANTMUTDER teması
     const announcements = [
       {
-        code: 'AMD-2026-68',
+        code: 'ANTMUTDER-2026-01',
         title: 'İnşaat Sektörü Analizi - Ocak 2026',
-        excerpt: 'İnşaat Sektörü Analizi - Ocak 2026',
-        content: 'İnşaat Sektörü Analizi - Ocak 2026\n\nDetaylar yakında paylaşılacaktır.',
+        excerpt: 'Antalya bölgesi inşaat sektörü analizi yayınlandı.',
+        content: 'Antalya İnşaat Müteahhitleri Derneği olarak inşaat sektörü analizi raporunu paylaşıyoruz.\n\nDetaylar için derneğimizle iletişime geçebilirsiniz.',
         publishDate: isoFromDotDate('30.01.2026'),
         isPublished: true,
       },
       {
-        code: 'AMD-2026-64',
-        title: 'Ukrayna için Enerji Ekipmanları Destek Talebi',
-        excerpt: 'Ukrayna için Enerji Ekipmanları Destek Talebi',
-        content: 'Ukrayna için Enerji Ekipmanları Destek Talebi\n\nDetaylar yakında paylaşılacaktır.',
+        code: 'ANTMUTDER-2026-02',
+        title: 'Kaçak Müteahhitlik İhbar Hattı',
+        excerpt: 'Kaçak müteahhitlik ihbarı için bilgilendirme.',
+        content: 'Kaçak müteahhitlik ile ilgili ihbar hattımız aktif. İhbar ve bildirimler için derneğimizle iletişime geçebilirsiniz.\n\nDetaylar için iletişim sayfamızı ziyaret edin.',
         publishDate: isoFromDotDate('30.01.2026'),
         isPublished: true,
       },
       {
-        code: 'AMD-2026-66',
-        title: 'Uluslararası Sulama Teknolojileri Fuarı Duyurusu',
-        excerpt: 'Uluslararası Sulama Teknolojileri Fuarı Duyurusu',
-        content: 'Uluslararası Sulama Teknolojileri Fuarı Duyurusu\n\nDetaylar yakında paylaşılacaktır.',
+        code: 'ANTMUTDER-2026-03',
+        title: 'Yapı Müteahhitlerinin Sınıflandırılması Yönetmeliği',
+        excerpt: 'Yapı müteahhitlerinin sınıflandırılması konusunda bilgilendirme toplantısı.',
+        content: 'Yapı Müteahhitlerinin Sınıflandırılması Yönetmeliği hakkında bilgilendirme toplantısı düzenlenecektir.\n\nÜyelerimizi davet ediyoruz.',
         publishDate: isoFromDotDate('29.01.2026'),
         isPublished: true,
       },
       {
-        code: 'AMD-2026-60',
+        code: 'ANTMUTDER-2026-04',
         title: 'Genel Kurul Toplantısı Bilgilendirmesi',
-        excerpt: 'Genel Kurul Toplantısı Bilgilendirmesi',
-        content: 'Genel Kurul Toplantısı Bilgilendirmesi\n\nDetaylar yakında paylaşılacaktır.',
+        excerpt: 'Antalya İnşaat Müteahhitleri Derneği Genel Kurul duyurusu.',
+        content: 'Genel Kurul Toplantısı tarih ve gündem bilgisi paylaşılacaktır.\n\nÜyelerimize duyurulur.',
         publishDate: isoFromDotDate('24.01.2026'),
         isPublished: true,
       },
@@ -211,11 +256,11 @@ async function seed() {
       },
     ];
 
-    // PUBLICATIONS (basic defaults)
+    // PUBLICATIONS - ANTMUTDER teması
     const publications = [
       {
-        title: 'AMD Faaliyet Raporu 2025',
-        excerpt: 'Derneğimizin 2025 yılı faaliyetlerini içeren rapor.',
+        title: 'Antalya İnşaat Müteahhitleri Derneği Faaliyet Raporu 2025',
+        excerpt: 'ANTMUTDER 2025 yılı faaliyetlerini içeren rapor.',
         coverImageUrl: 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1200&q=80',
         fileUrl: '#',
         publishDate: isoFromDotDate('15.12.2025'),
@@ -223,15 +268,15 @@ async function seed() {
       },
       {
         title: 'Sektör Bülteni - Ocak 2026',
-        excerpt: 'Aylık sektör bülteni ve öne çıkan gelişmeler.',
+        excerpt: 'Antalya inşaat sektörü bülteni ve öne çıkan gelişmeler.',
         coverImageUrl: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200&q=80',
         fileUrl: '#',
         publishDate: isoFromDotDate('31.01.2026'),
         isPublished: true,
       },
       {
-        title: 'Mevzuat Bilgilendirme Notu',
-        excerpt: 'Güncel mevzuat değişiklikleri hakkında özet not.',
+        title: 'Yapı Müteahhitleri Mevzuat Bilgilendirme Notu',
+        excerpt: 'Güncel mevzuat değişiklikleri ve yapı müteahhitleri sınıflandırması hakkında özet.',
         coverImageUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&q=80',
         fileUrl: '#',
         publishDate: isoFromDotDate('20.01.2026'),
@@ -245,7 +290,8 @@ async function seed() {
       db.Announcement,
       announcements,
       'Announcement',
-      (r) => (String(r?.code || '').trim() ? String(r.code).trim() : String(r?.title || '').trim())
+      (r) => (String(r?.code || '').trim() ? String(r.code).trim() : String(r?.title || '').trim()),
+      ['id', 'title', 'code']
     );
     await seedMissingByKey(db.Video, videos, 'Video', (r) => String(r?.title || '').trim());
     await seedMissingByKey(db.Publication, publications, 'Publication', (r) => String(r?.title || '').trim());
