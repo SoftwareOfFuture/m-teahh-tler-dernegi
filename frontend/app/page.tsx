@@ -229,7 +229,7 @@ export default function HomePage() {
         <section className="mt-6 w-full sm:mt-10">
           <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 lg:gap-10">
             <div className="space-y-8 sm:space-y-12">
-              <DigitalPlatformsSlider title="AMD DİJİTAL PLATFORMLAR" />
+              <DigitalPlatformsSlider title="ANTMUTDER DİJİTAL PLATFORMLAR" />
 
               <div>
                 <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">

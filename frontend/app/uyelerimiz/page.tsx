@@ -148,7 +148,7 @@ function MembersPageInner() {
     <PageLayoutWithFooter>
       <PageHero
         title="Üyelerimiz"
-        subtitle="Kayıt olan ve onaylanan üyelerimizi burada görüntüleyebilirsiniz. (Onaysız üyeler listelenmez.)"
+        subtitle="ANTMUTDER üyeleri ve sektörel paydaşlar. Derneğimiz üyesi müteahhitler ve partner firmalar."
       />
 
       <section className="mt-8 rounded-3xl bg-white p-6 shadow-card">

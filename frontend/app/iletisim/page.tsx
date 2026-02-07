@@ -57,7 +57,7 @@ export default function ContactPage() {
   const fallback = useMemo(
     () => ({
       heroTitle: 'İletişim',
-      heroSubtitle: 'Bize ulaşın. Mesajınızı iletin, en kısa sürede dönüş yapalım.',
+      heroSubtitle: 'ANTMUTDER ile iletişime geçin. Sorularınız ve talepleriniz için bize ulaşın.',
       contactAddress: 'Antalya / Türkiye',
       contactEmail: 'info@antmutder.org',
       contactPhone: '+90 (242) 000 00 00',

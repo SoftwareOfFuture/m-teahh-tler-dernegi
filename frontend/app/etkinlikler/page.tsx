@@ -40,7 +40,7 @@ export default function EventsPage() {
 
   return (
     <PageLayoutWithFooter>
-      <PageHero title="Etkinlikler" subtitle="Derneğimizin etkinlik takvimi ve duyuruları." />
+      <PageHero title="Etkinlikler" subtitle="ANTMUTDER etkinlik takvimi, konferans, seminer ve atölye çalışmaları." />
 
       <section className="mt-8">
         <div className="flex items-center justify-between gap-3">

@@ -52,7 +52,7 @@ export default function NewsPage() {
 
   return (
     <PageLayoutWithFooter>
-      <PageHero title="Haberler" subtitle="Derneğimizden ve sektörden güncel haberler." />
+      <PageHero title="Haberler" subtitle="ANTMUTDER ve Antalya inşaat sektöründen güncel haberler." />
 
       <section className="mt-8">
         <div className="flex items-center justify-between gap-3">

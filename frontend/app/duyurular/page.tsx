@@ -92,6 +92,9 @@ export default function KentselDonusumPage() {
           <h1 className="text-center text-3xl font-extrabold tracking-wide text-white sm:text-4xl">
             Kentsel Dönüşüm
           </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-white/90 sm:text-base">
+            Antalya İnşaat Müteahhitleri Derneği olarak kentsel dönüşüm süreçleri hakkında üyelerimizi ve sektörü bilgilendirmek amacıyla hazırlanan kaynaklara aşağıdan ulaşabilirsiniz.
+          </p>
 
           <div className="mt-8 w-full">
             <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-6">

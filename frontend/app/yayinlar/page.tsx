@@ -37,7 +37,7 @@ export default function PublicationsPage() {
 
   return (
     <PageLayoutWithFooter>
-      <PageHero title="Yayınlar" subtitle="Raporlar, bültenler ve yayın arşivi." />
+      <PageHero title="Yayınlar" subtitle="ANTMUTDER faaliyet raporları, sektör bültenleri ve mevzuat bilgilendirmeleri." />
 
       <section className="mt-8">
         <div className="flex items-center justify-between gap-3">

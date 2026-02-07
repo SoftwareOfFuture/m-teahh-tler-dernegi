@@ -6,7 +6,7 @@ export function SiteFooter() {
       <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
         <div>
           <p className="text-sm font-semibold text-white/90">Antalya İnşaat Müteahhitleri Derneği</p>
-          <p className="mt-1 text-xs text-white/70">Antalya&apos;nın Geleceğini Güvenle İnşa Ediyoruz</p>
+          <p className="mt-1 text-xs text-white/70">Paylaşım, dayanışma ve sektörel sorunların çözümü için birlikte çalışıyoruz.</p>
           <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-white/70">
             <Link href="/kvkk" className="hover:text-white">
               KVKK

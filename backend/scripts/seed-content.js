@@ -71,23 +71,23 @@ async function seed() {
       {
         slug: 'kurumsal',
         heroTitle: 'Kurumsal',
-        heroSubtitle: 'Antalya İnşaat Müteahhitleri Derneği vizyonu, misyonu ve kurumsal yapısı.',
+        heroSubtitle: 'Antalya İnşaat Müteahhitleri Derneği (ANTMUTDER) vizyonu, misyonu ve kurumsal yapısı.',
         aboutTitle: 'Hakkımızda',
         aboutParagraph1:
-          'Antalya İnşaat Müteahhitleri Derneği (ANTMUTDER); inşaat firmaları, mimarlar, mühendisler, müteahhitler ve inşaat sektörü profesyonellerinin bir araya geldiği bir dernek olarak, üyeler arasında dayanışmayı güçlendirmek, sektörel bilgi paylaşımını artırmak ve mesleki standartların gelişimine katkı sağlamak amacıyla çalışmalar yürütür.',
+          'Antalya İnşaat Müteahhitleri Derneği (ANTMUTDER), inşaat sektöründe faaliyet gösteren müteahhitleri bir araya getiren bir sivil toplum kuruluşudur. Derneğimizin temel amaçları; sektördeki sorunların çözümü, müteahhitler arasında birlik ve beraberliğin sağlanması, paylaşım ve dayanışmanın güçlendirilmesi, sektörün beklentilerine hızlı çözüm üretilmesi ve demokratik ve şeffaf bir yönetim anlayışının benimsenmesidir. Derneğimizin kapısı sektör mensuplarına her zaman açıktır.',
         aboutParagraph2:
-          'Derneğimiz; sektöre yönelik konferans, seminer ve atölye çalışmaları düzenlemekte, networking etkinlikleri ile iş ağlarını geliştirmekte, üyelerine sürekli eğitim sunmakta, sektördeki önemli fuarlarda temsil sağlamakta, kaçak müteahhitlik ile ilgili ihbar hattı oluşturmakta ve yapı müteahhitlerinin sınıflandırılması konusunda bilgilendirme toplantıları düzenlemektedir.',
+          'Derneğimiz; konferans, seminer ve atölye çalışmaları düzenlemekte, networking etkinlikleri ile iş ağlarını geliştirmekte, üyelerine sürekli eğitim sunmakta, sektördeki önemli fuarlarda temsil sağlamaktadır. Kaçak müteahhitlik ile mücadele ve profesyonel müteahhitliği teşvik etme faaliyetleri yürütmekte, yapı müteahhitlerinin sınıflandırılması konusunda bilgilendirme toplantıları düzenlemektedir. İnşaat sektörü ile ilgili önemli konularda söz sahibi olmayı, danışılan bir kuruluş olmayı hedeflemektedir.',
         quickInfo:
-          'Merkez: Antalya\nÇalışma Alanı: İnşaat ve müteahhitlik\nÜyelik: Başvuru + Onay\nTemsil: İnşaat firmaları, mimarlar, mühendisler, müteahhitler',
+          'Merkez: Antalya\nÇalışma Alanı: İnşaat ve müteahhitlik\nÜyelik: Başvuru + Onay\nYönetim: Demokratik ve şeffaf',
         mission:
-          'Üyelerimizin mesleki gelişimini desteklemek, sektörde ortak aklı büyütmek ve mesleki standartların yükseltilmesine katkı sağlamak.',
-        vision: 'Sürdürülebilir ve kaliteli yapı üretiminde Antalya ve Türkiye genelinde öncü bir kurumsal yapı olmak.',
+          'Paylaşım, dayanışma ve çözüm aranan konularda fikir ve tecrübelerin paylaşılacağı bir platform olmak. Sektörümüzün sorunları ve beklentilerini hızlı ve çabuk çözebilmek için çalışmak.',
+        vision: 'Antalya inşaat sektöründe daha aktif, daha çok söz sahibi, daha çok danışılan ve bilgi istenen, dikkat çeken bir sivil toplum kuruluşu olmak.',
         isPublished: true,
       },
       {
         slug: 'iletisim',
         heroTitle: 'İletişim',
-        heroSubtitle: 'Bize ulaşın. Mesajınızı iletin, en kısa sürede dönüş yapalım.',
+        heroSubtitle: 'ANTMUTDER ile iletişime geçin. Sorularınız ve talepleriniz için bize ulaşın.',
         contactAddress: 'Antalya / Türkiye',
         contactEmail: 'info@antmutder.org',
         contactPhone: '+90 (242) 000 00 00',

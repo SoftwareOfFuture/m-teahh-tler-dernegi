@@ -50,7 +50,7 @@ export default function VideosPage() {
 
   return (
     <PageLayoutWithFooter>
-      <PageHero title="Video Arşiv" subtitle="Etkinlikler, tanıtımlar ve video içerikleri." />
+      <PageHero title="Video Arşiv" subtitle="ANTMUTDER etkinlikleri, tanıtımlar ve sektör videoları." />
 
       <section className="mt-8">
         <div className="flex items-center justify-between gap-3">

@@ -120,7 +120,7 @@ export default function RegisterPage() {
 
   return (
     <PageLayoutWithFooter>
-      <PageHero title="Üye Kayıt" subtitle="Üyelik başvurunuzu oluşturun. Başvurunuz platform yöneticisi tarafından onaylandıktan sonra görünür." />
+      <PageHero title="Üye Kayıt" subtitle="ANTMUTDER üyeliği için başvurunuzu oluşturun. Derneğimizin kapısı sektör mensuplarına açıktır." />
 
       <section className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_420px]">
         <div className="rounded-3xl bg-white p-6 shadow-card">

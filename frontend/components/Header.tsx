@@ -44,7 +44,7 @@ export function Header() {
           </div>
           <div className="hidden leading-tight sm:block">
             <div className="text-sm font-semibold text-slate-900">Antalya İnşaat Müteahhitleri Derneği</div>
-            <div className="text-xs text-slate-500">Kurumsal</div>
+            <div className="text-xs text-slate-500">ANTMUTDER</div>
           </div>
         </Link>
 

@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Antalya İnşaat Müteahhitleri Derneği',
-  description: 'Kurumsal web sitesi',
+  description: 'ANTMUTDER - İnşaat sektöründe paylaşım, dayanışma ve sektörel sorunların çözümü için birlikte çalışıyoruz.',
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: 'any' },
