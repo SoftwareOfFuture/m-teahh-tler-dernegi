@@ -15,6 +15,7 @@ const eventsRoutes = require('./routes/events');
 const partnersRoutes = require('./routes/partners');
 const smsFeedbackRoutes = require('./routes/sms-feedback');
 const bannersRoutes = require('./routes/banners');
+const propertiesRoutes = require('./routes/properties');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/pages', pagesRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/partners', partnersRoutes);
 app.use('/api/banners', bannersRoutes);
+app.use('/api/properties', propertiesRoutes);
 app.use('/api/sms-feedback', smsFeedbackRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));

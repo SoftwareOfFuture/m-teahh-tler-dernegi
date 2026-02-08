@@ -162,6 +162,22 @@ export type Partner = {
   updatedAt?: string;
 };
 
+export type Property = {
+  id: number;
+  title: string;
+  address: string | null;
+  price: string | null;
+  description: string | null;
+  imageUrl: string | null;
+  propertyType: string | null;
+  rooms: string | null;
+  area: string | null;
+  sortOrder: number;
+  isPublished: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type MemberDocument = {
   id: number;
   kind: string;
@@ -507,6 +523,16 @@ export async function listPublicationsRecent(params?: { limit?: number }) {
   );
 }
 
+export async function listPropertiesPublic(params?: { page?: number; limit?: number }) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  return await apiFetch<PagedResponse<Property>>(
+    `/api/properties${qs.toString() ? `?${qs.toString()}` : ''}`,
+    { method: 'GET' }
+  );
+}
+
 // --- Content (admin) ---
 
 export async function listSlidesAdminAll(token: string, params?: { page?: number; limit?: number }) {
@@ -708,6 +734,39 @@ export async function updatePublication(token: string, id: number, payload: Part
 
 export async function deletePublication(token: string, id: number) {
   return await apiFetch<{ success: true }>(`/api/publications/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function listPropertiesAdminAll(token: string, params?: { page?: number; limit?: number }) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  return await apiFetch<PagedResponse<Property>>(
+    `/api/properties/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`,
+    { method: 'GET', headers: { Authorization: `Bearer ${token}` } }
+  );
+}
+
+export async function createProperty(token: string, payload: Partial<Property> & { title: string }) {
+  return await apiFetch<Property>('/api/properties', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateProperty(token: string, id: number, payload: Partial<Property>) {
+  return await apiFetch<Property>(`/api/properties/${id}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteProperty(token: string, id: number) {
+  return await apiFetch<{ success: true }>(`/api/properties/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },
   });

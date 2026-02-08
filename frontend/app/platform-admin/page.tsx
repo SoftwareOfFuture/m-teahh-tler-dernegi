@@ -25,18 +25,21 @@ import {
   listMemberDocumentsAdmin,
   createEvent,
   createPartner,
+  createProperty,
   listAnnouncementsAdminAll,
   listBannersAdminAll,
   listEventsAdminAll,
   listMembersAdminAll,
   listNewsAdminAll,
   listPartnersAdminAll,
+  listPropertiesAdminAll,
   listPublicationsAdminAll,
   listSlidesAdminAll,
   listVideosAdminAll,
   me,
   deleteEvent,
   deletePartner,
+  deleteProperty,
   getMemberDocumentBlob,
   rejectMember,
   requestMemberResubmission,
@@ -44,6 +47,7 @@ import {
   updateBanner,
   updateEvent,
   updatePartner,
+  updateProperty,
   upsertPageAdmin,
   updateAnnouncement,
   updateNews,
@@ -58,6 +62,7 @@ import {
   type PageContent,
   type MemberDocument,
   type Partner,
+  type Property,
   type Publication,
   type Video,
 } from '../../lib/api';
@@ -86,6 +91,7 @@ export default function PlatformAdminPage() {
     | 'publications'
     | 'events'
     | 'partners'
+    | 'properties'
     | 'kurumsal'
     | 'iletisim'
     | 'animations'
@@ -103,6 +109,7 @@ export default function PlatformAdminPage() {
     { id: 'publications', label: 'Yayınlar' },
     { id: 'events', label: 'Etkinlikler' },
     { id: 'partners', label: 'Partnerler' },
+    { id: 'properties', label: 'Emlak İlanları' },
     { id: 'kurumsal', label: 'Kurumsal' },
     { id: 'iletisim', label: 'İletişim' },
     { id: 'animations', label: 'Animasyonlar' },
@@ -270,6 +277,8 @@ export default function PlatformAdminPage() {
               <EventsPanel token={token} />
             ) : tab === 'partners' ? (
               <PartnersPanel token={token} />
+            ) : tab === 'properties' ? (
+              <PropertiesPanel token={token} />
             ) : tab === 'iletisim' ? (
               <IletisimPanel token={token} />
             ) : tab === 'animations' ? (
@@ -1660,6 +1669,31 @@ function PartnersPanel({ token }: { token: string | null }) {
         { key: 'logoText', label: 'Logo Yazısı (UI)', type: 'text' },
         { key: 'logoUrl', label: 'Logo URL (opsiyonel)', type: 'imageUrl' },
         { key: 'websiteUrl', label: 'Web Sitesi URL (opsiyonel)', type: 'text' },
+        { key: 'sortOrder', label: 'Sıralama', type: 'text' },
+      ]}
+    />
+  );
+}
+
+function PropertiesPanel({ token }: { token: string | null }) {
+  return (
+    <GenericContentPanel<Property>
+      token={token}
+      title="Emlak İlanları Yönetimi"
+      subtitle="Emlak İlanları sayfasındaki konut/daire/villa ilanları buradan yönetilir."
+      list={(t) => listPropertiesAdminAll(t, { page: 1, limit: 200 })}
+      create={(t, p) => createProperty(t, p as any)}
+      update={(t, id, p) => updateProperty(t, id, p as any)}
+      remove={(t, id) => deleteProperty(t, id)}
+      fields={[
+        { key: 'title', label: 'Başlık', type: 'text', required: true },
+        { key: 'address', label: 'Adres', type: 'text' },
+        { key: 'price', label: 'Fiyat', type: 'text' },
+        { key: 'propertyType', label: 'Tip (Konut/Daire/Villa)', type: 'text' },
+        { key: 'rooms', label: 'Oda Sayısı', type: 'text' },
+        { key: 'area', label: 'm²', type: 'text' },
+        { key: 'imageUrl', label: 'Görsel URL', type: 'imageUrl' },
+        { key: 'description', label: 'Açıklama', type: 'textarea' },
         { key: 'sortOrder', label: 'Sıralama', type: 'text' },
       ]}
     />

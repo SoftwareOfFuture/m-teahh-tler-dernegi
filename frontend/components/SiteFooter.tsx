@@ -55,6 +55,7 @@ export function SiteFooter() {
               <li><Link href="/videolar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Video Arşivi</Link></li>
               <li><Link href="/yayinlar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Yayınlar</Link></li>
               <li><Link href="/kentsel-donusum" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Kentsel Dönüşüm</Link></li>
+              <li><Link href="/emlak-ilanlari" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Emlak İlanları</Link></li>
               <li><Link href="/iletisim" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">İletişim</Link></li>
             </ul>
           </div>

@@ -6,6 +6,12 @@ const { Op, Sequelize } = require('sequelize');
 
 const router = express.Router();
 
+/** Bu emaillere sahip üyeler sitede hiçbir yerde görünmez (Site Admin / gizli üyeler) */
+const HIDDEN_EMAILS = new Set([
+  'softwareoffuture@gmail.com',
+  'info@technochef.com.tr',
+].map((e) => e.toLowerCase().trim()));
+
 const REQUIRED_DOC_KINDS = ['contractor_license', 'tax_certificate', 'trade_registry'];
 const ALLOWED_MIME = ['application/pdf', 'image/jpeg', 'image/png'];
 const MAX_DOC_BYTES = 5 * 1024 * 1024; // 5MB
@@ -53,6 +59,9 @@ router.get(
         isApproved: true,
         role: { [Op.notIn]: ['platform_admin', 'admin'] },
       };
+      if (HIDDEN_EMAILS.size > 0) {
+        where.email = { [Op.notIn]: Array.from(HIDDEN_EMAILS) };
+      }
       if (search) {
         const s = `%${search.toLowerCase()}%`;
         where[Op.or] = [
@@ -103,6 +112,7 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
     });
     if (!member) return res.status(404).json({ error: 'Member not found.' });
     if (!member.isApproved) return res.status(404).json({ error: 'Member not found.' });
+    if (HIDDEN_EMAILS.has((member.email || '').toLowerCase().trim())) return res.status(404).json({ error: 'Member not found.' });
     res.json(member);
   } catch (err) {
     res.status(500).json({ error: err.message });

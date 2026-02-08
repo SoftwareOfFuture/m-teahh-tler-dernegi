@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/videolar',
     '/yayinlar',
     '/kentsel-donusum',
+    '/emlak-ilanlari',
     '/uyelerimiz',
     '/duyurular',
     '/etkinlikler',
