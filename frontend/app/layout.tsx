@@ -51,11 +51,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: '/logo.png', type: 'image/png', sizes: 'any' },
       { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon.svg', type: 'image/svg+xml' },
     ],
-    shortcut: '/favicon.ico',
-    apple: '/favicon.svg',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
   verification: {},
 };
