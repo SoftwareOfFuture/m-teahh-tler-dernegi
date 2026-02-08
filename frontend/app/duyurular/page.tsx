@@ -1,116 +1,82 @@
-import Image from 'next/image';
+'use client';
+
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-type KentselCardItem = {
-  title: string;
-  description: string;
-  cta: string;
-  href: string;
-  size: 'sm' | 'lg';
-};
+import { AnnouncementCard } from '../../components/AnnouncementCard';
+import { listAnnouncementsPublic, type Announcement } from '../../lib/api';
+import type { AnnouncementItem } from '../../lib/types';
 
-const BG =
-  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2400&q=70';
-
-const CARDS: KentselCardItem[] = [
-  {
-    title: 'Riskli Yapı Süreci',
-    description: 'Riskli yapıların süreçleri hakkında bilgi almak için inceleyiniz.',
-    cta: 'Bakanlık Sayfasına Git',
-    href: 'https://altyapi.csb.gov.tr/riskli-yapi-sureci-i-104285',
-    size: 'sm',
-  },
-  {
-    title: 'Faiz Desteği',
-    description: 'Kentsel dönüşümde faiz desteği hakkında bilgi almak için inceleyiniz.',
-    cta: 'İncele',
-    href: 'https://altyapi.csb.gov.tr/finansal-destekler-i-4708',
-    size: 'sm',
-  },
-  {
-    title: 'Kira Yardımı Kılavuzu',
-    description: 'Kentsel dönüşümde kira yardımı hakkında bilgi almak için inceleyiniz.',
-    cta: 'İncele',
-    href: 'https://webdosya.csb.gov.tr/db/altyapi/icerikler/kira-yardim-kilavuzu-2024-20240506155234.pdf',
-    size: 'sm',
-  },
-  {
-    title: '6306 Sayılı Kanun Kapsamında Protokol Yapılmış Bankalar',
-    description: 'Kanun kapsamında anlaşma yapılmış olan bankaların listesini inceleyiniz.',
-    cta: 'Bankalar Listesi',
-    href: 'https://altyapi.csb.gov.tr/6306-sayili-kanun-kapsaminda-protokol-yapilmis-bankalar-i-2906',
-    size: 'lg',
-  },
-  {
-    title: '6306 Sayılı Kanun Kapsamında Riskli Yapıların Tespiti için Yetki Verilen Kurum ve Kuruluşlar',
-    description: 'Yetki verilen kurum ve kuruluşlar listesini incelemek için ilgili bakanlık sayfasına gidiniz.',
-    cta: 'Bakanlık Sayfasına Git',
-    href: 'https://altyapi.csb.gov.tr/riskli-yapi-tespiti-ile-ilgili-kuruluslar',
-    size: 'lg',
-  },
-];
-
-function KentselCard({ item }: { item: KentselCardItem }) {
-  return (
-    <a
-      href={item.href}
-      target="_blank"
-      rel="noreferrer"
-      className={`group relative overflow-hidden rounded-2xl bg-slate-900/90 p-6 shadow-soft backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-xl ${
-        item.size === 'lg' ? 'min-h-[170px] sm:min-h-[190px]' : 'min-h-[140px]'
-      }`}
-    >
-      <h3 className="text-center text-base font-bold text-white sm:text-lg">{item.title}</h3>
-      <p className="mt-3 text-center text-xs leading-relaxed text-white/80 sm:text-sm">{item.description}</p>
-
-      <div className="mt-5 flex justify-center">
-        <span className="inline-flex items-center justify-center rounded-xl bg-burgundy px-5 py-2.5 text-xs font-bold text-white transition-colors group-hover:bg-burgundy-dark">
-          {item.cta}
-        </span>
-      </div>
-    </a>
-  );
+function formatDot(iso: string | null | undefined) {
+  if (!iso) return '';
+  const parts = String(iso).split('-');
+  if (parts.length !== 3) return String(iso);
+  return `${parts[2]}.${parts[1]}.${parts[0]}`;
 }
 
-export default function KentselDonusumPage() {
+function toAnnouncementItem(a: Announcement): AnnouncementItem {
+  return {
+    id: String(a.id),
+    code: a.code ?? '',
+    date: formatDot(a.publishDate),
+    title: a.title,
+  };
+}
+
+export default function DuyurularPage() {
+  const [items, setItems] = useState<AnnouncementItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = useMemo(() => {
+    return async () => {
+      setLoading(true);
+      try {
+        const res = await listAnnouncementsPublic({ page: 1, limit: 50 });
+        if (res?.items?.length) setItems(res.items.map(toAnnouncementItem));
+      } finally {
+        setLoading(false);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
   return (
     <PageLayoutWithFooter>
-      <section className="relative mt-8 overflow-hidden rounded-3xl shadow-soft-lg">
-        <div className="absolute inset-0">
-          <Image
-            src={BG}
-            alt=""
-            fill
-            unoptimized
-            priority
-            sizes="100vw"
-            className="object-cover object-center grayscale"
-          />
-          <div className="absolute inset-0 bg-black/55" />
+      <PageHero
+        title="Duyurular"
+        subtitle="ANTMUTDER ve Antalya inşaat sektöründen güncel duyurular. Dernek haberleri ve bilgilendirmeleri."
+      />
+
+      <section className="mt-8 min-w-0">
+        <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-bold text-slate-900 sm:text-xl">Duyuru Arşivi</h2>
+          <Link
+            href="/"
+            className="text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark"
+          >
+            Ana sayfaya dön →
+          </Link>
         </div>
 
-        <div className="relative px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-16">
-          <h1 className="text-center text-3xl font-bold text-white sm:text-4xl">
-            Kentsel Dönüşüm
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-white/90 sm:text-base">
-            Antalya İnşaat Müteahhitleri Derneği olarak kentsel dönüşüm süreçleri hakkında üyelerimizi ve sektörü bilgilendirmek amacıyla hazırlanan kaynaklara aşağıdan ulaşabilirsiniz.
-          </p>
+        <div className="mt-6 grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {items.map((item) => (
+            <AnnouncementCard key={item.id} item={item} />
+          ))}
+        </div>
 
-          <div className="mt-8 w-full">
-            <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-6">
-              {CARDS.map((c, idx) => (
-                <div
-                  key={`${c.title}-${idx}`}
-                  className={c.size === 'lg' ? 'lg:col-span-3' : 'lg:col-span-2'}
-                >
-                  <KentselCard item={c} />
-                </div>
-              ))}
-            </div>
+        {loading && (
+          <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div>
+        )}
+        {!loading && items.length === 0 && (
+          <div className="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-sm text-slate-600">
+            Henüz duyuru eklenmemiş.
           </div>
-        </div>
+        )}
       </section>
     </PageLayoutWithFooter>
   );
 }
-
