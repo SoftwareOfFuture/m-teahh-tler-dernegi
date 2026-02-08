@@ -37,7 +37,7 @@ const navItems: NavItem[] = [
   { href: '/videolar', label: 'Video Arşivi' },
   { href: '/yayinlar', label: 'Yayınlar' },
   { href: '/kentsel-donusum', label: 'Kentsel Dönüşüm' },
-  { href: '/#partnerler', label: 'Partnerler' },
+  { href: '/uyelerimiz', label: 'Partnerler' },
   { href: '/iletisim', label: 'İletişim' },
 ];
 
@@ -101,8 +101,8 @@ export function Navbar() {
             <Image src="/logo.png" alt="" fill className="object-contain p-1" priority sizes="44px" />
           </div>
           <div className="hidden min-w-0 sm:block">
-            <span className="block truncate text-sm font-bold text-slate-900 sm:text-base">ANTMUTDER</span>
-            <span className="block truncate text-xs text-slate-500">Antalya Müteahhitler Derneği</span>
+            <span className="block truncate text-sm font-bold text-slate-900 sm:text-base">Antalya İnşaat Müteahhitleri Derneği</span>
+            <span className="block truncate text-xs text-slate-500">ANTMUTDER</span>
           </div>
         </Link>
 

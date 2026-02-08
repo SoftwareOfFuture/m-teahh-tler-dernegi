@@ -95,7 +95,7 @@ export function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="w-full px-4 py-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-white/70">
-            © ANTMUTDER – Antalya Müteahhitler Derneği. Tüm Hakları Saklıdır.
+            © Antalya İnşaat Müteahhitleri Derneği. Tüm Hakları Saklıdır.
           </p>
         </div>
       </div>

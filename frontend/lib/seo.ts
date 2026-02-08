@@ -3,11 +3,11 @@
  * Admin panelinden gelen değerler (getPagePublic('seo')) ile birleştirilebilir.
  */
 
-const SITE_NAME = 'ANTMUTDER – Antalya Müteahhitler Derneği';
+const SITE_NAME = 'Antalya İnşaat Müteahhitleri Derneği';
 const DEFAULT_DESCRIPTION =
-  'Antalya Müteahhitler Derneği (ANTMUTDER). Sektörel birliktelik, paylaşım ve dayanışma. Haberler, yayınlar, video arşivi ve iletişim.';
+  'Antalya İnşaat Müteahhitleri Derneği. Sektörel birliktelik, paylaşım ve dayanışma. Haberler, yayınlar, video arşivi ve iletişim.';
 const DEFAULT_KEYWORDS =
-  'ANTMUTDER, Antalya müteahhitler derneği, inşaat sektörü, müteahhit derneği, Antalya dernek, sektörel birliktelik';
+  'Antalya İnşaat Müteahhitleri Derneği, ANTMUTDER, inşaat sektörü, müteahhit derneği, Antalya dernek, sektörel birliktelik';
 const BASE_URL =
   typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SITE_URL
     ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
