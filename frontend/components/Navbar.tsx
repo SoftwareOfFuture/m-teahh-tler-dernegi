@@ -126,7 +126,7 @@ export function Navbar() {
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
             className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-full text-slate-700 transition-colors duration-200 hover:bg-amber-50/80 lg:hidden"
-            aria-expanded={mobileOpen ? 'true' : 'false'}
+            {...(mobileOpen ? { 'aria-expanded': 'true' as const } : { 'aria-expanded': 'false' as const })}
             aria-label="Menüyü aç/kapat"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -141,7 +141,7 @@ export function Navbar() {
         className={`overflow-hidden transition-all duration-300 ease-out ${
           mobileOpen ? 'mt-3 max-h-[min(80vh,600px)] opacity-100' : 'max-h-0 opacity-0'
         }`}
-        aria-hidden={!mobileOpen ? 'true' : 'false'}
+        {...(mobileOpen ? {} : { 'aria-hidden': 'true' as const })}
       >
         <div className="mx-auto max-w-6xl rounded-2xl border border-white/30 bg-white/60 px-4 py-4 shadow-lg backdrop-blur-[14px]">
           <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">
