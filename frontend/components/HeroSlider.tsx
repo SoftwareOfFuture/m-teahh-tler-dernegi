@@ -2,11 +2,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SliderItem } from '../lib/types';
 import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 
 type Props = { items: SliderItem[] };
+
+const SWIPE_THRESHOLD = 50;
 
 export function HeroSlider({ items }: Props) {
   const safeItems = useMemo(() => {
@@ -26,6 +28,7 @@ export function HeroSlider({ items }: Props) {
   const [idx, setIdx] = useState(0);
   const len = safeItems.length;
   const current = safeItems[idx % len];
+  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     if (len <= 1) return;
@@ -33,9 +36,26 @@ export function HeroSlider({ items }: Props) {
     return () => clearInterval(t);
   }, [len]);
 
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current == null || len <= 1) return;
+    const endX = e.changedTouches[0].clientX;
+    const delta = touchStartX.current - endX;
+    if (delta > SWIPE_THRESHOLD) setIdx((v) => (v + 1) % len);
+    else if (delta < -SWIPE_THRESHOLD) setIdx((v) => (v - 1 + len) % len);
+    touchStartX.current = null;
+  }, [len]);
+
   return (
     <section className="relative mt-2 w-full min-w-0 overflow-hidden rounded-2xl shadow-soft-lg sm:mt-4 md:mt-6">
-      <div className="relative h-[280px] min-w-0 sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[560px]">
+      <div
+        className="relative h-[280px] min-w-0 touch-pan-y sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[560px]"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         <Image
           src={normalizeImageSrc(current.imageUrl)}
           alt={current.title}
@@ -71,11 +91,12 @@ export function HeroSlider({ items }: Props) {
           </div>
         </div>
 
+        {/* Sağ/sol oklar: sadece sm ve üzeri (mobilde gizli, dokunmatik kaydırma kullanılır) */}
         <button
           type="button"
           onClick={() => setIdx((v) => (v - 1 + len) % len)}
-          className="absolute left-2 top-1/2 grid size-10 min-h-[44px] min-w-[44px] -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:left-4 sm:size-12"
-          aria-label="Önceki"
+          className="absolute left-2 top-1/2 hidden -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:left-4 sm:grid sm:size-12"
+          aria-label="Önceki slayt"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -84,8 +105,8 @@ export function HeroSlider({ items }: Props) {
         <button
           type="button"
           onClick={() => setIdx((v) => (v + 1) % len)}
-          className="absolute right-2 top-1/2 grid size-10 min-h-[44px] min-w-[44px] -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:right-4 sm:size-12"
-          aria-label="Sonraki"
+          className="absolute right-2 top-1/2 hidden -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:right-4 sm:grid sm:size-12"
+          aria-label="Sonraki slayt"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
