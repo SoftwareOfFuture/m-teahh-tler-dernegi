@@ -145,7 +145,6 @@ export default function ContactPage() {
 
         <div className="rounded-2xl bg-white p-6 shadow-soft">
           <h2 className="text-xl font-bold text-slate-800">Mesaj Gönder</h2>
-          <p className="mt-1 text-sm text-slate-600">Form demo amaçlıdır.</p>
 
           <form
             className="mt-6 space-y-4"
@@ -187,7 +186,7 @@ export default function ContactPage() {
               Gönder
             </button>
 
-            {sent ? <p className="text-center text-sm font-semibold text-emerald-700">Mesaj gönderildi (demo).</p> : null}
+            {sent ? <p className="text-center text-sm font-semibold text-emerald-700">Mesaj gönderildi.</p> : null}
           </form>
         </div>
       </section>

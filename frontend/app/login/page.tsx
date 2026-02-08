@@ -89,9 +89,7 @@ export default function LoginPage() {
           <h3 className="text-sm font-bold text-slate-900">Bilgi</h3>
           <ul className="mt-4 space-y-2 text-sm text-slate-700">
             <li>• Üyelik kaydı sonrası onay süreci vardır.</li>
-            <li>• Onay için platform yöneticisi paneli kullanılır.</li>
           </ul>
-          <p className="mt-4 text-xs text-slate-500">Not: Şifre yenileme akışı backend’de hazırdır.</p>
         </div>
       </section>
     </PageLayoutWithFooter>
