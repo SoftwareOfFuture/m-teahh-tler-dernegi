@@ -7,14 +7,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { getToken } from '../lib/api';
 
 /* =============================================================================
-   NAVBAR - Glassmorphism Pill Navbar (İstenen Tasarım)
+   NAVBAR - Kurumsal Beyaz Navbar
    =============================================================================
-   - Sticky, hero üzerinde floating
-   - Pill-shaped container (rounded-full)
-   - Glassmorphism: bg-white/60 + backdrop-blur
-   - Sol: Logo + konum | Orta: Nav linkleri | Sağ: Sosyal ikonlar + CTA
-   - Soft gold/amber hover accent
-   - Mobil: hamburger + slide-down menü
+   - Sticky, temiz beyaz arka plan
+   - Sol: Logo | Orta: Nav linkleri | Sağ: Sosyal + Üye Girişi
+   - Açık bordo hover vurgu
    ============================================================================= */
 
 export type NavItem = { href: string; label: string };
@@ -38,10 +35,11 @@ function FacebookIcon() {
 const navItems: NavItem[] = [
   { href: '/', label: 'Ana Sayfa' },
   { href: '/kurumsal', label: 'Kurumsal' },
-  { href: '/uyelerimiz', label: 'Üyelerimiz' },
-  { href: '/duyurular', label: 'Kentsel Dönüşüm' },
+  { href: '/#dijital-platformlar', label: 'Dijital Platformlar' },
   { href: '/haberler', label: 'Haberler' },
+  { href: '/videolar', label: 'Video Arşivi' },
   { href: '/yayinlar', label: 'Yayınlar' },
+  { href: '/#partnerler', label: 'Partnerler' },
   { href: '/iletisim', label: 'İletişim' },
 ];
 
@@ -55,13 +53,12 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full px-4 pt-4 safe-area-inset-top md:px-6 md:pt-6" role="banner">
-      {/* Pill container: glassmorphism - semi-transparent white + backdrop-blur */}
+    <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white shadow-soft safe-area-inset-top" role="banner">
       <nav
-        className="mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border border-white/30 bg-white/60 px-4 py-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.08)] backdrop-blur-[14px] md:px-6 md:py-3"
+        className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6 md:py-4"
         aria-label="Ana navigasyon"
       >
-        {/* SOL: Logo + konum metni */}
+        {/* SOL: Logo */}
         <Link
           href="/"
           className="flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-3 md:min-w-0"
@@ -71,23 +68,23 @@ export function Navbar() {
             <Image src="/logo.png" alt="" fill className="object-contain p-1" priority />
           </div>
           <div className="hidden sm:block">
-            <span className="block text-sm font-medium text-slate-800">Antalya İnşaat Müteahhitleri Derneği</span>
-            <span className="block text-xs text-slate-500">ANTMUTDER · Antalya</span>
+            <span className="block text-base font-bold text-slate-900">ANTMUTDER</span>
+            <span className="block text-xs text-slate-500">Antalya Müteahhitler Derneği</span>
           </div>
         </Link>
 
-        {/* ORTA: Nav linkleri — soft gold/amber hover */}
+        {/* ORTA: Nav linkleri — bordo hover */}
         <div className="hidden items-center gap-0.5 lg:flex">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
+            const isActive = pathname === item.href || pathname?.startsWith(item.href.replace(/#.*/, '') + '/');
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ease-out ${
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? 'bg-amber-100/80 text-amber-900'
-                    : 'text-slate-700 hover:bg-amber-50/80 hover:text-amber-800'
+                    ? 'bg-burgundy/10 text-burgundy'
+                    : 'text-slate-700 hover:bg-burgundy/5 hover:text-burgundy'
                 }`}
               >
                 {item.label}
@@ -96,20 +93,20 @@ export function Navbar() {
           })}
         </div>
 
-        {/* SAĞ: Sosyal ikonlar (Instagram, Facebook) + Üye Girişi + Hamburger */}
+        {/* SAĞ: Sosyal ikonlar + Üye Girişi + Hamburger */}
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden items-center gap-1 md:flex">
             <a
               href="#"
               aria-label="Instagram"
-              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-amber-50/80 hover:text-amber-700"
+              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
             >
               <InstagramIcon />
             </a>
             <a
               href="#"
               aria-label="Facebook"
-              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-amber-50/80 hover:text-amber-700"
+              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
             >
               <FacebookIcon />
             </a>
@@ -117,15 +114,15 @@ export function Navbar() {
 
           <Link
             href={hasToken ? '/profilim' : '/login'}
-            className="inline-flex min-h-[42px] min-w-[42px] shrink-0 items-center justify-center rounded-full bg-burgundy px-4 py-2.5 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-5 sm:text-sm"
+            className="inline-flex min-h-[42px] min-w-[42px] shrink-0 items-center justify-center rounded-lg bg-burgundy px-4 py-2.5 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-5 sm:text-sm"
           >
-            {hasToken ? 'Profilim' : 'ÜYE GİRİŞİ'}
+            {hasToken ? 'Profilim' : 'Üye Girişi'}
           </Link>
 
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-full text-slate-700 transition-colors duration-200 hover:bg-amber-50/80 lg:hidden"
+            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-lg text-slate-700 transition-colors duration-200 hover:bg-burgundy/5 lg:hidden"
             {...(mobileOpen ? { 'aria-expanded': 'true' as const } : { 'aria-expanded': 'false' as const })}
             aria-label="Menüyü aç/kapat"
           >
@@ -136,14 +133,14 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* MOBİL MENÜ: Slide-down, touch-friendly */}
+      {/* MOBİL MENÜ: Slide-down */}
       <div
-        className={`overflow-hidden transition-all duration-300 ease-out ${
-          mobileOpen ? 'mt-3 max-h-[min(80vh,600px)] opacity-100' : 'max-h-0 opacity-0'
+        className={`overflow-hidden border-t border-slate-100 transition-all duration-300 ease-out ${
+          mobileOpen ? 'max-h-[min(80vh,600px)] opacity-100' : 'max-h-0 opacity-0'
         }`}
         {...(mobileOpen ? {} : { 'aria-hidden': 'true' as const })}
       >
-        <div className="mx-auto max-w-6xl rounded-2xl border border-white/30 bg-white/60 px-4 py-4 shadow-lg backdrop-blur-[14px]">
+        <div className="mx-auto max-w-7xl bg-white px-4 py-4">
           <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -153,7 +150,7 @@ export function Navbar() {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={`min-h-[48px] rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-                    isActive ? 'bg-amber-100/80 text-amber-900' : 'text-slate-700 hover:bg-amber-50/80'
+                    isActive ? 'bg-burgundy/10 text-burgundy' : 'text-slate-700 hover:bg-burgundy/5'
                   }`}
                 >
                   {item.label}
@@ -165,7 +162,7 @@ export function Navbar() {
                 href="#"
                 aria-label="Instagram"
                 onClick={() => setMobileOpen(false)}
-                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-amber-50"
+                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
               >
                 <InstagramIcon />
               </a>
@@ -173,7 +170,7 @@ export function Navbar() {
                 href="#"
                 aria-label="Facebook"
                 onClick={() => setMobileOpen(false)}
-                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-amber-50"
+                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
               >
                 <FacebookIcon />
               </a>

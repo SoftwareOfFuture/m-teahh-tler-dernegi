@@ -11,8 +11,7 @@ module.exports = {
         burgundy: '#8B1538',
         'burgundy-dark': '#6B1030',
         'burgundy-light': '#A91D4A',
-        navy: '#0f172a',
-        teal: '#0d9488',
+        'burgundy-accent': '#A91D4A',
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'Inter', 'system-ui', 'sans-serif'],

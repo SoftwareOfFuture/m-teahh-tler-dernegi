@@ -9,10 +9,23 @@ import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 type Props = { items: SliderItem[] };
 
 export function HeroSlider({ items }: Props) {
-  const safeItems = useMemo(() => items ?? [], [items]);
+  const safeItems = useMemo(() => {
+    const arr = items ?? [];
+    if (arr.length === 0) {
+      return [{
+        id: 'default',
+        date: '',
+        title: 'ANTMUTDER DİJİTAL PLATFORMLAR',
+        description: 'Sektörel birliktelik, güncel içerikler ve güçlü iletişim için dijital platformlarımızla yanınızdayız.',
+        imageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=2400&q=70',
+        href: '#',
+      }];
+    }
+    return arr;
+  }, [items]);
   const [idx, setIdx] = useState(0);
   const len = safeItems.length;
-  const current = len ? safeItems[idx % len] : null;
+  const current = safeItems[idx % len];
 
   useEffect(() => {
     if (len <= 1) return;
@@ -20,10 +33,8 @@ export function HeroSlider({ items }: Props) {
     return () => clearInterval(t);
   }, [len]);
 
-  if (!current) return null;
-
   return (
-    <section className="relative mx-4 mt-4 overflow-hidden rounded-3xl shadow-soft-lg md:mx-6 md:mt-6">
+    <section className="relative mx-4 mt-4 overflow-hidden rounded-2xl shadow-soft-lg md:mx-6 md:mt-6">
       <div className="relative h-[320px] sm:h-[400px] md:h-[500px] lg:h-[560px]">
         <Image
           src={normalizeImageSrc(current.imageUrl)}
@@ -37,20 +48,24 @@ export function HeroSlider({ items }: Props) {
 
         <div className="absolute inset-0 flex items-end">
           <div className="w-full max-w-full p-6 sm:p-8 md:p-12">
-            <p className="text-xs font-semibold uppercase tracking-widest text-white/70">{current.date}</p>
-            <h1 className="mt-2 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
-              {current.title}
+            <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
+              ANTMUTDER DİJİTAL PLATFORMLAR
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/90 sm:text-base">
-              {current.description}
+              Sektörel birliktelik, güncel içerikler ve güçlü iletişim için dijital platformlarımızla yanınızdayız.
             </p>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/kurumsal"
-                className="inline-flex items-center gap-2 rounded-full bg-white/20 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-slate-900"
+                className="inline-flex items-center gap-2 rounded-lg bg-burgundy px-6 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98]"
               >
-                DETAYLI İNCELE
-                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                Hakkımızda
+              </Link>
+              <Link
+                href="/iletisim"
+                className="inline-flex items-center gap-2 rounded-lg border-2 border-white px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900"
+              >
+                İletişim
               </Link>
             </div>
           </div>
