@@ -23,22 +23,22 @@ export function HeroSlider({ items }: Props) {
   if (!current) return null;
 
   return (
-    <section className="relative w-full overflow-hidden border-b-4 border-navy">
-      <div className="relative h-[320px] sm:h-[400px] md:h-[500px] lg:h-[580px]">
+    <section className="relative mx-4 mt-4 overflow-hidden rounded-3xl shadow-soft-lg md:mx-6 md:mt-6">
+      <div className="relative h-[320px] sm:h-[400px] md:h-[500px] lg:h-[560px]">
         <Image
           src={normalizeImageSrc(current.imageUrl)}
           alt={current.title}
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover object-center transition-transform duration-700 ease-out"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/70 via-50% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/50 to-transparent" />
 
         <div className="absolute inset-0 flex items-end">
           <div className="w-full max-w-full p-6 sm:p-8 md:p-12">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-teal">{current.date}</p>
-            <h1 className="mt-2 font-heading text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/70">{current.date}</p>
+            <h1 className="mt-2 text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
               {current.title}
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/90 sm:text-base">
@@ -47,9 +47,10 @@ export function HeroSlider({ items }: Props) {
             <div className="mt-6">
               <Link
                 href="/kurumsal"
-                className="inline-block border-2 border-white bg-transparent px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-navy"
+                className="inline-flex items-center gap-2 rounded-full bg-white/20 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white hover:text-slate-900"
               >
                 DETAYLI İNCELE
+                <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </Link>
             </div>
           </div>
@@ -58,7 +59,7 @@ export function HeroSlider({ items }: Props) {
         <button
           type="button"
           onClick={() => setIdx((v) => (v - 1 + len) % len)}
-          className="absolute left-3 top-1/2 grid size-12 -translate-y-1/2 place-items-center border-2 border-white/50 bg-black/30 text-white transition-colors hover:bg-black/50 sm:left-6"
+          className="absolute left-4 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30"
           aria-label="Önceki"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -68,7 +69,7 @@ export function HeroSlider({ items }: Props) {
         <button
           type="button"
           onClick={() => setIdx((v) => (v + 1) % len)}
-          className="absolute right-3 top-1/2 grid size-12 -translate-y-1/2 place-items-center border-2 border-white/50 bg-black/30 text-white transition-colors hover:bg-black/50 sm:right-6"
+          className="absolute right-4 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30"
           aria-label="Sonraki"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -76,14 +77,14 @@ export function HeroSlider({ items }: Props) {
           </svg>
         </button>
 
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
           {safeItems.map((it, i) => (
             <button
               key={it.id}
               type="button"
               onClick={() => setIdx(i)}
-              className={`h-1 transition-all ${
-                i === idx ? 'w-8 bg-teal' : 'w-1 bg-white/60 hover:bg-white'
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === idx ? 'w-8 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
               }`}
               aria-label={`Slayt ${i + 1}`}
             />

@@ -18,7 +18,7 @@ export function LogoSlider({ logos }: Props) {
   const doubled = [...logos, ...logos];
 
   return (
-    <div className="w-full overflow-hidden border-2 border-navy bg-white p-4 sm:p-6">
+    <div className="w-full overflow-hidden rounded-2xl bg-white p-4 shadow-soft sm:p-6">
       <div className="relative h-[120px] w-full overflow-hidden sm:h-[140px] md:h-[160px]">
         <div className="absolute left-0 top-0 inline-flex h-full animate-marquee gap-4 will-change-transform sm:gap-6">
           {doubled.map((logo, idx) => {
@@ -26,19 +26,19 @@ export function LogoSlider({ logos }: Props) {
             const websiteUrl = normalizeWebsiteUrl(logo.websiteUrl);
 
             const CardContent = (
-              <div className="group grid h-full w-[140px] shrink-0 flex-col place-items-center border-2 border-navy bg-cream px-3 py-2 text-center transition-all hover:border-teal hover:bg-teal/5 sm:w-[170px] sm:px-4 sm:py-3">
+              <div className="group grid h-full w-[140px] shrink-0 flex-col place-items-center rounded-xl bg-slate-50 px-3 py-2 text-center transition-all duration-300 hover:bg-burgundy/5 hover:shadow-soft sm:w-[170px] sm:px-4 sm:py-3">
                 <div className="flex h-[80px] w-full items-center justify-center">
                   {logoSrc ? (
                     /* eslint-disable @next/next/no-img-element */
                     <img src={logoSrc} alt={logo.name} className="max-h-[80px] w-auto max-w-[150px] object-contain" loading="lazy" />
                   ) : (
-                    <div className="grid size-16 place-items-center border-2 border-navy/30 bg-cream-dark font-heading text-lg font-bold text-navy/60">
+                    <div className="grid size-16 place-items-center rounded-lg bg-slate-200 text-lg font-bold text-slate-400">
                       {logo.name.substring(0, 2).toUpperCase()}
                     </div>
                   )}
                 </div>
                 <div className="mt-1.5 w-full overflow-hidden sm:mt-2">
-                  <div className="truncate text-[11px] font-semibold text-navy sm:text-xs">{logo.name}</div>
+                  <div className="truncate text-[11px] font-semibold text-slate-700 sm:text-xs">{logo.name}</div>
                 </div>
               </div>
             );

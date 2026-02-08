@@ -55,15 +55,15 @@ function KentselCard({ item }: { item: KentselCardItem }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className={`group relative overflow-hidden border-2 border-white/30 bg-navy/90 p-6 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-teal hover:shadow-brutal ${
+      className={`group relative overflow-hidden rounded-2xl bg-slate-900/90 p-6 shadow-soft backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-xl ${
         item.size === 'lg' ? 'min-h-[170px] sm:min-h-[190px]' : 'min-h-[140px]'
       }`}
     >
-      <h3 className="font-heading text-center text-base font-bold text-white sm:text-lg">{item.title}</h3>
+      <h3 className="text-center text-base font-bold text-white sm:text-lg">{item.title}</h3>
       <p className="mt-3 text-center text-xs leading-relaxed text-white/80 sm:text-sm">{item.description}</p>
 
       <div className="mt-5 flex justify-center">
-        <span className="inline-flex items-center justify-center border-2 border-teal bg-teal px-5 py-2.5 text-xs font-bold text-white transition-colors group-hover:bg-teal-dark group-hover:border-teal-dark">
+        <span className="inline-flex items-center justify-center rounded-xl bg-burgundy px-5 py-2.5 text-xs font-bold text-white transition-colors group-hover:bg-burgundy-dark">
           {item.cta}
         </span>
       </div>
@@ -74,7 +74,7 @@ function KentselCard({ item }: { item: KentselCardItem }) {
 export default function KentselDonusumPage() {
   return (
     <PageLayoutWithFooter>
-      <section className="relative mt-8 overflow-hidden border-b-4 border-navy">
+      <section className="relative mt-8 overflow-hidden rounded-3xl shadow-soft-lg">
         <div className="absolute inset-0">
           <Image
             src={BG}
@@ -89,7 +89,7 @@ export default function KentselDonusumPage() {
         </div>
 
         <div className="relative px-5 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-16">
-          <h1 className="font-heading text-center text-3xl font-bold text-white sm:text-4xl">
+          <h1 className="text-center text-3xl font-bold text-white sm:text-4xl">
             Kentsel Dönüşüm
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-center text-sm leading-relaxed text-white/90 sm:text-base">

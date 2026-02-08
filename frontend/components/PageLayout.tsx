@@ -5,7 +5,7 @@ type Props = { children: React.ReactNode };
 
 export function PageLayout({ children }: Props) {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-cream">
+    <div className="min-h-screen w-full overflow-x-hidden bg-slate-50">
       <Header />
       <main className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 lg:px-10">{children}</main>
     </div>

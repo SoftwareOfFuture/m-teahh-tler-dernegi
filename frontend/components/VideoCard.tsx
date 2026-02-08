@@ -16,27 +16,28 @@ export function VideoCard({ item, onOpen }: Props) {
           alt={item.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
         />
-        <div className="absolute inset-0 grid place-items-center bg-black/30">
-          <div className="grid size-14 place-items-center border-2 border-white bg-black/40 text-white transition-transform group-hover:scale-110">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5">
+        <div className="absolute inset-0 grid place-items-center bg-black/20">
+          <div className="grid size-14 place-items-center rounded-full bg-white/30 text-white backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:bg-white/50">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
               <path d="M8 5v14l11-7z" />
             </svg>
           </div>
         </div>
       </div>
-      <div className="min-w-0 border-t-2 border-navy p-4">
-        <h3 className="font-heading line-clamp-2 text-sm font-semibold text-navy transition-colors group-hover:text-teal sm:text-base">
+      <div className="min-w-0 p-4">
+        <h3 className="line-clamp-2 text-sm font-semibold text-slate-800 transition-colors duration-200 group-hover:text-burgundy sm:text-base">
           {item.title}
         </h3>
-        <p className="mt-1 line-clamp-2 text-xs text-navy/70">{item.excerpt}</p>
-        <p className="mt-2 text-xs text-navy/50">{item.date}</p>
+        <p className="mt-1 line-clamp-2 text-xs text-slate-600">{item.excerpt}</p>
+        <p className="mt-2 text-xs text-slate-400">{item.date}</p>
       </div>
     </>
   );
 
-  const cardClass = 'group w-full overflow-hidden border-2 border-navy bg-white text-left transition-all hover:-translate-y-1 hover:shadow-brutal';
+  const cardClass =
+    'group w-full overflow-hidden rounded-2xl bg-white shadow-soft text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-soft-xl';
 
   if (clickable) {
     return <button type="button" onClick={() => onOpen!(item)} className={cardClass}>{content}</button>;

@@ -24,40 +24,40 @@ function themeClasses(accent: DigitalPlatformItem['accent']) {
   switch (accent) {
     case 'emerald':
       return {
-        overlay: 'bg-navy/80',
+        overlay: 'bg-slate-900/80',
         text: 'text-white',
         subText: 'text-white/90',
         pill: 'bg-white/20 text-white',
         button: 'border-white/70 text-white hover:bg-white/15',
-        buttonFill: 'bg-white/95 text-navy hover:bg-white',
+        buttonFill: 'bg-white/95 text-slate-900 hover:bg-white',
       };
     case 'sky':
       return {
-        overlay: 'bg-navy/80',
+        overlay: 'bg-slate-900/80',
         text: 'text-white',
         subText: 'text-white/90',
         pill: 'bg-white/20 text-white',
         button: 'border-white/70 text-white hover:bg-white/15',
-        buttonFill: 'bg-white/95 text-navy hover:bg-white',
+        buttonFill: 'bg-white/95 text-slate-900 hover:bg-white',
       };
     case 'slate':
       return {
-        overlay: 'bg-navy/80',
+        overlay: 'bg-slate-900/80',
         text: 'text-white',
         subText: 'text-white/90',
         pill: 'bg-white/20 text-white',
         button: 'border-white/70 text-white hover:bg-white/15',
-        buttonFill: 'bg-white/95 text-navy hover:bg-white',
+        buttonFill: 'bg-white/95 text-slate-900 hover:bg-white',
       };
     case 'burgundy':
     default:
       return {
-        overlay: 'bg-navy/80',
+        overlay: 'bg-slate-900/80',
         text: 'text-white',
         subText: 'text-white/90',
         pill: 'bg-white/20 text-white',
         button: 'border-white/70 text-white hover:bg-white/15',
-        buttonFill: 'bg-white/95 text-navy hover:bg-white',
+        buttonFill: 'bg-white/95 text-slate-900 hover:bg-white',
       };
   }
 }
@@ -108,7 +108,7 @@ function PlatformBlock({
           priority={false}
         />
         <div ref={overlayRef} className={`absolute inset-0 backdrop-blur-[2px] ${t.overlay}`} />
-        <div ref={gradientRef} className="absolute inset-0 bg-gradient-to-r from-navy/40 via-teal/20 to-transparent" />
+        <div ref={gradientRef} className="absolute inset-0 bg-gradient-to-r from-slate-900/40 via-burgundy/10 to-transparent" />
       </div>
 
       <div className="relative w-full min-w-0 px-3 py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
@@ -565,12 +565,12 @@ export function DigitalPlatformsSlider({
   return (
     <section className="w-full max-w-full overflow-hidden" aria-label="Dijital platformlar">
       <div className="mb-6 sm:mb-8">
-        <h2 className="font-heading text-center text-xl font-bold text-navy sm:text-2xl lg:text-3xl">
+        <h2 className="text-center text-xl font-bold text-slate-800 sm:text-2xl lg:text-3xl">
           {title}
         </h2>
       </div>
 
-      <div className="w-full overflow-hidden border-2 border-navy">
+      <div className="w-full overflow-hidden rounded-2xl shadow-soft-lg">
         {list.map((item, idx) => {
           const align: 'left' | 'right' = idx % 2 === 0 ? 'left' : 'right';
           const animDir: 'left' | 'right' = align === 'left' ? 'left' : 'right';

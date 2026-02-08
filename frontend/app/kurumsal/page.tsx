@@ -66,10 +66,10 @@ export default function CorporatePage() {
       <PageHero title={heroTitle} subtitle={heroSubtitle} />
 
       <section className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="border-2 border-navy bg-white p-6 lg:col-span-2">
-          <h2 className="font-heading text-xl font-bold text-navy">{aboutTitle}</h2>
-          <p className="mt-3 text-sm leading-relaxed text-navy/80">{aboutP1}</p>
-          <p className="mt-3 text-sm leading-relaxed text-navy/80">{aboutP2}</p>
+        <div className="rounded-2xl bg-white p-6 shadow-soft lg:col-span-2">
+          <h2 className="text-xl font-bold text-slate-800">{aboutTitle}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">{aboutP1}</p>
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">{aboutP2}</p>
 
           {aboutPdfUrl ? (
             <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -77,14 +77,14 @@ export default function CorporatePage() {
                 href={aboutPdfUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex border-2 border-navy bg-cream px-4 py-2 text-sm font-semibold text-navy transition-colors hover:bg-teal/10"
+                className="inline-flex rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-800 transition-colors hover:bg-burgundy/10"
               >
                 PDF İndir
               </a>
               <button
                 type="button"
                 onClick={() => setPreview({ url: aboutPdfUrl, title: aboutPdfTitle || 'Hakkımızda (PDF)' })}
-                className="inline-flex border-2 border-teal bg-teal px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-dark"
+                className="inline-flex rounded-xl bg-burgundy px-4 py-2 text-sm font-semibold text-white transition-all hover:bg-burgundy-dark active:scale-[0.98]"
               >
                 ÖNİZLEME
               </button>
@@ -92,9 +92,9 @@ export default function CorporatePage() {
           ) : null}
         </div>
 
-        <div className="border-2 border-navy bg-cream-dark p-6">
-          <h3 className="font-heading text-base font-bold text-navy">Hızlı Bilgiler</h3>
-          <ul className="mt-4 space-y-2 text-sm text-navy/80">
+        <div className="rounded-2xl bg-slate-100 p-6">
+          <h3 className="text-base font-bold text-slate-800">Hızlı Bilgiler</h3>
+          <ul className="mt-4 space-y-2 text-sm text-slate-600">
             {quickInfoLines.map((line, idx) => (
               <li key={idx}>• {line}</li>
             ))}
@@ -103,13 +103,13 @@ export default function CorporatePage() {
       </section>
 
       <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="border-2 border-navy bg-white p-6 transition-all hover:shadow-brutal">
-          <h3 className="font-heading text-base font-bold text-navy">Misyon</h3>
-          <p className="mt-2 text-sm leading-relaxed text-navy/80">{mission}</p>
+        <div className="rounded-2xl bg-white p-6 shadow-soft transition-all hover:-translate-y-1 hover:shadow-soft-lg">
+          <h3 className="text-base font-bold text-slate-800">Misyon</h3>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{mission}</p>
         </div>
-        <div className="border-2 border-navy bg-white p-6 transition-all hover:shadow-brutal">
-          <h3 className="font-heading text-base font-bold text-navy">Vizyon</h3>
-          <p className="mt-2 text-sm text-navy/80">{vision}</p>
+        <div className="rounded-2xl bg-white p-6 shadow-soft transition-all hover:-translate-y-1 hover:shadow-soft-lg">
+          <h3 className="text-base font-bold text-slate-800">Vizyon</h3>
+          <p className="mt-2 text-sm text-slate-600">{vision}</p>
         </div>
       </section>
 

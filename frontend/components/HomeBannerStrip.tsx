@@ -99,7 +99,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
 
   if (!list.length && loading) {
     return (
-      <div className="relative w-full overflow-hidden border-b-4 border-navy bg-cream-dark">
+      <div className="relative mx-4 mt-4 overflow-hidden rounded-2xl bg-slate-200 md:mx-6">
         <div className="h-[180px] animate-pulse sm:h-[280px] md:h-[350px] lg:h-[450px]" />
       </div>
     );
@@ -111,7 +111,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
   const layerBEffective = layerB ?? activeBanner;
 
   const content = (
-    <div ref={rootRef} className="group relative w-full overflow-hidden border-b-4 border-navy bg-navy">
+    <div ref={rootRef} className="group relative w-full overflow-hidden rounded-2xl bg-slate-900 shadow-soft-lg">
       <div className="relative h-[180px] w-full min-w-0 sm:h-[280px] md:h-[350px] lg:h-[450px]" style={{ aspectRatio: '1920 / 450' }}>
         {/* Layer A - animasyon dışında opacity activeLayer ile, animasyonda GSAP kontrolü */}
         <div

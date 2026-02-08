@@ -1,20 +1,13 @@
 import type { Metadata } from 'next';
-import { Cormorant_Garamond, Outfit } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import { ChunkErrorAutoReload } from '../components/ChunkErrorAutoReload';
 import './globals.css';
 
-const fontHeading = Cormorant_Garamond({
+const fontSans = Inter({
   subsets: ['latin', 'latin-ext'],
-  weight: ['500', '600', '700'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
-  variable: '--font-heading',
-});
-
-const fontBody = Outfit({
-  subsets: ['latin', 'latin-ext'],
-  weight: ['400', '500', '600'],
-  display: 'swap',
-  variable: '--font-body',
+  variable: '--font-sans',
 });
 
 export const metadata: Metadata = {
@@ -32,8 +25,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${fontHeading.variable} ${fontBody.variable}`}>
-      <body className="font-body antialiased">
+    <html lang="tr" className={fontSans.variable}>
+      <body className="font-sans antialiased">
         <ChunkErrorAutoReload />
         {children}
       </body>
