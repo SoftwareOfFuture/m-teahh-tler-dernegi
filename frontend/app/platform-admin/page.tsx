@@ -61,13 +61,22 @@ import {
   type Publication,
   type Video,
 } from '../../lib/api';
+import {
+  ANIMATION_OPTIONS,
+  getStoredSectionAnimations,
+  SECTION_IDS,
+  SECTION_LABELS,
+  setStoredSectionAnimations,
+  type SectionId,
+  type AnimationId,
+} from '../../lib/sectionAnimations';
 
 export default function PlatformAdminPage() {
   const [checking, setChecking] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [tab, setTab] = useState<
+  type TabId =
     | 'members'
     | 'slides'
     | 'banners'
@@ -79,7 +88,26 @@ export default function PlatformAdminPage() {
     | 'partners'
     | 'kurumsal'
     | 'iletisim'
-  >('members');
+    | 'animations'
+    | 'seo';
+  const [tab, setTab] = useState<TabId>('members');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const adminTabs: { id: TabId; label: string }[] = [
+    { id: 'members', label: 'Üyeler' },
+    { id: 'slides', label: 'Slider' },
+    { id: 'banners', label: 'Banner' },
+    { id: 'news', label: 'Haberler' },
+    { id: 'announcements', label: 'Duyurular' },
+    { id: 'videos', label: 'Videolar' },
+    { id: 'publications', label: 'Yayınlar' },
+    { id: 'events', label: 'Etkinlikler' },
+    { id: 'partners', label: 'Partnerler' },
+    { id: 'kurumsal', label: 'Kurumsal' },
+    { id: 'iletisim', label: 'İletişim' },
+    { id: 'animations', label: 'Animasyonlar' },
+    { id: 'seo', label: 'SEO' },
+  ];
 
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -141,28 +169,81 @@ export default function PlatformAdminPage() {
       />
 
       {checking ? (
-        <div className="mt-8 rounded-3xl bg-white p-6 shadow-card">Kontrol ediliyor…</div>
+        <div className="mt-8 rounded-2xl bg-white p-6 shadow-soft">Kontrol ediliyor…</div>
       ) : !authorized ? (
-        <div className="mt-8 rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
+        <div className="mt-8 rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700">
           Bu sayfaya erişim yok. Lütfen platform admin hesabıyla giriş yapın.
         </div>
       ) : (
-        <section className="mt-8 rounded-3xl bg-white p-6 shadow-card">
-          <div className="flex flex-wrap gap-2">
-            <TabButton active={tab === 'members'} onClick={() => setTab('members')}>Üyeler</TabButton>
-            <TabButton active={tab === 'slides'} onClick={() => setTab('slides')}>Slider</TabButton>
-            <TabButton active={tab === 'banners'} onClick={() => setTab('banners')}>Banner</TabButton>
-            <TabButton active={tab === 'news'} onClick={() => setTab('news')}>Haberler</TabButton>
-            <TabButton active={tab === 'announcements'} onClick={() => setTab('announcements')}>Duyurular</TabButton>
-            <TabButton active={tab === 'videos'} onClick={() => setTab('videos')}>Videolar</TabButton>
-            <TabButton active={tab === 'publications'} onClick={() => setTab('publications')}>Yayınlar</TabButton>
-            <TabButton active={tab === 'events'} onClick={() => setTab('events')}>Etkinlikler</TabButton>
-            <TabButton active={tab === 'partners'} onClick={() => setTab('partners')}>Partnerler</TabButton>
-            <TabButton active={tab === 'kurumsal'} onClick={() => setTab('kurumsal')}>Kurumsal</TabButton>
-            <TabButton active={tab === 'iletisim'} onClick={() => setTab('iletisim')}>İletişim</TabButton>
-          </div>
+        <div className="mt-6 flex w-full min-w-0 flex-col gap-4 lg:mt-8 lg:flex-row lg:gap-6">
+          {/* Sol panel: mobilde yatay sekme, lg+ daraltılabilir sidebar */}
+          <aside
+            className={`flex shrink-0 flex-col border border-slate-200 bg-white shadow-soft transition-[width] duration-300 ease-out rounded-2xl overflow-hidden ${
+              sidebarCollapsed ? 'lg:w-14' : 'lg:w-56'
+            } w-full lg:w-auto`}
+          >
+            <div className={`flex items-center border-b border-slate-100 p-2 ${sidebarCollapsed ? 'lg:justify-center' : 'justify-between lg:justify-between'}`}>
+              {/* Mobil: yatay kaydırılabilir sekmeler */}
+              <nav className="flex flex-1 overflow-x-auto py-2 lg:hidden" aria-label="Admin menüsü (mobil)">
+                <div className="flex min-w-0 gap-1 px-1">
+                  {adminTabs.map(({ id, label }) => (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setTab(id)}
+                      className={`flex shrink-0 items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${
+                        tab === id ? 'bg-burgundy text-white' : 'text-slate-700 hover:bg-slate-100'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </nav>
+              {!sidebarCollapsed && <span className="hidden px-2 text-xs font-bold uppercase text-slate-500 lg:inline">Kontrol Menüsü</span>}
+              <button
+                type="button"
+                onClick={() => setSidebarCollapsed((c) => !c)}
+                className="hidden size-9 shrink-0 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-burgundy/10 hover:text-burgundy lg:flex"
+                aria-label={sidebarCollapsed ? 'Menüyü genişlet' : 'Menüyü daralt'}
+                title={sidebarCollapsed ? 'Menüyü genişlet' : 'Menüyü daralt'}
+              >
+                {sidebarCollapsed ? (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                ) : (
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            <nav className="hidden flex-col gap-0.5 p-2 lg:flex lg:flex-col" aria-label="Admin menüsü (masaüstü)">
+              {adminTabs.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setTab(id)}
+                  className={`flex min-h-[44px] w-full items-center gap-2 rounded-lg px-2 py-2.5 text-left text-sm font-medium transition-colors ${
+                    tab === id
+                      ? 'bg-burgundy text-white'
+                      : 'text-slate-700 hover:bg-slate-100'
+                  }`}
+                  title={sidebarCollapsed ? label : undefined}
+                >
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded bg-black/10 text-xs font-bold">
+                    {label.charAt(0)}
+                  </span>
+                  {!sidebarCollapsed && <span className="truncate">{label}</span>}
+                </button>
+              ))}
+            </nav>
+          </aside>
 
-          <div className="mt-6">
+          {/* İçerik alanı */}
+          <section className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
+            <div>
             {tab === 'members' ? (
               <MembersPanel
                 token={token}
@@ -191,11 +272,16 @@ export default function PlatformAdminPage() {
               <PartnersPanel token={token} />
             ) : tab === 'iletisim' ? (
               <IletisimPanel token={token} />
+            ) : tab === 'animations' ? (
+              <AnimationsPanel />
+            ) : tab === 'seo' ? (
+              <SeoPanel token={token} />
             ) : (
               <KurumsalPanel token={token} />
             )}
-          </div>
-        </section>
+            </div>
+          </section>
+        </div>
       )}
     </PageLayoutWithFooter>
   );
@@ -401,6 +487,196 @@ function IletisimPanel({ token }: { token: string | null }) {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function AnimationsPanel() {
+  const [animations, setAnimations] = useState(() => getStoredSectionAnimations());
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
+
+  const handleChange = (sectionId: SectionId, value: AnimationId) => {
+    const next = { ...animations, [sectionId]: value };
+    setAnimations(next);
+    setStoredSectionAnimations(next);
+    setSavedMsg('Kaydedildi. Ana sayfayı yenileyerek görebilirsiniz.');
+    setTimeout(() => setSavedMsg(null), 3000);
+  };
+
+  const handleReset = () => {
+    setAnimations({});
+    setStoredSectionAnimations({});
+    setSavedMsg('Varsayılana döndürüldü.');
+    setTimeout(() => setSavedMsg(null), 3000);
+  };
+
+  return (
+    <div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">Sayfa Animasyonları</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Ana sayfadaki her bölüm için giriş animasyonu seçin. Değişiklikler anında kaydedilir; ana sayfayı yenileyerek görebilirsiniz.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={handleReset}
+          className="shrink-0 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+        >
+          Varsayılana Döndür
+        </button>
+      </div>
+
+      {savedMsg ? (
+        <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          {savedMsg}
+        </div>
+      ) : null}
+
+      <div className="mt-6 space-y-4">
+        {SECTION_IDS.map((sectionId) => (
+          <div
+            key={sectionId}
+            className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50/50 p-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <span className="font-medium text-slate-800">{SECTION_LABELS[sectionId]}</span>
+              <span className="ml-2 text-xs text-slate-500">({sectionId})</span>
+            </div>
+            <select
+              value={animations[sectionId] ?? 'none'}
+              onChange={(e) => handleChange(sectionId, e.target.value as AnimationId)}
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 sm:w-48"
+              aria-label={`${SECTION_LABELS[sectionId]} animasyonu`}
+            >
+              {ANIMATION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-6 text-xs text-slate-500">
+        Animasyonlar tarayıcıda (localStorage) saklanır. Farklı cihazlarda aynı ayarlar için her cihazda tekrar seçmeniz gerekir.
+      </p>
+    </div>
+  );
+}
+
+function SeoPanel({ token }: { token: string | null }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [form, setForm] = useState<Partial<PageContent>>({
+    heroTitle: 'ANTMUTDER – Antalya Müteahhitler Derneği',
+    heroSubtitle:
+      'Antalya Müteahhitler Derneği (ANTMUTDER). Sektörel birliktelik, paylaşım ve dayanışma. Haberler, yayınlar, video arşivi ve iletişim.',
+    quickInfo: 'ANTMUTDER, Antalya müteahhitler derneği, inşaat sektörü, müteahhit derneği, Antalya dernek, sektörel birliktelik',
+  });
+
+  const load = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getPageAdmin(token, 'seo');
+      if (res) setForm(res);
+    } catch (e: any) {
+      setError(e?.message ?? 'SEO ayarları yüklenemedi.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return (
+    <div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">SEO Ayarları</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Site genelinde kullanılan varsayılan meta başlık, açıklama ve anahtar kelimeler. Kurumsal / İletişim sayfaları kendi içeriklerinden türetilir; diğer sayfalar bu varsayılanları kullanır.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={load}
+            disabled={!token || loading}
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 disabled:opacity-50"
+          >
+            Yenile
+          </button>
+          <button
+            type="button"
+            disabled={!token || loading}
+            onClick={async () => {
+              if (!token) return;
+              setLoading(true);
+              setError(null);
+              setSavedMsg(null);
+              try {
+                await upsertPageAdmin(token, 'seo', {
+                  heroTitle: (form.heroTitle ?? '').toString().trim() || null,
+                  heroSubtitle: (form.heroSubtitle ?? '').toString().trim() || null,
+                  quickInfo: (form.quickInfo ?? '').toString().trim() || null,
+                  isPublished: true,
+                });
+                setSavedMsg('Kaydedildi. Bir sonraki build veya yenilemede meta bilgiler güncellenir.');
+              } catch (e: any) {
+                setError(e?.message ?? 'Kaydetme başarısız.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            className="rounded-lg bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+
+      {error ? <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+      {savedMsg ? <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{savedMsg}</div> : null}
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Field label="Site / Varsayılan meta başlık">
+          <TextInput
+            value={String(form.heroTitle ?? '')}
+            onChange={(e) => setForm((s) => ({ ...s, heroTitle: e.target.value }))}
+            placeholder="ANTMUTDER – Antalya Müteahhitler Derneği"
+          />
+        </Field>
+        <Field label="Varsayılan meta açıklama (max ~160 karakter)">
+          <TextArea
+            rows={3}
+            value={String(form.heroSubtitle ?? '')}
+            onChange={(e) => setForm((s) => ({ ...s, heroSubtitle: e.target.value }))}
+            placeholder="Kısa site açıklaması..."
+          />
+        </Field>
+        <div className="md:col-span-2">
+          <Field label="Meta anahtar kelimeler (virgülle ayırın)">
+            <TextArea
+              rows={2}
+              value={String(form.quickInfo ?? '')}
+              onChange={(e) => setForm((s) => ({ ...s, quickInfo: e.target.value }))}
+              placeholder="ANTMUTDER, Antalya dernek, inşaat sektörü, ..."
+            />
+          </Field>
+        </div>
+      </div>
+
+      <p className="mt-6 text-xs text-slate-500">
+        Bu ayarlar &quot;seo&quot; sayfası olarak kaydedilir. Kurumsal ve İletişim sayfalarının meta bilgileri kendi sayfa içeriklerinden (hero başlık / alt başlık) türetilir. Sitemap ve robots.txt otomatik üretilir.
+      </p>
     </div>
   );
 }

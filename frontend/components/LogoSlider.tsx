@@ -18,15 +18,15 @@ export function LogoSlider({ logos }: Props) {
   const doubled = [...logos, ...logos];
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl bg-white p-4 shadow-soft sm:p-6">
-      <div className="relative h-[120px] w-full overflow-hidden sm:h-[140px] md:h-[160px]">
+    <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-soft sm:p-6">
+      <div className="relative h-[100px] w-full overflow-hidden sm:h-[120px] md:h-[140px] lg:h-[160px]">
         <div className="absolute left-0 top-0 inline-flex h-full animate-marquee gap-4 will-change-transform sm:gap-6">
           {doubled.map((logo, idx) => {
             const logoSrc = normalizeImageSrc(logo.logoUrl);
             const websiteUrl = normalizeWebsiteUrl(logo.websiteUrl);
 
             const CardContent = (
-              <div className="group grid h-full w-[140px] shrink-0 flex-col place-items-center rounded-xl bg-slate-50 px-3 py-2 text-center transition-all duration-300 hover:bg-burgundy/5 hover:shadow-soft sm:w-[170px] sm:px-4 sm:py-3">
+              <div className="group grid h-full w-[120px] shrink-0 flex-col place-items-center rounded-xl bg-slate-50 px-2 py-2 text-center transition-all duration-300 hover:bg-burgundy/5 hover:shadow-soft sm:w-[140px] sm:px-3 md:w-[170px] md:px-4 md:py-3">
                 <div className="flex h-[80px] w-full items-center justify-center">
                   {logoSrc ? (
                     /* eslint-disable @next/next/no-img-element */

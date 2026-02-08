@@ -3,15 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getToken } from '../lib/api';
 
 /* =============================================================================
    NAVBAR - Kurumsal Beyaz Navbar
-   =============================================================================
-   - Sticky, temiz beyaz arka plan
-   - Sol: Logo | Orta: Nav linkleri | Sağ: Sosyal + Üye Girişi
-   - Açık bordo hover vurgu
+   - Kaydırırken aşağı gidince gizlenir, yukarı veya durunca geri gelir
    ============================================================================= */
 
 export type NavItem = { href: string; label: string };
@@ -43,33 +40,68 @@ const navItems: NavItem[] = [
   { href: '/iletisim', label: 'İletişim' },
 ];
 
+const SCROLL_SHOW_TOP = 40;
+
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
   const pathname = usePathname();
 
   useEffect(() => {
     setHasToken(!!getToken());
   }, []);
 
+  const onScroll = useCallback(() => {
+    if (ticking.current) return;
+    ticking.current = true;
+    requestAnimationFrame(() => {
+      const y = typeof window !== 'undefined' ? window.scrollY : 0;
+      const delta = y - lastScrollY.current;
+      if (y <= SCROLL_SHOW_TOP) {
+        setNavbarVisible(true);
+      } else if (delta > 8) {
+        setNavbarVisible(false);
+      } else if (delta < -8) {
+        setNavbarVisible(true);
+      }
+      lastScrollY.current = y;
+      ticking.current = false;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    lastScrollY.current = window.scrollY;
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [onScroll]);
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white shadow-soft safe-area-inset-top" role="banner">
+    <header
+      className={`sticky top-0 z-50 w-full border-b border-slate-100 bg-white shadow-soft transition-transform duration-300 ease-out safe-area-inset-top ${
+        navbarVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+      role="banner"
+    >
       <nav
-        className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 md:py-4 lg:px-8"
+        className="flex w-full min-w-0 items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-6 md:py-4 lg:px-8"
         aria-label="Ana navigasyon"
       >
         {/* SOL: Logo */}
         <Link
           href="/"
-          className="flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-3 md:min-w-0"
+          className="flex min-h-[44px] min-w-0 shrink-0 items-center gap-2 sm:gap-3"
           aria-label="Ana sayfa"
         >
-          <div className="relative size-10 shrink-0 overflow-hidden rounded-full md:size-11">
-            <Image src="/logo.png" alt="" fill className="object-contain p-1" priority />
+          <div className="relative size-9 shrink-0 overflow-hidden rounded-full sm:size-10 md:size-11">
+            <Image src="/logo.png" alt="" fill className="object-contain p-1" priority sizes="44px" />
           </div>
-          <div className="hidden sm:block">
-            <span className="block text-base font-bold text-slate-900">ANTMUTDER</span>
-            <span className="block text-xs text-slate-500">Antalya Müteahhitler Derneği</span>
+          <div className="hidden min-w-0 sm:block">
+            <span className="block truncate text-sm font-bold text-slate-900 sm:text-base">ANTMUTDER</span>
+            <span className="block truncate text-xs text-slate-500">Antalya Müteahhitler Derneği</span>
           </div>
         </Link>
 

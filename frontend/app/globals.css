@@ -41,6 +41,17 @@ iframe {
   height: auto;
 }
 
+/* Flex/Grid overflow: içerik küçülünce taşmayı önle */
+.min-w-0 {
+  min-width: 0;
+}
+
+/* Uzun kelimelerin taşmaması */
+.break-words {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
 /* Modern link underline animation */
 .link-modern {
   position: relative;
@@ -59,7 +70,7 @@ iframe {
   width: 100%;
 }
 
-/* Scroll-triggered fade-in-up for sections */
+/* Scroll-triggered section animations */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -71,8 +82,96 @@ iframe {
   }
 }
 
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.8s var(--ease-out-expo) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.7s var(--ease-out-expo) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.7s var(--ease-out-expo) forwards;
+}
+
+.animate-zoom-in {
+  animation: zoomIn 0.6s var(--ease-out-expo) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s var(--ease-out-expo) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s var(--ease-out-expo) forwards;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Stagger children for card grids */

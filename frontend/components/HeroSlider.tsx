@@ -34,8 +34,8 @@ export function HeroSlider({ items }: Props) {
   }, [len]);
 
   return (
-    <section className="relative mt-4 w-full overflow-hidden rounded-2xl shadow-soft-lg md:mt-6">
-      <div className="relative h-[320px] sm:h-[400px] md:h-[500px] lg:h-[560px]">
+    <section className="relative mt-2 w-full min-w-0 overflow-hidden rounded-2xl shadow-soft-lg sm:mt-4 md:mt-6">
+      <div className="relative h-[280px] min-w-0 sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[560px]">
         <Image
           src={normalizeImageSrc(current.imageUrl)}
           alt={current.title}
@@ -47,23 +47,23 @@ export function HeroSlider({ items }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/50 to-transparent" />
 
         <div className="absolute inset-0 flex items-end">
-          <div className="w-full max-w-full p-6 sm:p-8 md:p-12">
-            <h1 className="text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
+          <div className="w-full max-w-full min-w-0 p-4 sm:p-6 md:p-8 lg:p-12">
+            <h1 className="text-xl font-bold leading-tight text-white sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl break-words">
               ANTMUTDER DİJİTAL PLATFORMLAR
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/90 sm:text-base">
+            <p className="mt-2 max-w-2xl min-w-0 text-xs leading-relaxed text-white/90 sm:mt-3 sm:text-sm md:text-base break-words">
               Sektörel birliktelik, güncel içerikler ve güçlü iletişim için dijital platformlarımızla yanınızdayız.
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
               <Link
                 href="/kurumsal"
-                className="inline-flex items-center gap-2 rounded-lg bg-burgundy px-6 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98]"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
               >
                 Hakkımızda
               </Link>
               <Link
                 href="/iletisim"
-                className="inline-flex items-center gap-2 rounded-lg border-2 border-white px-6 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900"
+                className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border-2 border-white px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900 sm:px-6"
               >
                 İletişim
               </Link>
@@ -74,7 +74,7 @@ export function HeroSlider({ items }: Props) {
         <button
           type="button"
           onClick={() => setIdx((v) => (v - 1 + len) % len)}
-          className="absolute left-4 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30"
+          className="absolute left-2 top-1/2 grid size-10 min-h-[44px] min-w-[44px] -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:left-4 sm:size-12"
           aria-label="Önceki"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -84,7 +84,7 @@ export function HeroSlider({ items }: Props) {
         <button
           type="button"
           onClick={() => setIdx((v) => (v + 1) % len)}
-          className="absolute right-4 top-1/2 grid size-12 -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30"
+          className="absolute right-2 top-1/2 grid size-10 min-h-[44px] min-w-[44px] -translate-y-1/2 place-items-center rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:bg-white/30 sm:right-4 sm:size-12"
           aria-label="Sonraki"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

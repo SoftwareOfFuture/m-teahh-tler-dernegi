@@ -34,9 +34,9 @@ function YouTubeIcon() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto w-full overflow-hidden bg-burgundy-dark safe-area-inset-bottom" role="contentinfo">
-      <div className="w-full px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
+    <footer className="mt-auto w-full min-w-0 overflow-hidden bg-burgundy-dark safe-area-inset-bottom" role="contentinfo">
+      <div className="w-full min-w-0 px-4 py-10 sm:px-6 sm:py-14 md:py-16 lg:px-8 lg:py-20">
+        <div className="grid grid-cols-1 gap-8 min-w-0 sm:gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           {/* Hakkımızda */}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">Hakkımızda</h3>
@@ -48,24 +48,24 @@ export function SiteFooter() {
           {/* Hızlı Erişim */}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">Hızlı Erişim</h3>
-            <ul className="mt-4 space-y-2 text-sm text-white/80">
-              <li><Link href="/" className="transition-colors hover:text-white">Ana Sayfa</Link></li>
-              <li><Link href="/kurumsal" className="transition-colors hover:text-white">Kurumsal</Link></li>
-              <li><Link href="/haberler" className="transition-colors hover:text-white">Haberler</Link></li>
-              <li><Link href="/videolar" className="transition-colors hover:text-white">Video Arşivi</Link></li>
-              <li><Link href="/yayinlar" className="transition-colors hover:text-white">Yayınlar</Link></li>
-              <li><Link href="/iletisim" className="transition-colors hover:text-white">İletişim</Link></li>
+            <ul className="mt-4 space-y-0 text-sm text-white/80 sm:space-y-2">
+              <li><Link href="/" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Ana Sayfa</Link></li>
+              <li><Link href="/kurumsal" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Kurumsal</Link></li>
+              <li><Link href="/haberler" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Haberler</Link></li>
+              <li><Link href="/videolar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Video Arşivi</Link></li>
+              <li><Link href="/yayinlar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Yayınlar</Link></li>
+              <li><Link href="/iletisim" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">İletişim</Link></li>
             </ul>
           </div>
 
           {/* Yasal */}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">Yasal</h3>
-            <ul className="mt-4 space-y-2 text-sm text-white/80">
-              <li><Link href="/kvkk" className="transition-colors hover:text-white">KVKK</Link></li>
-              <li><Link href="/kullanim-sartlari" className="transition-colors hover:text-white">Kullanım Şartları</Link></li>
-              <li><Link href="/uyelik-sartlari" className="transition-colors hover:text-white">Üyelik Şartları</Link></li>
-              <li><Link href="/sms-geri-bildirim" className="transition-colors hover:text-white">SMS Geri Bildirim</Link></li>
+            <ul className="mt-4 space-y-0 text-sm text-white/80 sm:space-y-2">
+              <li><Link href="/kvkk" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">KVKK</Link></li>
+              <li><Link href="/kullanim-sartlari" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Kullanım Şartları</Link></li>
+              <li><Link href="/uyelik-sartlari" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Üyelik Şartları</Link></li>
+              <li><Link href="/sms-geri-bildirim" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">SMS Geri Bildirim</Link></li>
             </ul>
           </div>
 
