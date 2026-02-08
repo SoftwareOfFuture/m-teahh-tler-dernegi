@@ -1,8 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
+
+const HERO_BG =
+  'https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=2400&q=80';
 
 type KentselCardItem = {
   title: string;
@@ -74,10 +77,35 @@ function KentselCard({ item }: { item: KentselCardItem }) {
 export default function KentselDonusumPage() {
   return (
     <PageLayoutWithFooter>
-      <PageHero
-        title="Kentsel Dönüşüm"
-        subtitle="Antalya İnşaat Müteahhitleri Derneği olarak kentsel dönüşüm süreçleri hakkında üyelerimizi ve sektörü bilgilendirmek amacıyla hazırlanan kaynaklara aşağıdan ulaşabilirsiniz."
-      />
+      <section className="relative min-w-0 overflow-hidden rounded-2xl shadow-soft-lg">
+        <div className="relative h-[200px] w-full sm:h-[260px] md:h-[320px] lg:h-[380px]">
+          <Image
+            src={HERO_BG}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-md"
+            aria-hidden
+          />
+        </div>
+        <div className="absolute inset-0 flex flex-col justify-end">
+          <div className="relative min-w-0 px-4 py-8 sm:px-6 sm:py-10 md:px-10 md:py-14 lg:px-14 lg:py-16">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/70">
+              Antalya İnşaat Müteahhitleri Derneği
+            </p>
+            <h1 className="mt-2 break-words text-2xl font-bold text-white sm:text-3xl md:text-4xl lg:text-5xl">
+              Kentsel Dönüşüm
+            </h1>
+            <p className="mt-3 max-w-2xl break-words text-sm leading-relaxed text-white/90 sm:text-base">
+              Antalya İnşaat Müteahhitleri Derneği olarak kentsel dönüşüm süreçleri hakkında üyelerimizi ve sektörü bilgilendirmek amacıyla hazırlanan kaynaklara aşağıdan ulaşabilirsiniz.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <section className="mt-8 min-w-0">
         <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">

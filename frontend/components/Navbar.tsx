@@ -32,7 +32,6 @@ function FacebookIcon() {
 const navItems: NavItem[] = [
   { href: '/', label: 'Ana Sayfa' },
   { href: '/kurumsal', label: 'Kurumsal' },
-  { href: '/#dijital-platformlar', label: 'Dijital Platformlar' },
   { href: '/haberler', label: 'Haberler' },
   { href: '/videolar', label: 'Video Arşivi' },
   { href: '/yayinlar', label: 'Yayınlar' },
