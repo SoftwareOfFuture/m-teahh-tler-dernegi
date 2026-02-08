@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import { ChunkErrorAutoReload } from '../components/ChunkErrorAutoReload';
 import './globals.css';
 
-const inter = Inter({
-  subsets: ['latin'],
+const fontSans = DM_Sans({
+  subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600', '700'],
   display: 'swap',
+  variable: '--font-sans',
 });
 
 export const metadata: Metadata = {
@@ -23,8 +25,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr">
-      <body className={inter.className}>
+    <html lang="tr" className={fontSans.variable}>
+      <body className="font-sans antialiased">
         <ChunkErrorAutoReload />
         {children}
       </body>

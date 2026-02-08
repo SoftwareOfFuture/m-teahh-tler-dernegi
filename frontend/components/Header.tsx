@@ -29,32 +29,32 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-black/5 bg-white/90 backdrop-blur safe-area-inset-top">
-      <div className="flex w-full items-center justify-between gap-2 px-3 py-2.5 sm:gap-3 sm:px-6 sm:py-3 lg:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/90 backdrop-blur-xl safe-area-inset-top transition-shadow duration-300 [box-shadow:0_1px_0_0_rgba(255,255,255,0.8)_inset]">
+      <div className="flex w-full items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6 sm:py-3.5 lg:px-12 lg:py-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="relative size-10 shrink-0 overflow-hidden rounded-xl bg-white shadow-card ring-1 ring-black/5">
+        <Link href="/" className="group flex items-center gap-3">
+          <div className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-white shadow-premium ring-1 ring-slate-100/80 transition-all duration-300 group-hover:shadow-card-hover group-hover:ring-burgundy/20 sm:size-[52px] sm:rounded-[14px]">
             <Image
               src="/logo.png"
               alt="Antalya İnşaat Müteahhitleri Derneği"
               fill
-              className="object-contain p-1"
+              className="object-contain p-1.5 transition-transform duration-300 group-hover:scale-105"
               priority
             />
           </div>
           <div className="hidden leading-tight sm:block">
-            <div className="text-sm font-semibold text-slate-900">Antalya İnşaat Müteahhitleri Derneği</div>
-            <div className="text-xs text-slate-500">ANTMUTDER</div>
+            <div className="text-sm font-semibold tracking-tight text-slate-900">Antalya İnşaat Müteahhitleri Derneği</div>
+            <div className="text-xs font-semibold tracking-wider text-burgundy/90">ANTMUTDER</div>
           </div>
         </Link>
 
         {/* Desktop Menu */}
-        <nav className="hidden items-center gap-4 lg:flex">
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className="text-sm font-medium text-slate-700 transition-colors hover:text-burgundy"
+              className="link-underline rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors duration-250 hover:text-burgundy"
             >
               {item.label}
             </Link>
@@ -62,8 +62,8 @@ export function Header() {
         </nav>
 
         {/* Right side controls */}
-        <div className="flex items-center gap-2">
-          <div className="hidden shrink-0 items-center gap-1 xl:flex">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden shrink-0 items-center gap-2 xl:flex">
             <IconButton label="LinkedIn">
               <LinkedInIcon />
             </IconButton>
@@ -77,18 +77,18 @@ export function Header() {
 
           <Link
             href={hasToken ? '/profilim' : '/login'}
-            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-burgundy px-3 py-2 text-xs font-semibold text-white shadow-card transition-all active:scale-[0.98] hover:bg-burgundy-dark sm:px-4 sm:text-sm lg:hover:-translate-y-0.5 lg:hover:shadow-card-hover"
+            className="flex min-h-[42px] min-w-[42px] items-center justify-center rounded-xl bg-burgundy px-5 py-2.5 text-xs font-semibold text-white shadow-premium transition-all duration-300 active:scale-[0.98] hover:bg-burgundy-dark hover:shadow-glow-burgundy sm:px-6 sm:text-sm"
           >
             {hasToken ? 'Profilim' : 'ÜYE GİRİŞİ'}
           </Link>
 
           <button
             type="button"
-            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-xl border border-black/10 bg-white text-slate-800 transition-colors active:scale-95 hover:bg-soft-gray lg:hidden"
+            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 transition-all duration-300 active:scale-95 hover:border-burgundy/30 hover:bg-burgundy/5 hover:text-burgundy lg:hidden"
             aria-label="Menü"
             onClick={() => setOpen((v) => !v)}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="transition-transform duration-300">
               <path
                 d={open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                 stroke="currentColor"
@@ -103,14 +103,15 @@ export function Header() {
 
       {/* Mobile menu */}
       {open && (
-        <div className="w-full border-t border-black/5 bg-white lg:hidden">
-          <div className="w-full px-3 py-2 sm:px-6 sm:py-3 lg:px-8">
+        <div className="w-full animate-fade-in-down border-t border-slate-100 bg-white/98 backdrop-blur-sm lg:hidden">
+          <div className="w-full px-3 py-3 sm:px-6 sm:py-4">
             <nav className="flex flex-col gap-0.5">
-              {navItems.map((item) => (
+              {navItems.map((item, i) => (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="min-h-[44px] rounded-xl px-3 py-3 text-sm font-medium text-slate-700 active:bg-soft-gray hover:bg-soft-gray hover:text-burgundy"
+                  className="min-h-[48px] rounded-xl px-4 py-3 text-sm font-medium text-slate-700 transition-colors active:bg-soft-gray hover:bg-burgundy-muted hover:text-burgundy"
+                  style={{ animationDelay: `${i * 30}ms` }}
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
@@ -129,7 +130,7 @@ function IconButton({ label, children }: { label: string; children: React.ReactN
     <a
       href="#"
       aria-label={label}
-      className="grid size-9 place-items-center rounded-full bg-soft-gray text-slate-600 transition-colors hover:bg-white hover:text-burgundy"
+      className="grid size-9 place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-500 transition-all duration-300 hover:border-burgundy/40 hover:bg-burgundy/8 hover:text-burgundy hover:scale-105"
     >
       {children}
     </a>

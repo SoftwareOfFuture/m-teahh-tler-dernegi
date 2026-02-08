@@ -102,8 +102,8 @@ export default function ContactPage() {
     <PageLayoutWithFooter>
       <PageHero title={heroTitle} subtitle={heroSubtitle} />
 
-      <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl bg-white p-6 shadow-card">
+      <section className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl">
           <h2 className="text-lg font-bold text-slate-900">İletişim Bilgileri</h2>
           <div className="mt-4 space-y-2 text-sm text-slate-600">
             <p>Adres: {contactAddress}</p>
@@ -143,7 +143,7 @@ export default function ContactPage() {
           )}
         </div>
 
-        <div className="rounded-3xl bg-white p-6 shadow-card">
+        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl">
           <h2 className="text-lg font-bold text-slate-900">Mesaj Gönder</h2>
           <p className="mt-1 text-sm text-slate-600">Form demo amaçlıdır.</p>
 
@@ -161,14 +161,14 @@ export default function ContactPage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
               placeholder="Ad Soyad"
               required
             />
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy"
+              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
               placeholder="E-posta"
               type="email"
               required
@@ -176,13 +176,13 @@ export default function ContactPage() {
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="min-h-[140px] w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy"
+              className="min-h-[140px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
               placeholder="Mesajınız…"
               required
             />
             <button
               type="submit"
-              className="w-full rounded-full bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-card transition-colors hover:bg-burgundy-dark"
+              className="w-full rounded-xl bg-burgundy px-5 py-3.5 text-sm font-semibold text-white shadow-premium transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow-burgundy active:scale-[0.99]"
             >
               Gönder
             </button>

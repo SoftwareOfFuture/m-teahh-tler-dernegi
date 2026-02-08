@@ -211,10 +211,10 @@ export default function HomePage() {
   }, [formatDot]);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-surface">
       <Header />
 
-      <main className="w-full max-w-full overflow-x-hidden px-4 pb-16 pt-6 sm:px-6 lg:px-8">
+      <main className="w-full max-w-full overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-12">
         {slidesLoading ? (
           <section className="relative w-full overflow-hidden rounded-2xl bg-soft-gray shadow-card sm:rounded-3xl">
             <div className="h-[280px] animate-pulse sm:h-[360px] md:h-[460px] lg:h-[520px]" />
@@ -226,40 +226,42 @@ export default function HomePage() {
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
         </div>
 
-        <section className="mt-6 w-full sm:mt-10">
-          <div className="grid w-full grid-cols-1 gap-6 sm:gap-8 lg:gap-10">
-            <div className="space-y-8 sm:space-y-12">
-              <DigitalPlatformsSlider title="ANTMUTDER DİJİTAL PLATFORMLAR" />
+        <section className="mt-8 w-full sm:mt-12">
+          <div className="grid w-full grid-cols-1 gap-8 sm:gap-10 lg:gap-12">
+            <div className="space-y-12 sm:space-y-16">
+              <div className="animate-fade-in-up">
+                <DigitalPlatformsSlider title="ANTMUTDER DİJİTAL PLATFORMLAR" />
+              </div>
 
-              <div>
-                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">
-                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Güncel Haberler</h2>
-                  <Link href="/haberler" className="shrink-0 text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
+              <div className="animate-fade-in-up [animation-delay:0.05s]">
+                <div className="mb-5 flex flex-wrap items-end justify-between gap-2 sm:mb-6">
+                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Güncel Haberler</h2>
+                  <Link href="/haberler" className="link-underline shrink-0 text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3 stagger-children">
                   {newsItems.slice(0, 6).map((item) => (
                     <NewsCard key={item.id} item={item} />
                   ))}
                 </div>
                 {!newsLoading && newsItems.length === 0 ? (
-                  <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                  <div className="mt-6 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
                     Henüz haber eklenmemiş.
                   </div>
                 ) : null}
               </div>
 
-              <div>
-                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">
-                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Video Arşiv</h2>
-                  <Link href="/videolar" className="shrink-0 text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
+              <div className="animate-fade-in-up [animation-delay:0.1s]">
+                <div className="mb-5 flex flex-wrap items-end justify-between gap-2 sm:mb-6">
+                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Video Arşiv</h2>
+                  <Link href="/videolar" className="link-underline shrink-0 text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {videoItems.slice(0, 3).map((item) => (
                     <VideoCard
                       key={item.id}
@@ -272,16 +274,16 @@ export default function HomePage() {
                   ))}
                 </div>
                 {!videosLoading && videoItems.length === 0 ? (
-                  <div className="mt-4 rounded-2xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600 sm:mt-6 sm:rounded-3xl">
+                  <div className="mt-4 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:mt-6 sm:rounded-3xl">
                     Henüz video eklenmemiş.
                   </div>
                 ) : null}
               </div>
 
-              <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-card sm:rounded-3xl sm:p-5">
-                <div className="mb-3 flex flex-wrap items-end justify-between gap-2 sm:mb-4">
-                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Yayınlar</h2>
-                  <Link href="/yayinlar" className="shrink-0 text-xs font-semibold text-burgundy hover:text-burgundy-dark sm:text-sm">
+              <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-5 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl sm:p-6">
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">
+                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Yayınlar</h2>
+                  <Link href="/yayinlar" className="link-underline shrink-0 text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
                     Tümünü Gör →
                   </Link>
                 </div>
@@ -291,34 +293,34 @@ export default function HomePage() {
                     <a
                       key={p.id}
                       href={p.fileUrl || '#'}
-                      className="rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-800 transition-colors hover:bg-white"
+                      className="group flex rounded-2xl border border-slate-200/80 bg-soft-gray px-4 py-3.5 text-sm text-slate-800 transition-all duration-300 hover:border-burgundy/20 hover:bg-white hover:shadow-card sm:rounded-3xl"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div className="truncate font-semibold">{p.title}</div>
                           <div className="mt-1 text-xs text-slate-500">{formatDot(p.publishDate)}</div>
                         </div>
-                        <span className="shrink-0 text-xs font-semibold text-burgundy">İndir →</span>
+                        <span className="shrink-0 text-xs font-semibold text-burgundy transition-transform group-hover:translate-x-0.5">İndir →</span>
                       </div>
                     </a>
                   ))}
 
                   {publications.length === 0 ? (
-                    <div className="rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+                    <div className="rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
                       Yayın bulunamadı.
                     </div>
                   ) : null}
                 </div>
               </div>
 
-              <div>
+              <div className="animate-fade-in-up [animation-delay:0.15s]">
                 <div className="mb-4 sm:mb-5">
-                  <h2 className="text-base font-bold text-slate-900 sm:text-lg">Üyelikler / Partnerler</h2>
+                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Üyelikler / Partnerler</h2>
                 </div>
 
                 <LogoSlider logos={partnerLogos} />
                 {!partnersLoading && partnerLogos.length === 0 ? (
-                  <div className="mt-4 rounded-2xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600 sm:rounded-3xl">
+                  <div className="mt-4 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
                     Henüz partner eklenmemiş.
                   </div>
                 ) : null}

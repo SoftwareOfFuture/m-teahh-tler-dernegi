@@ -564,19 +564,19 @@ export function DigitalPlatformsSlider({
 
   return (
     <section className="w-full max-w-full overflow-hidden" aria-label="Dijital platformlar">
-      <div className="mb-4 sm:mb-6">
-        <h2 className="text-center text-lg font-extrabold tracking-wide text-slate-900 sm:text-2xl lg:text-3xl">
+      <div className="mb-6 sm:mb-8">
+        <h2 className="text-center text-lg font-bold tracking-tight text-slate-900 sm:text-2xl lg:text-3xl">
           {title}
         </h2>
       </div>
 
-      <div className="w-full overflow-hidden rounded-2xl ring-1 ring-red-900/30 sm:rounded-3xl">
+      <div className="w-full overflow-hidden rounded-2xl shadow-premium ring-1 ring-slate-200/60 sm:rounded-3xl">
         {list.map((item, idx) => {
           const align: 'left' | 'right' = idx % 2 === 0 ? 'left' : 'right';
           const animDir: 'left' | 'right' = align === 'left' ? 'left' : 'right';
           return (
             <div key={item.id}>
-              {idx > 0 ? <div className="h-2 w-full bg-red-950" /> : null}
+              {idx > 0 ? <div className="h-px w-full bg-slate-700/50" /> : null}
               <PlatformBlock
                 item={item}
                 align={align}

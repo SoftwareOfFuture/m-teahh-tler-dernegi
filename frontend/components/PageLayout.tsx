@@ -7,9 +7,9 @@ type Props = {
 
 export function PageLayout({ children }: Props) {
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-surface">
       <Header />
-      <main className="w-full max-w-full overflow-x-hidden px-4 pb-16 pt-6 sm:px-6 lg:px-8">{children}</main>
+      <main className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-12">{children}</main>
     </div>
   );
 }

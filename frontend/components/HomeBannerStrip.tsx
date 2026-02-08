@@ -111,7 +111,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
   const layerBEffective = layerB ?? activeBanner;
 
   const content = (
-    <div ref={rootRef} className="group relative w-full overflow-hidden rounded-2xl bg-slate-900 shadow-card sm:rounded-3xl">
+    <div ref={rootRef} className="group relative w-full overflow-hidden rounded-2xl bg-slate-premium shadow-premium sm:rounded-3xl">
       <div className="relative h-[180px] w-full min-w-0 sm:h-[280px] md:h-[350px] lg:h-[450px]" style={{ aspectRatio: '1920 / 450' }}>
         {/* Layer A - animasyon dışında opacity activeLayer ile, animasyonda GSAP kontrolü */}
         <div

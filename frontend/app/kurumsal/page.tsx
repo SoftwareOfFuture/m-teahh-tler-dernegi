@@ -65,8 +65,8 @@ export default function CorporatePage() {
     <PageLayoutWithFooter>
       <PageHero title={heroTitle} subtitle={heroSubtitle} />
 
-      <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-3xl bg-white p-6 shadow-card lg:col-span-2">
+      <section className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl lg:col-span-2">
           <h2 className="text-lg font-bold text-slate-900">{aboutTitle}</h2>
           <p className="mt-3 text-sm leading-relaxed text-slate-600">{aboutP1}</p>
           <p className="mt-3 text-sm leading-relaxed text-slate-600">{aboutP2}</p>
@@ -84,7 +84,7 @@ export default function CorporatePage() {
               <button
                 type="button"
                 onClick={() => setPreview({ url: aboutPdfUrl, title: aboutPdfTitle || 'Hakkımızda (PDF)' })}
-                className="inline-flex rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-burgundy-dark"
+                className="inline-flex rounded-xl bg-burgundy px-4 py-2 text-sm font-semibold text-white shadow-premium transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow-burgundy active:scale-[0.98]"
               >
                 ÖNİZLEME
               </button>
@@ -92,7 +92,7 @@ export default function CorporatePage() {
           ) : null}
         </div>
 
-        <div className="rounded-3xl bg-soft-gray p-6">
+        <div className="rounded-2xl border border-slate-200/60 bg-soft-gray p-6 sm:rounded-3xl">
           <h3 className="text-sm font-bold text-slate-900">Hızlı Bilgiler</h3>
           <ul className="mt-4 space-y-2 text-sm text-slate-700">
             {quickInfoLines.map((line, idx) => (
@@ -102,12 +102,12 @@ export default function CorporatePage() {
         </div>
       </section>
 
-      <section className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="rounded-3xl bg-white p-6 shadow-card">
+      <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 transition-all duration-300 hover:shadow-card-hover sm:rounded-3xl">
           <h3 className="text-sm font-bold text-slate-900">Misyon</h3>
-          <p className="mt-2 text-sm text-slate-600">{mission}</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{mission}</p>
         </div>
-        <div className="rounded-3xl bg-white p-6 shadow-card">
+        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 transition-all duration-300 hover:shadow-card-hover sm:rounded-3xl">
           <h3 className="text-sm font-bold text-slate-900">Vizyon</h3>
           <p className="mt-2 text-sm text-slate-600">{vision}</p>
         </div>

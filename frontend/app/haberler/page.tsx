@@ -54,15 +54,15 @@ export default function NewsPage() {
     <PageLayoutWithFooter>
       <PageHero title="Haberler" subtitle="ANTMUTDER ve Antalya inşaat sektöründen güncel haberler." />
 
-      <section className="mt-8">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-lg font-bold text-slate-900">Güncel Haberler</h2>
-          <Link href="/" className="text-sm font-semibold text-burgundy hover:text-burgundy-dark">
+      <section className="mt-10">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Güncel Haberler</h2>
+          <Link href="/" className="link-underline text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
             Ana sayfaya dön →
           </Link>
         </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => (
             <NewsCard key={item.id} item={item} />
           ))}
@@ -70,7 +70,7 @@ export default function NewsPage() {
 
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
         {!loading && items.length === 0 ? (
-          <div className="mt-6 rounded-3xl border border-black/5 bg-soft-gray px-4 py-3 text-sm text-slate-600">
+          <div className="mt-6 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
             Henüz haber eklenmemiş.
           </div>
         ) : null}

@@ -55,7 +55,7 @@ function KentselCard({ item }: { item: KentselCardItem }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className={`group relative overflow-hidden rounded-2xl border border-white/15 bg-black/25 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.25)] backdrop-blur-sm transition-colors hover:bg-black/35 ${
+      className={`group relative overflow-hidden rounded-2xl border border-white/20 bg-black/30 p-6 shadow-premium-lg backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-burgundy/30 hover:shadow-glow-burgundy sm:rounded-3xl ${
         item.size === 'lg' ? 'min-h-[170px] sm:min-h-[190px]' : 'min-h-[140px]'
       }`}
     >
@@ -63,7 +63,7 @@ function KentselCard({ item }: { item: KentselCardItem }) {
       <p className="mt-3 text-center text-xs leading-relaxed text-white/75 sm:text-sm">{item.description}</p>
 
       <div className="mt-5 flex justify-center">
-        <span className="inline-flex items-center justify-center rounded-md bg-orange-600 px-5 py-2 text-xs font-extrabold text-white shadow transition-colors group-hover:bg-orange-700">
+        <span className="inline-flex items-center justify-center rounded-xl bg-burgundy px-5 py-2.5 text-xs font-bold text-white shadow-premium transition-all duration-300 group-hover:bg-burgundy-dark group-hover:shadow-glow-burgundy">
           {item.cta}
         </span>
       </div>

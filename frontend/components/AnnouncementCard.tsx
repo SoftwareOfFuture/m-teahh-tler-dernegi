@@ -9,9 +9,9 @@ export function AnnouncementCard({ item }: Props) {
   return (
     <Link
       href="#"
-      className="flex items-start gap-2.5 rounded-3xl bg-white p-3 shadow-card transition-shadow hover:shadow-card-hover sm:gap-3 sm:p-4"
+      className="group flex items-start gap-2.5 rounded-2xl bg-white p-3 shadow-card ring-1 ring-slate-100/60 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-card-hover hover:ring-burgundy/10 sm:gap-3 sm:rounded-3xl sm:p-4"
     >
-      <div className="grid size-9 shrink-0 place-items-center rounded-2xl bg-soft-gray text-slate-500 sm:size-10">
+      <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-burgundy-muted text-burgundy transition-colors duration-300 group-hover:bg-burgundy/10 sm:size-10">
         {/* Minimal “file” icon (list vibe) */}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path
