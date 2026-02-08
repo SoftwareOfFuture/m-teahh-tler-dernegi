@@ -211,13 +211,13 @@ export default function HomePage() {
   }, [formatDot]);
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-surface">
+    <div className="min-h-screen w-full overflow-x-hidden bg-cream">
       <Header />
 
-      <main className="w-full max-w-full overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 sm:pt-10 lg:px-12">
+      <main className="w-full overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 lg:px-10">
         {slidesLoading ? (
-          <section className="relative w-full overflow-hidden rounded-2xl bg-soft-gray shadow-card sm:rounded-3xl">
-            <div className="h-[280px] animate-pulse sm:h-[360px] md:h-[460px] lg:h-[520px]" />
+          <section className="relative w-full overflow-hidden border-b-4 border-navy bg-cream-dark">
+            <div className="h-[320px] animate-pulse sm:h-[400px] md:h-[500px]" />
           </section>
         ) : (
           <HeroSlider items={sliderItems} />
@@ -235,19 +235,19 @@ export default function HomePage() {
 
               <div className="animate-fade-in-up [animation-delay:0.05s]">
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-2 sm:mb-6">
-                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Güncel Haberler</h2>
-                  <Link href="/haberler" className="link-underline shrink-0 text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
+                  <h2 className="font-heading text-xl font-bold text-navy sm:text-2xl">Güncel Haberler</h2>
+                  <Link href="/haberler" className="link-editorial shrink-0 text-sm font-semibold text-teal hover:text-teal-dark">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3 stagger-children">
+                <div className="grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-3">
                   {newsItems.slice(0, 6).map((item) => (
                     <NewsCard key={item.id} item={item} />
                   ))}
                 </div>
                 {!newsLoading && newsItems.length === 0 ? (
-                  <div className="mt-6 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
+                  <div className="mt-6 border-2 border-navy bg-cream-dark px-5 py-4 text-sm text-navy/70">
                     Henüz haber eklenmemiş.
                   </div>
                 ) : null}
@@ -255,8 +255,8 @@ export default function HomePage() {
 
               <div className="animate-fade-in-up [animation-delay:0.1s]">
                 <div className="mb-5 flex flex-wrap items-end justify-between gap-2 sm:mb-6">
-                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Video Arşiv</h2>
-                  <Link href="/videolar" className="link-underline shrink-0 text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
+                  <h2 className="font-heading text-xl font-bold text-navy sm:text-2xl">Video Arşiv</h2>
+                  <Link href="/videolar" className="link-editorial shrink-0 text-sm font-semibold text-teal hover:text-teal-dark">
                     Tümünü Gör →
                   </Link>
                 </div>
@@ -274,39 +274,39 @@ export default function HomePage() {
                   ))}
                 </div>
                 {!videosLoading && videoItems.length === 0 ? (
-                  <div className="mt-4 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:mt-6 sm:rounded-3xl">
+                  <div className="mt-4 border-2 border-navy bg-cream-dark px-5 py-4 text-sm text-navy/70 sm:mt-6">
                     Henüz video eklenmemiş.
                   </div>
                 ) : null}
               </div>
 
-              <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-5 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl sm:p-6">
+              <div className="w-full min-w-0 overflow-hidden border-2 border-navy bg-white p-5 sm:p-6">
                 <div className="mb-4 flex flex-wrap items-end justify-between gap-2 sm:mb-5">
-                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Yayınlar</h2>
-                  <Link href="/yayinlar" className="link-underline shrink-0 text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
+                  <h2 className="font-heading text-xl font-bold text-navy sm:text-2xl">Yayınlar</h2>
+                  <Link href="/yayinlar" className="link-editorial shrink-0 text-sm font-semibold text-teal hover:text-teal-dark">
                     Tümünü Gör →
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-2 sm:gap-3 md:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {(publications.length ? publications : []).slice(0, 4).map((p) => (
                     <a
                       key={p.id}
                       href={p.fileUrl || '#'}
-                      className="group flex rounded-2xl border border-slate-200/80 bg-soft-gray px-4 py-3.5 text-sm text-slate-800 transition-all duration-300 hover:border-burgundy/20 hover:bg-white hover:shadow-card sm:rounded-3xl"
+                      className="group flex border-2 border-navy bg-cream px-4 py-3.5 text-sm text-navy transition-all hover:border-teal hover:bg-teal/5"
                     >
-                      <div className="flex items-center justify-between gap-3">
+                      <div className="flex w-full items-center justify-between gap-3">
                         <div className="min-w-0">
                           <div className="truncate font-semibold">{p.title}</div>
-                          <div className="mt-1 text-xs text-slate-500">{formatDot(p.publishDate)}</div>
+                          <div className="mt-1 text-xs text-navy/60">{formatDot(p.publishDate)}</div>
                         </div>
-                        <span className="shrink-0 text-xs font-semibold text-burgundy transition-transform group-hover:translate-x-0.5">İndir →</span>
+                        <span className="shrink-0 text-xs font-semibold text-teal">İndir →</span>
                       </div>
                     </a>
                   ))}
 
                   {publications.length === 0 ? (
-                    <div className="rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
+                    <div className="border-2 border-navy bg-cream-dark px-5 py-4 text-sm text-navy/70">
                       Yayın bulunamadı.
                     </div>
                   ) : null}
@@ -315,12 +315,12 @@ export default function HomePage() {
 
               <div className="animate-fade-in-up [animation-delay:0.15s]">
                 <div className="mb-4 sm:mb-5">
-                  <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Üyelikler / Partnerler</h2>
+                  <h2 className="font-heading text-xl font-bold text-navy sm:text-2xl">Üyelikler / Partnerler</h2>
                 </div>
 
                 <LogoSlider logos={partnerLogos} />
                 {!partnersLoading && partnerLogos.length === 0 ? (
-                  <div className="mt-4 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
+                  <div className="mt-4 border-2 border-navy bg-cream-dark px-5 py-4 text-sm text-navy/70">
                     Henüz partner eklenmemiş.
                   </div>
                 ) : null}

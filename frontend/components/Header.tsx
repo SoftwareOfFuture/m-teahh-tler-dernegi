@@ -29,66 +29,57 @@ export function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/60 bg-white/90 backdrop-blur-xl safe-area-inset-top transition-shadow duration-300 [box-shadow:0_1px_0_0_rgba(255,255,255,0.8)_inset]">
-      <div className="flex w-full items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6 sm:py-3.5 lg:px-12 lg:py-4">
-        {/* Logo */}
+    <header className="sticky top-0 z-50 w-full border-b-2 border-navy bg-navy safe-area-inset-top">
+      <div className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-10 lg:py-4">
         <Link href="/" className="group flex items-center gap-3">
-          <div className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-white shadow-premium ring-1 ring-slate-100/80 transition-all duration-300 group-hover:shadow-card-hover group-hover:ring-burgundy/20 sm:size-[52px] sm:rounded-[14px]">
+          <div className="relative size-12 shrink-0 overflow-hidden border-2 border-white/20 bg-navy-light">
             <Image
               src="/logo.png"
-              alt="Antalya İnşaat Müteahhitleri Derneği"
+              alt="ANTMUTDER"
               fill
-              className="object-contain p-1.5 transition-transform duration-300 group-hover:scale-105"
+              className="object-contain p-1.5"
               priority
             />
           </div>
-          <div className="hidden leading-tight sm:block">
-            <div className="text-sm font-semibold tracking-tight text-slate-900">Antalya İnşaat Müteahhitleri Derneği</div>
-            <div className="text-xs font-semibold tracking-wider text-burgundy/90">ANTMUTDER</div>
+          <div className="hidden sm:block">
+            <div className="font-heading text-base font-semibold tracking-tight text-white">Antalya İnşaat Müteahhitleri Derneği</div>
+            <div className="text-xs font-medium uppercase tracking-[0.2em] text-teal">ANTMUTDER</div>
           </div>
         </Link>
 
-        {/* Desktop Menu */}
-        <nav className="hidden items-center gap-0.5 lg:flex">
+        <nav className="hidden items-center gap-1 lg:flex">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className="link-underline rounded-lg px-4 py-2.5 text-sm font-medium text-slate-600 transition-colors duration-250 hover:text-burgundy"
+              className="border-b-2 border-transparent px-4 py-2 text-sm font-medium text-white/90 transition-colors hover:border-teal hover:text-white"
             >
               {item.label}
             </Link>
           ))}
         </nav>
 
-        {/* Right side controls */}
         <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden shrink-0 items-center gap-2 xl:flex">
-            <IconButton label="LinkedIn">
-              <LinkedInIcon />
-            </IconButton>
-            <IconButton label="X">
-              <XIcon />
-            </IconButton>
-            <IconButton label="Instagram">
-              <InstagramIcon />
-            </IconButton>
+          <div className="hidden items-center gap-2 xl:flex">
+            <SocialLink href="#" ariaLabel="LinkedIn"><LinkedInIcon /></SocialLink>
+            <SocialLink href="#" ariaLabel="X"><XIcon /></SocialLink>
+            <SocialLink href="#" ariaLabel="Instagram"><InstagramIcon /></SocialLink>
           </div>
 
           <Link
             href={hasToken ? '/profilim' : '/login'}
-            className="flex min-h-[42px] min-w-[42px] items-center justify-center rounded-xl bg-burgundy px-5 py-2.5 text-xs font-semibold text-white shadow-premium transition-all duration-300 active:scale-[0.98] hover:bg-burgundy-dark hover:shadow-glow-burgundy sm:px-6 sm:text-sm"
+            className="inline-flex min-h-[42px] min-w-[42px] items-center justify-center border-2 border-teal bg-teal px-5 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-teal-dark hover:border-teal-dark sm:px-6 sm:text-sm"
           >
             {hasToken ? 'Profilim' : 'ÜYE GİRİŞİ'}
           </Link>
 
           <button
             type="button"
-            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 transition-all duration-300 active:scale-95 hover:border-burgundy/30 hover:bg-burgundy/5 hover:text-burgundy lg:hidden"
+            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center border-2 border-white/30 text-white lg:hidden"
             aria-label="Menü"
             onClick={() => setOpen((v) => !v)}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="transition-transform duration-300">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path
                 d={open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                 stroke="currentColor"
@@ -101,37 +92,29 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {open && (
-        <div className="w-full animate-fade-in-down border-t border-slate-100 bg-white/98 backdrop-blur-sm lg:hidden">
-          <div className="w-full px-3 py-3 sm:px-6 sm:py-4">
-            <nav className="flex flex-col gap-0.5">
-              {navItems.map((item, i) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="min-h-[48px] rounded-xl px-4 py-3 text-sm font-medium text-slate-700 transition-colors active:bg-soft-gray hover:bg-burgundy-muted hover:text-burgundy"
-                  style={{ animationDelay: `${i * 30}ms` }}
-                  onClick={() => setOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
+        <div className="w-full border-t-2 border-white/10 bg-navy-light lg:hidden">
+          <nav className="flex flex-col">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="border-b border-white/10 px-5 py-4 text-sm font-medium text-white hover:bg-white/5"
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       )}
     </header>
   );
 }
 
-function IconButton({ label, children }: { label: string; children: React.ReactNode }) {
+function SocialLink({ href, ariaLabel, children }: { href: string; ariaLabel: string; children: React.ReactNode }) {
   return (
-    <a
-      href="#"
-      aria-label={label}
-      className="grid size-9 place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-500 transition-all duration-300 hover:border-burgundy/40 hover:bg-burgundy/8 hover:text-burgundy hover:scale-105"
-    >
+    <a href={href} aria-label={ariaLabel} className="grid size-9 place-items-center text-white/70 transition-colors hover:text-teal">
       {children}
     </a>
   );
@@ -160,4 +143,3 @@ function InstagramIcon() {
     </svg>
   );
 }
-

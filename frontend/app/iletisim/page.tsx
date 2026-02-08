@@ -103,16 +103,16 @@ export default function ContactPage() {
       <PageHero title={heroTitle} subtitle={heroSubtitle} />
 
       <section className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl">
-          <h2 className="text-lg font-bold text-slate-900">İletişim Bilgileri</h2>
-          <div className="mt-4 space-y-2 text-sm text-slate-600">
+        <div className="border-2 border-navy bg-white p-6">
+          <h2 className="font-heading text-xl font-bold text-navy">İletişim Bilgileri</h2>
+          <div className="mt-4 space-y-2 text-sm text-navy/80">
             <p>Adres: {contactAddress}</p>
             <p>E-posta: {contactEmail}</p>
             <p>Telefon: {contactPhone}</p>
           </div>
 
           {embedSrc ? (
-            <div className="mt-6 overflow-hidden rounded-3xl border border-black/5 bg-soft-gray">
+            <div className="mt-6 overflow-hidden border-2 border-navy bg-cream-dark">
               <div className="relative aspect-[16/10] w-full sm:aspect-[16/9]">
                 <iframe
                   title="Google Maps"
@@ -123,13 +123,13 @@ export default function ContactPage() {
                 />
               </div>
               {openHref ? (
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-black/5 bg-white px-4 py-3">
-                  <div className="text-xs text-slate-500">Harita linki:</div>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t-2 border-navy bg-white px-4 py-3">
+                  <div className="text-xs text-navy/60">Harita linki:</div>
                   <a
                     href={openHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs font-semibold text-burgundy hover:text-burgundy-dark"
+                    className="text-xs font-semibold text-teal hover:text-teal-dark"
                   >
                     Haritada aç →
                   </a>
@@ -137,15 +137,15 @@ export default function ContactPage() {
               ) : null}
             </div>
           ) : (
-            <div className="mt-6 rounded-3xl bg-soft-gray p-6 text-sm text-slate-700">
+            <div className="mt-6 border-2 border-navy bg-cream-dark p-6 text-sm text-navy/80">
               Harita henüz eklenmedi. Platform Admin &gt; İletişim bölümünden Google Maps linki veya adres ekleyebilirsiniz.
             </div>
           )}
         </div>
 
-        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl">
-          <h2 className="text-lg font-bold text-slate-900">Mesaj Gönder</h2>
-          <p className="mt-1 text-sm text-slate-600">Form demo amaçlıdır.</p>
+        <div className="border-2 border-navy bg-white p-6">
+          <h2 className="font-heading text-xl font-bold text-navy">Mesaj Gönder</h2>
+          <p className="mt-1 text-sm text-navy/70">Form demo amaçlıdır.</p>
 
           <form
             className="mt-6 space-y-4"
@@ -161,14 +161,14 @@ export default function ContactPage() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
+              className="w-full border-2 border-navy bg-white px-4 py-3 text-sm outline-none focus:border-teal"
               placeholder="Ad Soyad"
               required
             />
             <input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
+              className="w-full border-2 border-navy bg-white px-4 py-3 text-sm outline-none focus:border-teal"
               placeholder="E-posta"
               type="email"
               required
@@ -176,13 +176,13 @@ export default function ContactPage() {
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="min-h-[140px] w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-all duration-200 focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
+              className="min-h-[140px] w-full border-2 border-navy bg-white px-4 py-3 text-sm outline-none focus:border-teal"
               placeholder="Mesajınız…"
               required
             />
             <button
               type="submit"
-              className="w-full rounded-xl bg-burgundy px-5 py-3.5 text-sm font-semibold text-white shadow-premium transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow-burgundy active:scale-[0.99]"
+              className="w-full border-2 border-teal bg-teal px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-teal-dark"
             >
               Gönder
             </button>

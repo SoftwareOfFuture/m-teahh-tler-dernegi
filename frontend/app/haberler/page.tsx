@@ -56,8 +56,8 @@ export default function NewsPage() {
 
       <section className="mt-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">Güncel Haberler</h2>
-          <Link href="/" className="link-underline text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
+          <h2 className="font-heading text-xl font-bold text-navy sm:text-2xl">Güncel Haberler</h2>
+          <Link href="/" className="link-editorial text-sm font-semibold text-teal hover:text-teal-dark">
             Ana sayfaya dön →
           </Link>
         </div>
@@ -70,7 +70,7 @@ export default function NewsPage() {
 
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
         {!loading && items.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-slate-200/80 bg-soft-gray px-5 py-4 text-sm text-slate-600 sm:rounded-3xl">
+          <div className="mt-6 border-2 border-navy bg-cream-dark px-5 py-4 text-sm text-navy/70">
             Henüz haber eklenmemiş.
           </div>
         ) : null}

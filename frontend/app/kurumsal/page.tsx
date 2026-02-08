@@ -66,10 +66,10 @@ export default function CorporatePage() {
       <PageHero title={heroTitle} subtitle={heroSubtitle} />
 
       <section className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 sm:rounded-3xl lg:col-span-2">
-          <h2 className="text-lg font-bold text-slate-900">{aboutTitle}</h2>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600">{aboutP1}</p>
-          <p className="mt-3 text-sm leading-relaxed text-slate-600">{aboutP2}</p>
+        <div className="border-2 border-navy bg-white p-6 lg:col-span-2">
+          <h2 className="font-heading text-xl font-bold text-navy">{aboutTitle}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-navy/80">{aboutP1}</p>
+          <p className="mt-3 text-sm leading-relaxed text-navy/80">{aboutP2}</p>
 
           {aboutPdfUrl ? (
             <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -77,14 +77,14 @@ export default function CorporatePage() {
                 href={aboutPdfUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-soft-gray"
+                className="inline-flex border-2 border-navy bg-cream px-4 py-2 text-sm font-semibold text-navy transition-colors hover:bg-teal/10"
               >
                 PDF İndir
               </a>
               <button
                 type="button"
                 onClick={() => setPreview({ url: aboutPdfUrl, title: aboutPdfTitle || 'Hakkımızda (PDF)' })}
-                className="inline-flex rounded-xl bg-burgundy px-4 py-2 text-sm font-semibold text-white shadow-premium transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow-burgundy active:scale-[0.98]"
+                className="inline-flex border-2 border-teal bg-teal px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-teal-dark"
               >
                 ÖNİZLEME
               </button>
@@ -92,9 +92,9 @@ export default function CorporatePage() {
           ) : null}
         </div>
 
-        <div className="rounded-2xl border border-slate-200/60 bg-soft-gray p-6 sm:rounded-3xl">
-          <h3 className="text-sm font-bold text-slate-900">Hızlı Bilgiler</h3>
-          <ul className="mt-4 space-y-2 text-sm text-slate-700">
+        <div className="border-2 border-navy bg-cream-dark p-6">
+          <h3 className="font-heading text-base font-bold text-navy">Hızlı Bilgiler</h3>
+          <ul className="mt-4 space-y-2 text-sm text-navy/80">
             {quickInfoLines.map((line, idx) => (
               <li key={idx}>• {line}</li>
             ))}
@@ -103,13 +103,13 @@ export default function CorporatePage() {
       </section>
 
       <section className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 transition-all duration-300 hover:shadow-card-hover sm:rounded-3xl">
-          <h3 className="text-sm font-bold text-slate-900">Misyon</h3>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">{mission}</p>
+        <div className="border-2 border-navy bg-white p-6 transition-all hover:shadow-brutal">
+          <h3 className="font-heading text-base font-bold text-navy">Misyon</h3>
+          <p className="mt-2 text-sm leading-relaxed text-navy/80">{mission}</p>
         </div>
-        <div className="rounded-2xl bg-white p-6 shadow-card ring-1 ring-slate-100/60 transition-all duration-300 hover:shadow-card-hover sm:rounded-3xl">
-          <h3 className="text-sm font-bold text-slate-900">Vizyon</h3>
-          <p className="mt-2 text-sm text-slate-600">{vision}</p>
+        <div className="border-2 border-navy bg-white p-6 transition-all hover:shadow-brutal">
+          <h3 className="font-heading text-base font-bold text-navy">Vizyon</h3>
+          <p className="mt-2 text-sm text-navy/80">{vision}</p>
         </div>
       </section>
 
