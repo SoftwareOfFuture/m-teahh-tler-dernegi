@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { Header } from '../components/Header';
+import { Navbar } from '../components/Navbar';
 import { HeroSlider } from '../components/HeroSlider';
 import { HomeBannerStrip } from '../components/HomeBannerStrip';
 import { NewsCard } from '../components/NewsCard';
@@ -212,7 +212,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden bg-slate-50">
-      <Header />
+      <Navbar />
 
       <main className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-20 pt-6 sm:px-6 lg:px-10">
         {slidesLoading ? (

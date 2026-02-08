@@ -3,45 +3,21 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getToken } from '../lib/api';
 
 /* =============================================================================
-   NAVBAR - Glassmorphism Pill Navbar
+   NAVBAR - Glassmorphism Pill Navbar (İstenen Tasarım)
    =============================================================================
-   A modern, responsive navbar with:
-   - Sticky positioning, floating over hero
-   - Pill-shaped container (large border-radius)
-   - Glassmorphism: semi-transparent bg + backdrop-blur
-   - Left: Logo + location | Center: Nav links | Right: Social icons
-   - Soft gold/warm accent on hover
-   - Hamburger menu for mobile with slide-down animation
+   - Sticky, hero üzerinde floating
+   - Pill-shaped container (rounded-full)
+   - Glassmorphism: bg-white/60 + backdrop-blur
+   - Sol: Logo + konum | Orta: Nav linkleri | Sağ: Sosyal ikonlar + CTA
+   - Soft gold/amber hover accent
+   - Mobil: hamburger + slide-down menü
    ============================================================================= */
 
 export type NavItem = { href: string; label: string };
-export type SocialLink = { href: string; label: string; icon: React.ReactNode };
-
-type NavbarProps = {
-  /** Logo URL (e.g. /logo.png) */
-  logoUrl?: string;
-  /** Brand/company name shown next to logo */
-  brandName?: string;
-  /** Small location text under brand (e.g. "Naarm/Melbourne") */
-  location?: string;
-  /** Navigation links */
-  navItems?: NavItem[];
-  /** Social media links with icons */
-  socialLinks?: SocialLink[];
-  /** Optional additional right-side content (e.g. CTA button) */
-  rightContent?: React.ReactNode;
-};
-
-const defaultNavItems: NavItem[] = [
-  { href: '/services', label: 'Services' },
-  { href: '/about', label: 'About' },
-  { href: '/principles', label: 'Our Principles' },
-  { href: '/community', label: 'Community' },
-  { href: '/contact', label: 'Contact' },
-];
 
 function InstagramIcon() {
   return (
@@ -59,58 +35,49 @@ function FacebookIcon() {
   );
 }
 
-const defaultSocialLinks: SocialLink[] = [
-  { href: 'https://instagram.com', label: 'Instagram', icon: <InstagramIcon /> },
-  { href: 'https://facebook.com', label: 'Facebook', icon: <FacebookIcon /> },
+const navItems: NavItem[] = [
+  { href: '/', label: 'Ana Sayfa' },
+  { href: '/kurumsal', label: 'Kurumsal' },
+  { href: '/uyelerimiz', label: 'Üyelerimiz' },
+  { href: '/duyurular', label: 'Kentsel Dönüşüm' },
+  { href: '/haberler', label: 'Haberler' },
+  { href: '/yayinlar', label: 'Yayınlar' },
+  { href: '/iletisim', label: 'İletişim' },
 ];
 
-export function Navbar({
-  logoUrl = '/logo.png',
-  brandName = 'Brand',
-  location = 'Naarm/Melbourne',
-  navItems = defaultNavItems,
-  socialLinks = defaultSocialLinks,
-  rightContent,
-}: NavbarProps) {
+export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hasToken, setHasToken] = useState(false);
   const pathname = usePathname();
 
+  useEffect(() => {
+    setHasToken(!!getToken());
+  }, []);
+
   return (
-    <header
-      className="sticky top-0 z-50 w-full px-4 pt-4 safe-area-inset-top md:px-6 md:pt-6"
-      role="banner"
-    >
-      {/* Pill container with glassmorphism.
-          Using bg-white/60 + backdrop-blur-[14px] for premium frosted-glass effect.
-          rounded-full creates the pill shape. Shadow adds floating feel. */}
+    <header className="sticky top-0 z-50 w-full px-4 pt-4 safe-area-inset-top md:px-6 md:pt-6" role="banner">
+      {/* Pill container: glassmorphism - semi-transparent white + backdrop-blur */}
       <nav
         className="mx-auto flex max-w-6xl items-center justify-between gap-4 rounded-full border border-white/30 bg-white/60 px-4 py-2.5 shadow-[0_4px_24px_rgba(0,0,0,0.08)] backdrop-blur-[14px] md:px-6 md:py-3"
-        aria-label="Main navigation"
+        aria-label="Ana navigasyon"
       >
-        {/* LEFT: Logo + location */}
+        {/* SOL: Logo + konum metni */}
         <Link
           href="/"
           className="flex min-h-[44px] min-w-[44px] shrink-0 items-center gap-3 md:min-w-0"
-          aria-label="Home"
+          aria-label="Ana sayfa"
         >
-          {logoUrl ? (
-            <div className="relative size-9 shrink-0 overflow-hidden rounded-full md:size-10">
-              <Image src={logoUrl} alt="" fill className="object-cover" priority />
-            </div>
-          ) : (
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-black/10 font-semibold text-black/70 md:size-10">
-              {brandName.charAt(0)}
-            </div>
-          )}
+          <div className="relative size-10 shrink-0 overflow-hidden rounded-full md:size-11">
+            <Image src="/logo.png" alt="" fill className="object-contain p-1" priority />
+          </div>
           <div className="hidden sm:block">
-            <span className="block text-sm font-medium text-black/90">{brandName}</span>
-            {/* Location text: smaller, muted for hierarchy */}
-            <span className="block text-xs text-black/50">{location}</span>
+            <span className="block text-sm font-medium text-slate-800">Antalya İnşaat Müteahhitleri Derneği</span>
+            <span className="block text-xs text-slate-500">ANTMUTDER · Antalya</span>
           </div>
         </Link>
 
-        {/* CENTER: Nav links — hidden on mobile, shown on lg+ */}
-        <div className="hidden items-center gap-1 lg:flex">
+        {/* ORTA: Nav linkleri — soft gold/amber hover */}
+        <div className="hidden items-center gap-0.5 lg:flex">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href + '/');
             return (
@@ -120,7 +87,7 @@ export function Navbar({
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ease-out ${
                   isActive
                     ? 'bg-amber-100/80 text-amber-900'
-                    : 'text-black/80 hover:bg-amber-50/80 hover:text-amber-800'
+                    : 'text-slate-700 hover:bg-amber-50/80 hover:text-amber-800'
                 }`}
               >
                 {item.label}
@@ -129,46 +96,47 @@ export function Navbar({
           })}
         </div>
 
-        {/* RIGHT: Social icons + optional right content + hamburger on mobile */}
-        <div className="flex items-center gap-3">
-          {/* Social links — hidden on smaller screens to save space */}
-          <div className="hidden items-center gap-2 md:flex">
-            {socialLinks.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label={s.label}
-                className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-black/60 transition-colors duration-200 hover:bg-amber-50/80 hover:text-amber-700"
-              >
-                {s.icon}
-              </a>
-            ))}
+        {/* SAĞ: Sosyal ikonlar (Instagram, Facebook) + Üye Girişi + Hamburger */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden items-center gap-1 md:flex">
+            <a
+              href="#"
+              aria-label="Instagram"
+              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-amber-50/80 hover:text-amber-700"
+            >
+              <InstagramIcon />
+            </a>
+            <a
+              href="#"
+              aria-label="Facebook"
+              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-amber-50/80 hover:text-amber-700"
+            >
+              <FacebookIcon />
+            </a>
           </div>
 
-          {rightContent}
+          <Link
+            href={hasToken ? '/profilim' : '/login'}
+            className="inline-flex min-h-[42px] min-w-[42px] shrink-0 items-center justify-center rounded-full bg-burgundy px-4 py-2.5 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-5 sm:text-sm"
+          >
+            {hasToken ? 'Profilim' : 'ÜYE GİRİŞİ'}
+          </Link>
 
-          {/* Hamburger: touch-friendly 44px target, lg:hidden */}
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-full text-black/80 transition-colors hover:bg-amber-50/80 lg:hidden"
+            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-full text-slate-700 transition-colors duration-200 hover:bg-amber-50/80 lg:hidden"
             aria-expanded={mobileOpen ? 'true' : 'false'}
-            aria-label="Toggle menu"
+            aria-label="Menüyü aç/kapat"
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              {mobileOpen ? (
-                <path d="M18 6L6 18M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
+              {mobileOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
             </svg>
           </button>
         </div>
       </nav>
 
-      {/* MOBILE MENU: Slide-down panel with touch-friendly spacing */}
+      {/* MOBİL MENÜ: Slide-down, touch-friendly */}
       <div
         className={`overflow-hidden transition-all duration-300 ease-out ${
           mobileOpen ? 'mt-3 max-h-[min(80vh,600px)] opacity-100' : 'max-h-0 opacity-0'
@@ -176,7 +144,7 @@ export function Navbar({
         aria-hidden={!mobileOpen ? 'true' : 'false'}
       >
         <div className="mx-auto max-w-6xl rounded-2xl border border-white/30 bg-white/60 px-4 py-4 shadow-lg backdrop-blur-[14px]">
-          <nav className="flex flex-col gap-0.5" aria-label="Mobile navigation">
+          <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
               return (
@@ -185,27 +153,30 @@ export function Navbar({
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={`min-h-[48px] rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-                    isActive ? 'bg-amber-100/80 text-amber-900' : 'text-black/80 hover:bg-amber-50/80'
+                    isActive ? 'bg-amber-100/80 text-amber-900' : 'text-slate-700 hover:bg-amber-50/80'
                   }`}
                 >
                   {item.label}
                 </Link>
               );
             })}
-            <div className="mt-3 flex gap-2 border-t border-black/5 pt-3">
-              {socialLinks.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label={s.label}
-                  onClick={() => setMobileOpen(false)}
-                  className="flex size-11 items-center justify-center rounded-full bg-black/5 text-black/70 transition-colors hover:bg-amber-50"
-                >
-                  {s.icon}
-                </a>
-              ))}
+            <div className="mt-3 flex gap-2 border-t border-slate-200/50 pt-3">
+              <a
+                href="#"
+                aria-label="Instagram"
+                onClick={() => setMobileOpen(false)}
+                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-amber-50"
+              >
+                <InstagramIcon />
+              </a>
+              <a
+                href="#"
+                aria-label="Facebook"
+                onClick={() => setMobileOpen(false)}
+                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-amber-50"
+              >
+                <FacebookIcon />
+              </a>
             </div>
           </nav>
         </div>
