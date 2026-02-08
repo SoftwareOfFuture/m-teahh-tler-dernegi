@@ -88,33 +88,33 @@ export function Navbar() {
       role="banner"
     >
       <nav
-        className="flex w-full min-w-0 items-center justify-between gap-2 px-3 py-3 sm:gap-4 sm:px-6 md:py-4 lg:px-8"
+        className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 md:py-3 lg:px-6"
         aria-label="Ana navigasyon"
       >
         {/* SOL: Logo */}
         <Link
           href="/"
-          className="flex min-h-[44px] min-w-0 shrink-0 items-center gap-2 sm:gap-3"
+          className="flex min-h-[44px] shrink-0 items-center gap-2 sm:gap-3"
           aria-label="Ana sayfa"
         >
-          <div className="relative size-9 shrink-0 overflow-hidden rounded-full sm:size-10 md:size-11">
+          <div className="relative size-9 shrink-0 overflow-hidden rounded-full sm:size-10">
             <Image src="/logo.png" alt="" fill className="object-contain p-1" priority sizes="44px" />
           </div>
-          <div className="hidden min-w-0 sm:block">
-            <span className="block truncate text-sm font-bold text-slate-900 sm:text-base">Antalya İnşaat Müteahhitleri Derneği</span>
-            <span className="block truncate text-xs text-slate-500">ANTMUTDER</span>
+          <div className="hidden min-w-0 shrink sm:block">
+            <span className="block truncate text-xs font-bold text-slate-900 sm:text-sm">Antalya İnşaat Müteahhitleri Derneği</span>
+            <span className="block truncate text-[10px] text-slate-500">ANTMUTDER</span>
           </div>
         </Link>
 
-        {/* ORTA: Nav linkleri — bordo hover */}
-        <div className="hidden items-center gap-0.5 lg:flex">
+        {/* ORTA: Nav linkleri — tek sıra, sıkı */}
+        <div className="hidden shrink-0 flex-nowrap items-center gap-px lg:flex">
           {navItems.map((item) => {
             const isActive = pathname === item.href || pathname?.startsWith(item.href.replace(/#.*/, '') + '/');
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                className={`whitespace-nowrap rounded px-2 py-1.5 text-[11px] font-medium transition-all duration-200 lg:text-xs xl:px-2.5 xl:text-sm ${
                   isActive
                     ? 'bg-burgundy/10 text-burgundy'
                     : 'text-slate-700 hover:bg-burgundy/5 hover:text-burgundy'
@@ -127,19 +127,19 @@ export function Navbar() {
         </div>
 
         {/* SAĞ: Sosyal ikonlar + Üye Girişi + Hamburger */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          <div className="hidden items-center gap-1 md:flex">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="hidden items-center gap-0.5 md:flex">
             <a
               href="#"
               aria-label="Instagram"
-              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
+              className="flex size-8 items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
             >
               <InstagramIcon />
             </a>
             <a
               href="#"
               aria-label="Facebook"
-              className="flex size-9 min-h-[44px] min-w-[44px] items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
+              className="flex size-8 items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
             >
               <FacebookIcon />
             </a>
@@ -147,7 +147,7 @@ export function Navbar() {
 
           <Link
             href={hasToken ? '/profilim' : '/login'}
-            className="inline-flex min-h-[42px] min-w-[42px] shrink-0 items-center justify-center rounded-lg bg-burgundy px-4 py-2.5 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-5 sm:text-sm"
+            className="inline-flex shrink-0 items-center justify-center rounded-lg bg-burgundy px-3 py-2 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-4 sm:py-2 sm:text-xs"
           >
             {hasToken ? 'Profilim' : 'Üye Girişi'}
           </Link>
