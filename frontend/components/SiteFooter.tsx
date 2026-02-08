@@ -34,8 +34,8 @@ function YouTubeIcon() {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-20 w-full overflow-hidden bg-burgundy-dark safe-area-inset-bottom" role="contentinfo">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-16 lg:px-10 lg:py-20">
+    <footer className="mt-auto w-full overflow-hidden bg-burgundy-dark safe-area-inset-bottom" role="contentinfo">
+      <div className="w-full px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           {/* Hakkımızda */}
           <div>
@@ -92,7 +92,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-10">
+        <div className="w-full px-4 py-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm text-white/70">
             © ANTMUTDER – Antalya Müteahhitler Derneği. Tüm Hakları Saklıdır.
           </p>

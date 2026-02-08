@@ -211,18 +211,18 @@ export default function HomePage() {
   }, [formatDot]);
 
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-white">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-white">
       <Navbar />
 
-      <main className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-20 pt-6 sm:px-6 lg:px-10">
+      <main className="flex-1 w-full overflow-x-hidden px-4 pb-20 pt-6 sm:px-6 lg:px-8">
         {slidesLoading ? (
-          <section className="relative mx-4 overflow-hidden rounded-2xl bg-slate-100 md:mx-6">
+          <section className="relative w-full overflow-hidden rounded-2xl bg-slate-100">
             <div className="h-[320px] animate-pulse sm:h-[400px] md:h-[500px]" />
           </section>
         ) : (
           <HeroSlider items={sliderItems} />
         )}
-        <div className="mt-4 sm:mt-5">
+        <div className="mt-4 w-full sm:mt-5">
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
         </div>
 
@@ -359,9 +359,8 @@ export default function HomePage() {
           title={videoPreview?.title}
           onClose={() => setVideoPreview(null)}
         />
-
-        <SiteFooter />
       </main>
+      <SiteFooter />
     </div>
   );
 }

@@ -5,9 +5,9 @@ type Props = { children: React.ReactNode };
 
 export function PageLayout({ children }: Props) {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-white">
+    <div className="flex min-h-screen w-full flex-col overflow-x-hidden bg-white">
       <Navbar />
-      <main className="mx-auto w-full max-w-7xl overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 lg:px-10">{children}</main>
+      <main className="flex-1 w-full overflow-x-hidden px-4 pb-20 pt-8 sm:px-6 lg:px-8">{children}</main>
     </div>
   );
 }

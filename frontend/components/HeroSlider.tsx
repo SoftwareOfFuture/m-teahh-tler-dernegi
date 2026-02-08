@@ -34,7 +34,7 @@ export function HeroSlider({ items }: Props) {
   }, [len]);
 
   return (
-    <section className="relative mx-4 mt-4 overflow-hidden rounded-2xl shadow-soft-lg md:mx-6 md:mt-6">
+    <section className="relative mt-4 w-full overflow-hidden rounded-2xl shadow-soft-lg md:mt-6">
       <div className="relative h-[320px] sm:h-[400px] md:h-[500px] lg:h-[560px]">
         <Image
           src={normalizeImageSrc(current.imageUrl)}

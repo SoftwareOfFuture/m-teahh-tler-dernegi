@@ -55,7 +55,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-100 bg-white shadow-soft safe-area-inset-top" role="banner">
       <nav
-        className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-6 md:py-4"
+        className="flex w-full items-center justify-between gap-4 px-4 py-3 sm:px-6 md:py-4 lg:px-8"
         aria-label="Ana navigasyon"
       >
         {/* SOL: Logo */}
@@ -140,7 +140,7 @@ export function Navbar() {
         }`}
         {...(mobileOpen ? {} : { 'aria-hidden': 'true' as const })}
       >
-        <div className="mx-auto max-w-7xl bg-white px-4 py-4">
+        <div className="w-full bg-white px-4 py-4 sm:px-6 lg:px-8">
           <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
