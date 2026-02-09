@@ -262,6 +262,7 @@ export type SiteSettings = {
   twitterUrl: string | null;
   youtubeUrl: string | null;
   linkedinUrl: string | null;
+  promoVideoUrl: string | null;
 };
 
 export async function getSiteSettingsPublic() {

@@ -85,6 +85,18 @@ async function seed() {
         isPublished: true,
       },
       {
+        slug: 'bugune-kadar-yaptiklarimiz',
+        heroTitle: 'Bugüne Kadar Yaptıklarımız',
+        heroSubtitle: 'Derneğimizin gerçekleştirdiği etkinlikler, projeler ve başarılar.',
+        aboutTitle: 'Çalışmalarımız',
+        aboutParagraph1: 'Derneğimiz kurulduğundan bu yana inşaat sektörüne yönelik çeşitli etkinlikler, eğitimler ve iş birlikleri gerçekleştirmiştir. Bu sayfada derneğimizin bugüne kadar yaptığı çalışmaları bulabilirsiniz.',
+        aboutParagraph2: '',
+        quickInfo: '',
+        mission: '',
+        vision: '',
+        isPublished: true,
+      },
+      {
         slug: 'iletisim',
         heroTitle: 'İletişim',
         heroSubtitle: 'ANTMUTDER ile iletişime geçin. Sorularınız ve talepleriniz için bize ulaşın.',

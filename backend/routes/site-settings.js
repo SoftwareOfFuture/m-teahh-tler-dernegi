@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
             twitterUrl: row.twitterUrl || null,
             youtubeUrl: row.youtubeUrl || null,
             linkedinUrl: row.linkedinUrl || null,
+            promoVideoUrl: row.promoVideoUrl || null,
           }
         : {
             facebookUrl: null,
@@ -30,6 +31,7 @@ router.get('/', async (req, res) => {
             twitterUrl: null,
             youtubeUrl: null,
             linkedinUrl: null,
+            promoVideoUrl: null,
           }
     );
   } catch (err) {
@@ -50,6 +52,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             twitterUrl: row.twitterUrl || null,
             youtubeUrl: row.youtubeUrl || null,
             linkedinUrl: row.linkedinUrl || null,
+            promoVideoUrl: row.promoVideoUrl || null,
           }
         : {
             id: null,
@@ -58,6 +61,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             twitterUrl: null,
             youtubeUrl: null,
             linkedinUrl: null,
+            promoVideoUrl: null,
           }
     );
   } catch (err) {
@@ -76,6 +80,7 @@ router.put(
     body('twitterUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('youtubeUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('linkedinUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('promoVideoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
   ],
   validate,
   async (req, res) => {
@@ -87,6 +92,7 @@ router.put(
         twitterUrl: req.body.twitterUrl?.trim() || null,
         youtubeUrl: req.body.youtubeUrl?.trim() || null,
         linkedinUrl: req.body.linkedinUrl?.trim() || null,
+        promoVideoUrl: req.body.promoVideoUrl?.trim() || null,
       };
       if (row) {
         await row.update(payload);

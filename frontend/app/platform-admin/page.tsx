@@ -94,6 +94,7 @@ export default function PlatformAdminPage() {
     | 'partners'
     | 'properties'
     | 'kurumsal'
+    | 'buguneKadarYaptiklarimiz'
     | 'iletisim'
     | 'contactMessages'
     | 'smsFeedback'
@@ -114,6 +115,7 @@ export default function PlatformAdminPage() {
     { id: 'partners', label: 'Partnerler' },
     { id: 'properties', label: 'Emlak İlanları' },
     { id: 'kurumsal', label: 'Kurumsal' },
+    { id: 'buguneKadarYaptiklarimiz', label: 'Bugüne Kadar Yaptıklarımız' },
     { id: 'iletisim', label: 'İletişim' },
     { id: 'contactMessages', label: 'İletişim Mesajları' },
     { id: 'smsFeedback', label: 'SMS Geri Bildirimleri' },
@@ -283,6 +285,8 @@ export default function PlatformAdminPage() {
               <PartnersPanel token={token} />
             ) : tab === 'properties' ? (
               <PropertiesPanel token={token} />
+            ) : tab === 'buguneKadarYaptiklarimiz' ? (
+              <BuguneKadarYaptiklarimizPanel token={token} />
             ) : tab === 'iletisim' ? (
               <IletisimPanel token={token} />
             ) : tab === 'contactMessages' ? (
@@ -739,6 +743,7 @@ const SOCIAL_LABELS: Record<keyof SiteSettings, string> = {
   twitterUrl: 'Twitter / X',
   youtubeUrl: 'YouTube',
   linkedinUrl: 'LinkedIn',
+  promoVideoUrl: 'Tanıtım Filmi (YouTube/Vimeo URL)',
 };
 
 function SocialMediaPanel({ token }: { token: string | null }) {
@@ -747,6 +752,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
     instagramUrl: null,
     twitterUrl: null,
     youtubeUrl: null,
+    promoVideoUrl: null,
     linkedinUrl: null,
   });
   const [loading, setLoading] = useState(false);
@@ -760,12 +766,13 @@ function SocialMediaPanel({ token }: { token: string | null }) {
     try {
       const res = await getSiteSettingsAdmin(token);
       setForm({
-        facebookUrl: res.facebookUrl ?? null,
-        instagramUrl: res.instagramUrl ?? null,
-        twitterUrl: res.twitterUrl ?? null,
-        youtubeUrl: res.youtubeUrl ?? null,
-        linkedinUrl: res.linkedinUrl ?? null,
-      });
+            facebookUrl: res.facebookUrl ?? null,
+            instagramUrl: res.instagramUrl ?? null,
+            twitterUrl: res.twitterUrl ?? null,
+            youtubeUrl: res.youtubeUrl ?? null,
+            linkedinUrl: res.linkedinUrl ?? null,
+            promoVideoUrl: res.promoVideoUrl ?? null,
+          });
     } catch (e: unknown) {
       setError((e as Error)?.message ?? 'Ayarlar yüklenemedi.');
     } finally {
@@ -809,6 +816,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
                   twitterUrl: form.twitterUrl?.trim() || null,
                   youtubeUrl: form.youtubeUrl?.trim() || null,
                   linkedinUrl: form.linkedinUrl?.trim() || null,
+                  promoVideoUrl: form.promoVideoUrl?.trim() || null,
                 });
                 setSavedMsg('Kaydedildi.');
                 setTimeout(() => setSavedMsg(null), 3000);
@@ -836,7 +844,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
       ) : null}
 
       <div className="mt-6 space-y-4 max-w-2xl">
-        {(['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl'] as const).map((key) => (
+        {(['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl'] as const).map((key) => (
           <Field key={key} label={SOCIAL_LABELS[key]}>
             <TextInput
               value={String(form[key] ?? '')}
@@ -1190,6 +1198,128 @@ function KurumsalPanel({ token }: { token: string | null }) {
         <div className="md:col-span-1">
           <Field label="Vizyon">
             <TextArea rows={4} value={String(form.vision ?? '')} onChange={(e) => setForm((s) => ({ ...s, vision: e.target.value }))} />
+          </Field>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BuguneKadarYaptiklarimizPanel({ token }: { token: string | null }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
+
+  const [form, setForm] = useState<Partial<PageContent>>({
+    heroTitle: 'Bugüne Kadar Yaptıklarımız',
+    heroSubtitle: 'Derneğimizin gerçekleştirdiği etkinlikler, projeler ve başarılar.',
+    aboutTitle: 'Çalışmalarımız',
+    aboutParagraph1: '',
+    aboutParagraph2: '',
+    quickInfo: '',
+    isPublished: true,
+  });
+
+  const load = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    setSavedMsg(null);
+    try {
+      const res = await getPageAdmin(token, 'bugune-kadar-yaptiklarimiz');
+      if (res) setForm(res);
+    } catch (e: any) {
+      setError(e?.message ?? 'Bugüne Kadar Yaptıklarımız içeriği yüklenemedi.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return (
+    <div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">Bugüne Kadar Yaptıklarımız Sayfası</h2>
+          <p className="mt-1 text-sm text-slate-600">`/bugune-kadar-yaptiklarimiz` sayfasındaki metin alanlarını buradan yönetebilirsiniz.</p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={load}
+            disabled={!token || loading}
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          >
+            Yenile
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              if (!token) return;
+              setLoading(true);
+              setError(null);
+              setSavedMsg(null);
+              try {
+                await upsertPageAdmin(token, 'bugune-kadar-yaptiklarimiz', {
+                  heroTitle: (form.heroTitle ?? '').toString().trim() || null,
+                  heroSubtitle: (form.heroSubtitle ?? '').toString().trim() || null,
+                  aboutTitle: (form.aboutTitle ?? '').toString().trim() || null,
+                  aboutParagraph1: (form.aboutParagraph1 ?? '').toString().trim() || null,
+                  aboutParagraph2: (form.aboutParagraph2 ?? '').toString().trim() || null,
+                  quickInfo: (form.quickInfo ?? '').toString().trim() || null,
+                  isPublished: !!form.isPublished,
+                });
+                setSavedMsg('Kaydedildi.');
+              } catch (e: any) {
+                setError(e?.message ?? 'Kaydetme başarısız.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={!token || loading}
+            className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+
+      {error ? <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+      {savedMsg ? <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{savedMsg}</div> : null}
+
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Field label="Hero Başlık">
+          <TextInput value={String(form.heroTitle ?? '')} onChange={(e) => setForm((s) => ({ ...s, heroTitle: e.target.value }))} />
+        </Field>
+        <Field label="Hero Alt Başlık">
+          <TextInput value={String(form.heroSubtitle ?? '')} onChange={(e) => setForm((s) => ({ ...s, heroSubtitle: e.target.value }))} />
+        </Field>
+
+        <Field label="Çalışmalarımız Başlık">
+          <TextInput value={String(form.aboutTitle ?? '')} onChange={(e) => setForm((s) => ({ ...s, aboutTitle: e.target.value }))} />
+        </Field>
+        <Field label="Durum">
+          <Toggle value={!!form.isPublished} onChange={(v) => setForm((s) => ({ ...s, isPublished: v }))} />
+        </Field>
+
+        <div className="md:col-span-2">
+          <Field label="Çalışmalarımız Paragraf 1">
+            <TextArea rows={6} value={String(form.aboutParagraph1 ?? '')} onChange={(e) => setForm((s) => ({ ...s, aboutParagraph1: e.target.value }))} placeholder="Derneğimizin yaptığı çalışmalar..." />
+          </Field>
+        </div>
+
+        <div className="md:col-span-2">
+          <Field label="Çalışmalarımız Paragraf 2 (opsiyonel)">
+            <TextArea rows={4} value={String(form.aboutParagraph2 ?? '')} onChange={(e) => setForm((s) => ({ ...s, aboutParagraph2: e.target.value }))} />
+          </Field>
+        </div>
+
+        <div className="md:col-span-2">
+          <Field label="Özet / Hızlı Bilgiler (her satır bir madde, opsiyonel)">
+            <TextArea rows={4} value={String(form.quickInfo ?? '')} onChange={(e) => setForm((s) => ({ ...s, quickInfo: e.target.value }))} placeholder="Her satır bir madde" />
           </Field>
         </div>
       </div>

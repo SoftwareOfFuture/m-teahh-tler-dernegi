@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       linkedinUrl: {
         type: DataTypes.STRING(500),
       },
+      promoVideoUrl: {
+        type: DataTypes.STRING(1000),
+      },
     },
     {
       tableName: 'site_settings',

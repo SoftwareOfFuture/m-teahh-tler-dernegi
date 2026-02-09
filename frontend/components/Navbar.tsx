@@ -12,7 +12,7 @@ import { useSiteSettings } from '../lib/useSiteSettings';
    - Kaydırırken aşağı gidince gizlenir, yukarı veya durunca geri gelir
    ============================================================================= */
 
-export type NavItem = { href: string; label: string };
+export type NavItem = { href: string; label: string } | { label: string; children: { href: string; label: string }[] };
 
 function InstagramIcon() {
   return (
@@ -35,7 +35,13 @@ const navItems: NavItem[] = [
   { href: '/kurumsal', label: 'Kurumsal' },
   { href: '/haberler', label: 'Haberler' },
   { href: '/videolar', label: 'Video Arşivi' },
-  { href: '/yayinlar', label: 'Yayınlar' },
+  {
+    label: 'Yayınlar',
+    children: [
+      { href: '/yayinlar', label: 'Yayınlar' },
+      { href: '/bugune-kadar-yaptiklarimiz', label: 'Bugüne Kadar Yaptıklarımız' },
+    ],
+  },
   { href: '/kentsel-donusum', label: 'Kentsel Dönüşüm' },
   { href: '/emlak-ilanlari', label: 'Emlak İlanları' },
   { href: '/uyelerimiz', label: 'Partnerler' },
@@ -46,6 +52,7 @@ const SCROLL_SHOW_TOP = 40;
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [hasToken, setHasToken] = useState(false);
   const social = useSiteSettings();
   const [navbarVisible, setNavbarVisible] = useState(true);
@@ -111,6 +118,59 @@ export function Navbar() {
         {/* ORTA: Nav linkleri — tek sıra, sıkı */}
         <div className="hidden shrink-0 flex-nowrap items-center gap-px lg:flex">
           {navItems.map((item) => {
+            if ('children' in item) {
+              const isActive = item.children.some(
+                (c) => pathname === c.href || pathname?.startsWith(c.href.replace(/#.*/, '') + '/')
+              );
+              const open = dropdownOpen === item.label;
+              return (
+                <div
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => setDropdownOpen(item.label)}
+                  onMouseLeave={() => setDropdownOpen(null)}
+                >
+                  <button
+                    type="button"
+                    aria-expanded={open ? 'true' : 'false'}
+                    aria-haspopup="menu"
+                    className={`flex items-center gap-0.5 whitespace-nowrap rounded px-2 py-1.5 text-[11px] font-medium transition-all duration-200 lg:text-xs xl:px-2.5 xl:text-sm ${
+                      isActive
+                        ? 'bg-burgundy/10 text-burgundy'
+                        : 'text-slate-700 hover:bg-burgundy/5 hover:text-burgundy'
+                    }`}
+                  >
+                    {item.label}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`ml-0.5 transition-transform ${open ? 'rotate-180' : ''}`}>
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                  {open ? (
+                    <ul
+                      className="absolute left-0 top-full z-50 mt-1 min-w-[200px] list-none rounded-xl border border-slate-100 bg-white py-1 shadow-soft"
+                      role="menu"
+                    >
+                      {item.children.map((c) => {
+                        const childActive = pathname === c.href || pathname?.startsWith(c.href.replace(/#.*/, '') + '/');
+                        return (
+                          <li key={c.href} role="none">
+                            <Link
+                              href={c.href}
+                              role="menuitem"
+                              className={`block px-4 py-2.5 text-sm transition-colors ${
+                                childActive ? 'bg-burgundy/10 text-burgundy font-medium' : 'text-slate-700 hover:bg-slate-50'
+                              }`}
+                            >
+                              {c.label}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : null}
+                </div>
+              );
+            }
             const isActive = pathname === item.href || pathname?.startsWith(item.href.replace(/#.*/, '') + '/');
             return (
               <Link
@@ -186,6 +246,28 @@ export function Navbar() {
         <div className="w-full bg-white px-4 py-4 sm:px-6 lg:px-8">
           <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">
             {navItems.map((item) => {
+              if ('children' in item) {
+                return (
+                  <div key={item.label} className="flex flex-col gap-0.5">
+                    <div className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-500">{item.label}</div>
+                    {item.children.map((c) => {
+                      const isActive = pathname === c.href;
+                      return (
+                        <Link
+                          key={c.href}
+                          href={c.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={`min-h-[44px] rounded-xl px-4 py-3 pl-6 text-sm font-medium transition-colors ${
+                            isActive ? 'bg-burgundy/10 text-burgundy' : 'text-slate-700 hover:bg-burgundy/5'
+                          }`}
+                        >
+                          {c.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                );
+              }
               const isActive = pathname === item.href;
               return (
                 <Link

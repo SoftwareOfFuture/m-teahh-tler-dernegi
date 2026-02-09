@@ -25,6 +25,7 @@ import {
   type HomeBanner,
   type Publication,
 } from '../lib/api';
+import { useSiteSettings } from '../lib/useSiteSettings';
 import {
   getAnimationClass,
   getStoredSectionAnimations,
@@ -51,6 +52,7 @@ export function HomePageContent() {
   const [partnerLogos, setPartnerLogos] = useState<PartnerLogo[]>([]);
   const [partnersLoading, setPartnersLoading] = useState(true);
   const [membersForPartners, setMembersForPartners] = useState<any[]>([]);
+  const siteSettings = useSiteSettings();
 
   const formatDot = useMemo(() => {
     return (iso: string | null | undefined) => {
@@ -225,6 +227,39 @@ export function HomePageContent() {
         <div className={`mt-4 w-full sm:mt-5 ${sectionClass('banner')}`}>
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
         </div>
+        {siteSettings?.promoVideoUrl ? (
+          <div id="tanitim-filmi" className={`mt-8 w-full sm:mt-10 ${sectionClass('banner')} scroll-mt-24`}>
+            <div className="rounded-2xl overflow-hidden bg-slate-900 shadow-soft">
+              <div className="flex flex-col items-center justify-center gap-4 px-4 py-8 sm:py-12 md:flex-row md:gap-8 md:px-8">
+                <div className="w-full max-w-[560px] aspect-video rounded-xl overflow-hidden bg-slate-800 relative group cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => setVideoPreview({ url: siteSettings.promoVideoUrl!, title: 'Tanıtım Filmi' })}
+                  onKeyDown={(e) => e.key === 'Enter' && setVideoPreview({ url: siteSettings.promoVideoUrl!, title: 'Tanıtım Filmi' })}
+                  aria-label="Tanıtım filmi oynat"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="size-20 rounded-full bg-burgundy/90 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="ml-1"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center md:text-left">
+                  <h2 className="text-xl font-bold text-white sm:text-2xl">Dernek Tanıtım Filmi</h2>
+                  <p className="mt-2 text-sm text-slate-300">Derneğimizi daha yakından tanımak için tanıtım filmini izleyebilirsiniz.</p>
+                  <button
+                    type="button"
+                    onClick={() => setVideoPreview({ url: siteSettings.promoVideoUrl!, title: 'Tanıtım Filmi' })}
+                    className="mt-4 inline-flex items-center gap-2 rounded-xl bg-burgundy px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-burgundy-dark"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    Tanıtım Filmini İzle
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
         <section className="mt-8 w-full min-w-0 sm:mt-12 lg:mt-16">
           <div className="grid w-full grid-cols-1 gap-8 min-w-0 sm:gap-12 lg:gap-20">
             <div id="dijital-platformlar" className={`${sectionClass('dijitalPlatformlar')} scroll-mt-24`}>
