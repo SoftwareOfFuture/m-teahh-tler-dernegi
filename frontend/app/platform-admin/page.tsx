@@ -418,7 +418,7 @@ function IletisimPanel({ token }: { token: string | null }) {
             type="button"
             onClick={load}
             disabled={!token || loading}
-            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
           >
             Yenile
           </button>
@@ -559,7 +559,7 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
           type="button"
           onClick={load}
           disabled={!token || loading}
-          className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
         >
           Yenile
         </button>
@@ -601,7 +601,7 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
                 type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+                className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
               >
                 ← Önceki
               </button>
@@ -612,7 +612,7 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
                 type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages || loading}
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+                className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
               >
                 Sonraki →
               </button>
@@ -663,7 +663,7 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
           type="button"
           onClick={load}
           disabled={!token || loading}
-          className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
         >
           Yenile
         </button>
@@ -710,7 +710,7 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
                 type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1 || loading}
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+                className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
               >
                 ← Önceki
               </button>
@@ -721,7 +721,7 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
                 type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages || loading}
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+                className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
               >
                 Sonraki →
               </button>
@@ -791,7 +791,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
             type="button"
             onClick={load}
             disabled={!token || loading}
-            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
           >
             Yenile
           </button>
@@ -1090,7 +1090,7 @@ function KurumsalPanel({ token }: { token: string | null }) {
             type="button"
             onClick={load}
             disabled={!token || loading}
-            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
           >
             Yenile
           </button>
@@ -1313,7 +1313,7 @@ function MembersPanel({
           type="button"
           onClick={refresh}
           disabled={loading}
-          className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
         >
           {loading ? 'Yükleniyor…' : 'Yenile'}
         </button>
@@ -1644,7 +1644,7 @@ function SlidesPanel({ token }: { token: string | null }) {
             type="button"
             disabled={!token || loading}
             onClick={refresh}
-            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
           >
             Yenile
           </button>
@@ -2086,7 +2086,7 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
           type="button"
           onClick={refresh}
           disabled={!token || loading || bulkDeleting}
-          className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
         >
           Yenile
         </button>

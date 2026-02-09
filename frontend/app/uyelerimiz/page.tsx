@@ -228,21 +228,21 @@ function MembersPageInner() {
               })}
         </div>
 
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-8 flex items-center justify-between gap-4">
           <button
             type="button"
-            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
             disabled={page <= 1 || loading}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
           >
             ← Önceki
           </button>
-          <div className="text-sm font-semibold text-slate-600">
+          <div className="min-w-[4rem] shrink-0 text-center text-sm font-semibold text-slate-600">
             {page} / {totalPages}
           </div>
           <button
             type="button"
-            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+            className="min-w-[100px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
             disabled={page >= totalPages || loading}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           >

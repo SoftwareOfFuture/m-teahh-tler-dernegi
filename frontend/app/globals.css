@@ -128,6 +128,7 @@ iframe {
 
 .animate-fade-in-up {
   animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
+  contain: layout style;
 }
 
 .animate-fade-in-down {

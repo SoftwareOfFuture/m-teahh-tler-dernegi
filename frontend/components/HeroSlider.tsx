@@ -71,29 +71,31 @@ export function HeroSlider({ items }: Props) {
             <h1 className="text-xl font-bold leading-tight text-white sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl break-words">
               {current.title}
             </h1>
-            {current.description ? (
-              <p className="mt-2 max-w-2xl min-w-0 text-xs leading-relaxed text-white/90 sm:mt-3 sm:text-sm md:text-base break-words">
-                {current.description}
-              </p>
-            ) : null}
-            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
+            <div className="mt-2 min-h-[2.5rem] sm:mt-3">
+              {current.description ? (
+                <p className="max-w-2xl min-w-0 text-xs leading-relaxed text-white/90 sm:text-sm md:text-base break-words">
+                  {current.description}
+                </p>
+              ) : null}
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
               {current.href && current.href !== '#' ? (
                 <Link
                   href={current.href}
-                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
+                  className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
                 >
                   Detay
                 </Link>
               ) : null}
               <Link
                 href="/kurumsal"
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
+                className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
               >
                 Hakkımızda
               </Link>
               <Link
                 href="/iletisim"
-                className="inline-flex min-h-[44px] items-center gap-2 rounded-lg border-2 border-white px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900 sm:px-6"
+                className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center gap-2 rounded-lg border-2 border-white px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900 sm:px-6"
               >
                 İletişim
               </Link>
