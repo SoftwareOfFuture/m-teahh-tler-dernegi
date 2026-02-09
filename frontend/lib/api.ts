@@ -254,6 +254,35 @@ export async function register(payload: {
   });
 }
 
+// --- Site Settings (sosyal medya) ---
+
+export type SiteSettings = {
+  facebookUrl: string | null;
+  instagramUrl: string | null;
+  twitterUrl: string | null;
+  youtubeUrl: string | null;
+  linkedinUrl: string | null;
+};
+
+export async function getSiteSettingsPublic() {
+  return await apiFetch<SiteSettings>('/api/site-settings', { method: 'GET' });
+}
+
+export async function getSiteSettingsAdmin(token: string) {
+  return await apiFetch<SiteSettings & { id: number | null }>('/api/site-settings/admin', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function updateSiteSettingsAdmin(token: string, payload: Partial<SiteSettings>) {
+  return await apiFetch<SiteSettings>('/api/site-settings/admin', {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
 // --- Contact Message (public) ---
 
 export async function createContactMessage(payload: { name: string; email: string; message: string }) {

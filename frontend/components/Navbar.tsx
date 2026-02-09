@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getToken } from '../lib/api';
+import { useSiteSettings } from '../lib/useSiteSettings';
 
 /* =============================================================================
    NAVBAR - Kurumsal Beyaz Navbar
@@ -46,6 +47,7 @@ const SCROLL_SHOW_TOP = 40;
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+  const social = useSiteSettings();
   const [navbarVisible, setNavbarVisible] = useState(true);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
@@ -129,20 +131,28 @@ export function Navbar() {
         {/* SAĞ: Sosyal ikonlar + Üye Girişi + Hamburger */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <div className="hidden items-center gap-0.5 md:flex">
-            <a
-              href="#"
-              aria-label="Instagram"
-              className="flex size-8 items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
-            >
-              <InstagramIcon />
-            </a>
-            <a
-              href="#"
-              aria-label="Facebook"
-              className="flex size-8 items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
-            >
-              <FacebookIcon />
-            </a>
+            {social?.instagramUrl ? (
+              <a
+                href={social.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Instagram"
+                className="flex size-8 items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
+              >
+                <InstagramIcon />
+              </a>
+            ) : null}
+            {social?.facebookUrl ? (
+              <a
+                href={social.facebookUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Facebook"
+                className="flex size-8 items-center justify-center rounded-full text-slate-600 transition-colors duration-200 hover:bg-burgundy/5 hover:text-burgundy"
+              >
+                <FacebookIcon />
+              </a>
+            ) : null}
           </div>
 
           <Link
@@ -190,24 +200,34 @@ export function Navbar() {
                 </Link>
               );
             })}
-            <div className="mt-3 flex gap-2 border-t border-slate-200/50 pt-3">
-              <a
-                href="#"
-                aria-label="Instagram"
-                onClick={() => setMobileOpen(false)}
-                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
-              >
-                <InstagramIcon />
-              </a>
-              <a
-                href="#"
-                aria-label="Facebook"
-                onClick={() => setMobileOpen(false)}
-                className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
-              >
-                <FacebookIcon />
-              </a>
-            </div>
+            {(social?.instagramUrl || social?.facebookUrl) ? (
+              <div className="mt-3 flex gap-2 border-t border-slate-200/50 pt-3">
+                {social?.instagramUrl ? (
+                  <a
+                    href={social.instagramUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Instagram"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
+                  >
+                    <InstagramIcon />
+                  </a>
+                ) : null}
+                {social?.facebookUrl ? (
+                  <a
+                    href={social.facebookUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label="Facebook"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
+                  >
+                    <FacebookIcon />
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </nav>
         </div>
       </div>

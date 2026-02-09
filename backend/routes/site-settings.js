@@ -1,0 +1,103 @@
+const express = require('express');
+const { body, validationResult } = require('express-validator');
+const db = require('../models');
+const { auth, adminOnly } = require('../middleware/auth');
+
+const router = express.Router();
+
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  next();
+};
+
+// GET /api/site-settings - public (sosyal medya linkleri)
+router.get('/', async (req, res) => {
+  try {
+    const row = await db.SiteSettings.findOne({ order: [['id', 'ASC']] });
+    res.json(
+      row
+        ? {
+            facebookUrl: row.facebookUrl || null,
+            instagramUrl: row.instagramUrl || null,
+            twitterUrl: row.twitterUrl || null,
+            youtubeUrl: row.youtubeUrl || null,
+            linkedinUrl: row.linkedinUrl || null,
+          }
+        : {
+            facebookUrl: null,
+            instagramUrl: null,
+            twitterUrl: null,
+            youtubeUrl: null,
+            linkedinUrl: null,
+          }
+    );
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/site-settings/admin - admin
+router.get('/admin', auth, adminOnly, async (req, res) => {
+  try {
+    const row = await db.SiteSettings.findOne({ order: [['id', 'ASC']] });
+    res.json(
+      row
+        ? {
+            id: row.id,
+            facebookUrl: row.facebookUrl || null,
+            instagramUrl: row.instagramUrl || null,
+            twitterUrl: row.twitterUrl || null,
+            youtubeUrl: row.youtubeUrl || null,
+            linkedinUrl: row.linkedinUrl || null,
+          }
+        : {
+            id: null,
+            facebookUrl: null,
+            instagramUrl: null,
+            twitterUrl: null,
+            youtubeUrl: null,
+            linkedinUrl: null,
+          }
+    );
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT /api/site-settings/admin - admin upsert
+router.put(
+  '/admin',
+  auth,
+  adminOnly,
+  [
+    body('facebookUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('instagramUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('twitterUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('youtubeUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('linkedinUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+  ],
+  validate,
+  async (req, res) => {
+    try {
+      let row = await db.SiteSettings.findOne({ order: [['id', 'ASC']] });
+      const payload = {
+        facebookUrl: req.body.facebookUrl?.trim() || null,
+        instagramUrl: req.body.instagramUrl?.trim() || null,
+        twitterUrl: req.body.twitterUrl?.trim() || null,
+        youtubeUrl: req.body.youtubeUrl?.trim() || null,
+        linkedinUrl: req.body.linkedinUrl?.trim() || null,
+      };
+      if (row) {
+        await row.update(payload);
+      } else {
+        row = await db.SiteSettings.create(payload);
+      }
+      res.json(row);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
+module.exports = router;

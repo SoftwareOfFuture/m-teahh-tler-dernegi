@@ -62,6 +62,9 @@ import {
   type Publication,
   type Video,
   type ContactMessage,
+  getSiteSettingsAdmin,
+  updateSiteSettingsAdmin,
+  type SiteSettings,
 } from '../../lib/api';
 import {
   ANIMATION_OPTIONS,
@@ -91,6 +94,7 @@ export default function PlatformAdminPage() {
     | 'kurumsal'
     | 'iletisim'
     | 'contactMessages'
+    | 'social'
     | 'animations'
     | 'seo';
   const [tab, setTab] = useState<TabId>('members');
@@ -109,6 +113,7 @@ export default function PlatformAdminPage() {
     { id: 'kurumsal', label: 'Kurumsal' },
     { id: 'iletisim', label: 'İletişim' },
     { id: 'contactMessages', label: 'İletişim Mesajları' },
+    { id: 'social', label: 'Sosyal Medya' },
     { id: 'animations', label: 'Animasyonlar' },
     { id: 'seo', label: 'SEO' },
   ];
@@ -278,6 +283,8 @@ export default function PlatformAdminPage() {
               <IletisimPanel token={token} />
             ) : tab === 'contactMessages' ? (
               <ContactMessagesPanel token={token} />
+            ) : tab === 'social' ? (
+              <SocialMediaPanel token={token} />
             ) : tab === 'animations' ? (
               <AnimationsPanel />
             ) : tab === 'seo' ? (
@@ -539,7 +546,7 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
         <div>
           <h2 className="text-lg font-bold text-slate-900">İletişim Mesajları</h2>
           <p className="mt-1 text-sm text-slate-600">
-            İletişim sayfasındaki "Mesaj Gönder" formundan gelen mesajlar burada listelenir.
+            İletişim sayfasındaki &quot;Mesaj Gönder&quot; formundan gelen mesajlar burada listelenir.
           </p>
         </div>
         <button
@@ -607,6 +614,123 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
           ) : null}
         </>
       )}
+    </div>
+  );
+}
+
+const SOCIAL_LABELS: Record<keyof SiteSettings, string> = {
+  facebookUrl: 'Facebook',
+  instagramUrl: 'Instagram',
+  twitterUrl: 'Twitter / X',
+  youtubeUrl: 'YouTube',
+  linkedinUrl: 'LinkedIn',
+};
+
+function SocialMediaPanel({ token }: { token: string | null }) {
+  const [form, setForm] = useState<SiteSettings>({
+    facebookUrl: null,
+    instagramUrl: null,
+    twitterUrl: null,
+    youtubeUrl: null,
+    linkedinUrl: null,
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getSiteSettingsAdmin(token);
+      setForm({
+        facebookUrl: res.facebookUrl ?? null,
+        instagramUrl: res.instagramUrl ?? null,
+        twitterUrl: res.twitterUrl ?? null,
+        youtubeUrl: res.youtubeUrl ?? null,
+        linkedinUrl: res.linkedinUrl ?? null,
+      });
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Ayarlar yüklenemedi.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return (
+    <div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">Sosyal Medya Hesapları</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Navbar ve Footer’da gösterilen sosyal medya linklerini buradan güncelleyebilirsiniz. Boş bırakılan hesaplar gösterilmez.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={load}
+            disabled={!token || loading}
+            className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+          >
+            Yenile
+          </button>
+          <button
+            type="button"
+            onClick={async () => {
+              if (!token) return;
+              setLoading(true);
+              setError(null);
+              setSavedMsg(null);
+              try {
+                await updateSiteSettingsAdmin(token, {
+                  facebookUrl: form.facebookUrl?.trim() || null,
+                  instagramUrl: form.instagramUrl?.trim() || null,
+                  twitterUrl: form.twitterUrl?.trim() || null,
+                  youtubeUrl: form.youtubeUrl?.trim() || null,
+                  linkedinUrl: form.linkedinUrl?.trim() || null,
+                });
+                setSavedMsg('Kaydedildi.');
+                setTimeout(() => setSavedMsg(null), 3000);
+              } catch (e: unknown) {
+                setError((e as Error)?.message ?? 'Kaydetme başarısız.');
+              } finally {
+                setLoading(false);
+              }
+            }}
+            disabled={!token || loading}
+            className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          >
+            Kaydet
+          </button>
+        </div>
+      </div>
+
+      {error ? (
+        <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+      ) : null}
+      {savedMsg ? (
+        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+          {savedMsg}
+        </div>
+      ) : null}
+
+      <div className="mt-6 space-y-4 max-w-2xl">
+        {(['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl'] as const).map((key) => (
+          <Field key={key} label={SOCIAL_LABELS[key]}>
+            <TextInput
+              value={String(form[key] ?? '')}
+              onChange={(e) => setForm((s) => ({ ...s, [key]: e.target.value || null }))}
+              placeholder={`https://...`}
+            />
+          </Field>
+        ))}
+      </div>
     </div>
   );
 }
