@@ -14,6 +14,7 @@ const pagesRoutes = require('./routes/pages');
 const eventsRoutes = require('./routes/events');
 const partnersRoutes = require('./routes/partners');
 const smsFeedbackRoutes = require('./routes/sms-feedback');
+const contactMessagesRoutes = require('./routes/contact-messages');
 const bannersRoutes = require('./routes/banners');
 const propertiesRoutes = require('./routes/properties');
 
@@ -43,6 +44,7 @@ app.use('/api/partners', partnersRoutes);
 app.use('/api/banners', bannersRoutes);
 app.use('/api/properties', propertiesRoutes);
 app.use('/api/sms-feedback', smsFeedbackRoutes);
+app.use('/api/contact-messages', contactMessagesRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 

@@ -254,12 +254,51 @@ export async function register(payload: {
   });
 }
 
+// --- Contact Message (public) ---
+
+export async function createContactMessage(payload: { name: string; email: string; message: string }) {
+  return await apiFetch<{ success: true; id: number }>('/api/contact-messages', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export type ContactMessage = {
+  id: number;
+  name: string;
+  email: string;
+  message: string;
+  source: string | null;
+  status: string | null;
+  createdAt: string;
+};
+
+export async function listContactMessagesAdminAll(
+  token: string,
+  params?: { page?: number; limit?: number }
+) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  const url = `/api/contact-messages/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`;
+  return await apiFetch<{ items: ContactMessage[]; total: number; page: number; limit: number; totalPages: number }>(
+    url,
+    { method: 'GET', headers: { Authorization: `Bearer ${token}` } }
+  );
+}
+
 // --- SMS Feedback (public) ---
 
-export async function createSmsFeedback(payload: { phoneE164: string; message: string; name?: string; email?: string }) {
+export async function createSmsFeedback(payload: {
+  phoneE164: string;
+  message: string;
+  name?: string;
+  email?: string;
+  source?: string;
+}) {
   return await apiFetch<{ success: true; id: number }>('/api/sms-feedback', {
     method: 'POST',
-    body: JSON.stringify({ ...payload, source: 'web' }),
+    body: JSON.stringify({ ...payload, source: payload.source || 'web' }),
   });
 }
 
