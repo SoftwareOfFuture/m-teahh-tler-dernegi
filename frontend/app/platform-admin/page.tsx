@@ -23,12 +23,10 @@ import {
   getPageAdmin,
   getToken,
   listMemberDocumentsAdmin,
-  createEvent,
   createPartner,
   createProperty,
   listAnnouncementsAdminAll,
   listBannersAdminAll,
-  listEventsAdminAll,
   listMembersAdminAll,
   listNewsAdminAll,
   listPartnersAdminAll,
@@ -37,7 +35,6 @@ import {
   listSlidesAdminAll,
   listVideosAdminAll,
   me,
-  deleteEvent,
   deletePartner,
   deleteProperty,
   getMemberDocumentBlob,
@@ -45,7 +42,6 @@ import {
   requestMemberResubmission,
   reviewMemberDocumentAdmin,
   updateBanner,
-  updateEvent,
   updatePartner,
   updateProperty,
   upsertPageAdmin,
@@ -55,7 +51,6 @@ import {
   updateSlide,
   updateVideo,
   type Announcement,
-  type Event,
   type HeroSlide,
   type HomeBanner,
   type News,
@@ -89,7 +84,6 @@ export default function PlatformAdminPage() {
     | 'announcements'
     | 'videos'
     | 'publications'
-    | 'events'
     | 'partners'
     | 'properties'
     | 'kurumsal'
@@ -107,7 +101,6 @@ export default function PlatformAdminPage() {
     { id: 'announcements', label: 'Duyurular' },
     { id: 'videos', label: 'Videolar' },
     { id: 'publications', label: 'Yayınlar' },
-    { id: 'events', label: 'Etkinlikler' },
     { id: 'partners', label: 'Partnerler' },
     { id: 'properties', label: 'Emlak İlanları' },
     { id: 'kurumsal', label: 'Kurumsal' },
@@ -273,8 +266,6 @@ export default function PlatformAdminPage() {
               <VideosPanel token={token} />
             ) : tab === 'publications' ? (
               <PublicationsPanel token={token} />
-            ) : tab === 'events' ? (
-              <EventsPanel token={token} />
             ) : tab === 'partners' ? (
               <PartnersPanel token={token} />
             ) : tab === 'properties' ? (
@@ -1630,28 +1621,6 @@ function PublicationsPanel({ token }: { token: string | null }) {
       { key: 'excerpt', label: 'Özet', type: 'textarea' },
     ]}
   />;
-}
-
-function EventsPanel({ token }: { token: string | null }) {
-  return (
-    <GenericContentPanel<Event>
-      token={token}
-      title="Etkinlik Yönetimi"
-      subtitle="Ana sayfadaki Etkinlikler (sidebar) listesi buradan yönetilir."
-      list={(t) => listEventsAdminAll(t, { page: 1, limit: 200 })}
-      create={(t, p) => createEvent(t, p as any)}
-      update={(t, id, p) => updateEvent(t, id, p as any)}
-      remove={(t, id) => deleteEvent(t, id)}
-      fields={[
-        { key: 'title', label: 'Başlık', type: 'text', required: true },
-        { key: 'dateText', label: 'Tarih Yazısı (örn: 02 Şubat 2026)', type: 'text' },
-        { key: 'eventDate', label: 'Tarih (YYYY-MM-DD) (opsiyonel)', type: 'text' },
-        { key: 'location', label: 'Konum', type: 'text' },
-        { key: 'color', label: 'Renk (burgundy/green/blue)', type: 'text' },
-        { key: 'sortOrder', label: 'Sıralama', type: 'text' },
-      ]}
-    />
-  );
 }
 
 function PartnersPanel({ token }: { token: string | null }) {
