@@ -123,17 +123,21 @@ export function HeroSlider({ items }: Props) {
           </svg>
         </button>
 
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1">
           {safeItems.map((it, i) => (
             <button
               key={it.id}
               type="button"
               onClick={() => setIdx(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === idx ? 'w-8 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
-              }`}
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-colors hover:bg-white/10"
               aria-label={`Slayt ${i + 1}`}
-            />
+            >
+              <span
+                className={`block h-1.5 rounded-full transition-all duration-300 ${
+                  i === idx ? 'w-8 bg-white' : 'w-1.5 bg-white/50 hover:bg-white/80'
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

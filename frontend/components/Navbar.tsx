@@ -176,12 +176,12 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* MOBİL MENÜ: Slide-down */}
+      {/* MOBİL MENÜ: Slide-down — hidden ile kapalıyken focusable değil */}
       <div
         className={`overflow-hidden border-t border-slate-100 transition-all duration-300 ease-out ${
           mobileOpen ? 'max-h-[min(80vh,600px)] opacity-100' : 'max-h-0 opacity-0'
         }`}
-        {...(mobileOpen ? {} : { 'aria-hidden': 'true' as const })}
+        hidden={!mobileOpen}
       >
         <div className="w-full bg-white px-4 py-4 sm:px-6 lg:px-8">
           <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">

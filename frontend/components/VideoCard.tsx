@@ -31,7 +31,7 @@ export function VideoCard({ item, onOpen }: Props) {
           {item.title}
         </h3>
         <p className="mt-1 line-clamp-2 text-xs text-slate-600">{item.excerpt}</p>
-        <p className="mt-2 text-xs text-slate-400">{item.date}</p>
+        <p className="mt-2 text-xs text-slate-500">{item.date}</p>
       </div>
     </>
   );

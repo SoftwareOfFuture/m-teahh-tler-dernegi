@@ -30,9 +30,9 @@ export function LogoSlider({ logos }: Props) {
                 <div className="flex h-[80px] w-full items-center justify-center">
                   {logoSrc ? (
                     /* eslint-disable @next/next/no-img-element */
-                    <img src={logoSrc} alt={logo.name} className="max-h-[80px] w-auto max-w-[150px] object-contain" loading="lazy" />
+                    <img src={logoSrc} alt="" className="max-h-[80px] w-auto max-w-[150px] object-contain" loading="lazy" />
                   ) : (
-                    <div className="grid size-16 place-items-center rounded-lg bg-slate-200 text-lg font-bold text-slate-400">
+                    <div className="grid size-16 place-items-center rounded-lg bg-slate-200 text-lg font-bold text-slate-500">
                       {logo.name.substring(0, 2).toUpperCase()}
                     </div>
                   )}

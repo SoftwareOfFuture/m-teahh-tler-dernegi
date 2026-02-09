@@ -1348,7 +1348,7 @@ function MembersPanel({
                     </span>
                   </div>
                   <p className="mt-1 truncate text-xs text-slate-500">{m.company || '—'}</p>
-                  <p className="mt-1 truncate text-xs text-slate-400">{m.email}</p>
+                  <p className="mt-1 truncate text-xs text-slate-500">{m.email}</p>
                 </div>
 
                 <div className="sm:text-right">

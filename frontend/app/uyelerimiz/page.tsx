@@ -212,7 +212,7 @@ function MembersPageInner() {
                           <div className="mt-1 truncate text-sm font-semibold text-slate-500">{person}</div>
                         ) : null}
                       </div>
-                      <div className="mt-4 text-center text-xs font-semibold text-slate-400">
+                      <div className="mt-4 text-center text-xs font-semibold text-slate-500">
                         {href ? <span className="text-burgundy group-hover:text-burgundy-dark">Web Sitesi →</span> : 'Web sitesi yok'}
                       </div>
                     </div>
