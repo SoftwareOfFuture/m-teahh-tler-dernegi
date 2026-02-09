@@ -11,8 +11,10 @@ import { VideoCard } from './VideoCard';
 import { VideoPlayerModal } from './VideoPlayerModal';
 import { LogoSlider } from './LogoSlider';
 import { SiteFooter } from './SiteFooter';
+import { AnnouncementCard } from './AnnouncementCard';
 import type { NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/types';
 import {
+  listAnnouncementsRecent,
   listBannersPublic,
   listMembersPublic,
   listNewsPublic,
@@ -40,6 +42,8 @@ export function HomePageContent() {
   const [bannerLoading, setBannerLoading] = useState(true);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
+  const [announcementItems, setAnnouncementItems] = useState<{ id: string; code: string; date: string; title: string }[]>([]);
+  const [announcementsLoading, setAnnouncementsLoading] = useState(true);
   const [videoItems, setVideoItems] = useState<VideoItem[]>([]);
   const [videosLoading, setVideosLoading] = useState(true);
   const [videoPreview, setVideoPreview] = useState<{ url: string; title: string } | null>(null);
@@ -81,6 +85,7 @@ export function HomePageContent() {
         ]);
         if (cancelled) return;
         const r2 = await Promise.allSettled([
+          fetchWithRetry(() => listAnnouncementsRecent(), 1),
           fetchWithRetry(() => listVideosRecent({ limit: 3 }), 1),
           fetchWithRetry(() => listPublicationsRecent({ limit: 3 }), 1),
           fetchWithRetry(() => listPartnersPublic({ limit: 500 }), 1),
@@ -90,10 +95,11 @@ export function HomePageContent() {
         const slides = r1[0].status === 'fulfilled' ? r1[0].value : null;
         const bannersRes = r1[1].status === 'fulfilled' ? r1[1].value : null;
         const news = r1[2].status === 'fulfilled' ? r1[2].value : null;
-        const vids = r2[0].status === 'fulfilled' ? r2[0].value : null;
-        const pubs = r2[1].status === 'fulfilled' ? r2[1].value : null;
-        const partners = r2[2].status === 'fulfilled' ? r2[2].value : null;
-        const membersRes = r2[3]?.status === 'fulfilled' ? r2[3].value : null;
+        const announcements = r2[0].status === 'fulfilled' ? r2[0].value : null;
+        const vids = r2[1].status === 'fulfilled' ? r2[1].value : null;
+        const pubs = r2[2].status === 'fulfilled' ? r2[2].value : null;
+        const partners = r2[3].status === 'fulfilled' ? r2[3].value : null;
+        const membersRes = r2[4]?.status === 'fulfilled' ? r2[4].value : null;
         if (Array.isArray(slides) && slides.length) {
           setSliderItems(
             slides.map((s) => ({
@@ -122,6 +128,17 @@ export function HomePageContent() {
           );
         } else setNewsItems([]);
         setNewsLoading(false);
+        if (Array.isArray(announcements) && announcements.length) {
+          setAnnouncementItems(
+            announcements.slice(0, 6).map((a) => ({
+              id: String(a.id),
+              code: a.code || '',
+              date: formatDot(a.publishDate),
+              title: a.title,
+            }))
+          );
+        } else setAnnouncementItems([]);
+        setAnnouncementsLoading(false);
         if (Array.isArray(vids) && vids.length) {
           setVideoItems(
             vids.map((v) => ({
@@ -169,12 +186,14 @@ export function HomePageContent() {
       } catch {
         setSliderItems([]);
         setNewsItems([]);
+        setAnnouncementItems([]);
         setVideoItems([]);
         setPartnerLogos([]);
         setPublications([]);
         setSlidesLoading(false);
         setBannerLoading(false);
         setNewsLoading(false);
+        setAnnouncementsLoading(false);
         setVideosLoading(false);
         setPartnersLoading(false);
       }
@@ -226,6 +245,24 @@ export function HomePageContent() {
               {!newsLoading && newsItems.length === 0 ? (
                 <div className="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-sm text-slate-600">
                   Henüz haber eklenmemiş.
+                </div>
+              ) : null}
+            </div>
+            <div className={`min-w-0 ${sectionClass('news')}`}>
+              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-6">
+                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Duyurular</h2>
+                <Link href="/duyurular" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+                  Tüm Duyurular
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">
+                {announcementItems.slice(0, 6).map((item) => (
+                  <AnnouncementCard key={item.id} item={item} />
+                ))}
+              </div>
+              {!announcementsLoading && announcementItems.length === 0 ? (
+                <div className="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-sm text-slate-600">
+                  Henüz duyuru eklenmemiş.
                 </div>
               ) : null}
             </div>
