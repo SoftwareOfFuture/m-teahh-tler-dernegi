@@ -6,7 +6,7 @@ type Props = { item: AnnouncementItem };
 export function AnnouncementCard({ item }: Props) {
   return (
     <Link
-      href="#"
+      href={`/duyurular/detay?id=${encodeURIComponent(item.id)}`}
       className="group flex items-start gap-3 rounded-2xl bg-white p-4 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg"
     >
       <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-burgundy/10 text-burgundy">

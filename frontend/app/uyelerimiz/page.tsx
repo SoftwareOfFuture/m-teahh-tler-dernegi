@@ -79,16 +79,19 @@ function MembersPageInner() {
         
         // Add partners
         if (Array.isArray(partnersRes)) {
+          const pm = new Map<number, Partner>();
           partnersRes.forEach((p: Partner) => {
+            pm.set(p.id, p);
             combined.push({
               id: `partner-${p.id}`,
               type: 'partner',
               name: p.title,
               company: p.title,
               logoUrl: p.logoUrl || null,
-              websiteUrl: null,
+              websiteUrl: p.websiteUrl || null,
             });
           });
+          setPartnersMap(pm);
         }
         
         // Add approved members (exclude admin accounts)

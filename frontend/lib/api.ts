@@ -491,6 +491,10 @@ export async function listAnnouncementsRecent() {
   return await apiFetch<Announcement[]>('/api/announcements/recent', { method: 'GET' });
 }
 
+export async function getAnnouncementPublic(id: number) {
+  return await apiFetch<Announcement>(`/api/announcements/${id}`, { method: 'GET' });
+}
+
 export async function listVideosPublic(params?: { page?: number; limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.page) qs.set('page', String(params.page));
