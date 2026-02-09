@@ -318,6 +318,31 @@ export async function listContactMessagesAdminAll(
 
 // --- SMS Feedback (public) ---
 
+export type SmsFeedback = {
+  id: number;
+  phoneE164: string;
+  name: string | null;
+  email: string | null;
+  message: string;
+  source: string | null;
+  status: string | null;
+  createdAt: string;
+};
+
+export async function listSmsFeedbackAdminAll(
+  token: string,
+  params?: { page?: number; limit?: number }
+) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  const url = `/api/sms-feedback/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`;
+  return await apiFetch<{ items: SmsFeedback[]; total: number; page: number; limit: number; totalPages: number }>(
+    url,
+    { method: 'GET', headers: { Authorization: `Bearer ${token}` } }
+  );
+}
+
 export async function createSmsFeedback(payload: {
   phoneE164: string;
   message: string;

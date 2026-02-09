@@ -69,12 +69,22 @@ export function HeroSlider({ items }: Props) {
         <div className="absolute inset-0 flex items-end">
           <div className="w-full max-w-full min-w-0 p-4 sm:p-6 md:p-8 lg:p-12">
             <h1 className="text-xl font-bold leading-tight text-white sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl break-words">
-              ANTMUTDER DİJİTAL PLATFORMLAR
+              {current.title}
             </h1>
-            <p className="mt-2 max-w-2xl min-w-0 text-xs leading-relaxed text-white/90 sm:mt-3 sm:text-sm md:text-base break-words">
-              Sektörel birliktelik, güncel içerikler ve güçlü iletişim için dijital platformlarımızla yanınızdayız.
-            </p>
+            {current.description ? (
+              <p className="mt-2 max-w-2xl min-w-0 text-xs leading-relaxed text-white/90 sm:mt-3 sm:text-sm md:text-base break-words">
+                {current.description}
+              </p>
+            ) : null}
             <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 sm:gap-3">
+              {current.href && current.href !== '#' ? (
+                <Link
+                  href={current.href}
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
+                >
+                  Detay
+                </Link>
+              ) : null}
               <Link
                 href="/kurumsal"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"

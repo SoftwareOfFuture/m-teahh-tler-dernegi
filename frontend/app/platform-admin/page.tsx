@@ -32,6 +32,7 @@ import {
   listPartnersAdminAll,
   listPropertiesAdminAll,
   listContactMessagesAdminAll,
+  listSmsFeedbackAdminAll,
   listPublicationsAdminAll,
   listSlidesAdminAll,
   listVideosAdminAll,
@@ -62,6 +63,7 @@ import {
   type Publication,
   type Video,
   type ContactMessage,
+  type SmsFeedback,
   getSiteSettingsAdmin,
   updateSiteSettingsAdmin,
   type SiteSettings,
@@ -94,6 +96,7 @@ export default function PlatformAdminPage() {
     | 'kurumsal'
     | 'iletisim'
     | 'contactMessages'
+    | 'smsFeedback'
     | 'social'
     | 'animations'
     | 'seo';
@@ -113,6 +116,7 @@ export default function PlatformAdminPage() {
     { id: 'kurumsal', label: 'Kurumsal' },
     { id: 'iletisim', label: 'İletişim' },
     { id: 'contactMessages', label: 'İletişim Mesajları' },
+    { id: 'smsFeedback', label: 'SMS Geri Bildirimleri' },
     { id: 'social', label: 'Sosyal Medya' },
     { id: 'animations', label: 'Animasyonlar' },
     { id: 'seo', label: 'SEO' },
@@ -283,6 +287,8 @@ export default function PlatformAdminPage() {
               <IletisimPanel token={token} />
             ) : tab === 'contactMessages' ? (
               <ContactMessagesPanel token={token} />
+            ) : tab === 'smsFeedback' ? (
+              <SmsFeedbackPanel token={token} />
             ) : tab === 'social' ? (
               <SocialMediaPanel token={token} />
             ) : tab === 'animations' ? (
@@ -584,6 +590,115 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
                 <a href={`mailto:${m.email}`} className="mt-1 text-sm text-burgundy hover:underline">
                   {m.email}
                 </a>
+                <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">{m.message}</p>
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 ? (
+            <div className="mt-6 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1 || loading}
+                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+              >
+                ← Önceki
+              </button>
+              <span className="text-sm text-slate-600">
+                {page} / {totalPages}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages || loading}
+                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+              >
+                Sonraki →
+              </button>
+            </div>
+          ) : null}
+        </>
+      )}
+    </div>
+  );
+}
+
+function SmsFeedbackPanel({ token }: { token: string | null }) {
+  const [items, setItems] = useState<SmsFeedback[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const load = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await listSmsFeedbackAdminAll(token, { page, limit: 50 });
+      setItems(res.items || []);
+      setTotalPages(res.totalPages || 1);
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'SMS geri bildirimleri yüklenemedi.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token, page]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return (
+    <div>
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">SMS Geri Bildirimleri</h2>
+          <p className="mt-1 text-sm text-slate-600">
+            İletişim sayfası ve &quot;SMS ile Geri Bildirim&quot; formundan gelen kayıtlar burada listelenir.
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={load}
+          disabled={!token || loading}
+          className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
+        >
+          Yenile
+        </button>
+      </div>
+
+      {error ? (
+        <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+      ) : null}
+
+      {loading ? (
+        <div className="mt-6 rounded-2xl bg-soft-gray p-8 text-center text-sm text-slate-600">Yükleniyor…</div>
+      ) : items.length === 0 ? (
+        <div className="mt-6 rounded-2xl border border-black/5 bg-soft-gray p-8 text-center text-sm text-slate-600">
+          Henüz geri bildirim yok.
+        </div>
+      ) : (
+        <>
+          <div className="mt-6 space-y-4">
+            {items.map((m) => (
+              <div
+                key={m.id}
+                className="rounded-2xl border border-black/5 bg-white p-5 shadow-soft"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <a href={`tel:${m.phoneE164}`} className="font-semibold text-slate-900 hover:text-burgundy">
+                    {m.phoneE164}
+                  </a>
+                  <div className="text-xs text-slate-500">{formatDate(m.createdAt)}</div>
+                </div>
+                {m.name ? <p className="mt-1 text-sm text-slate-700">{m.name}</p> : null}
+                {m.email ? (
+                  <a href={`mailto:${m.email}`} className="mt-1 block text-sm text-burgundy hover:underline">
+                    {m.email}
+                  </a>
+                ) : null}
                 <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">{m.message}</p>
               </div>
             ))}
