@@ -1634,7 +1634,7 @@ function PartnersPanel({ token }: { token: string | null }) {
       update={(t, id, p) => updatePartner(t, id, p as any)}
       remove={(t, id) => deletePartner(t, id)}
       fields={[
-        { key: 'title', label: 'Partner Adı', type: 'text', required: true },
+        { key: 'title', label: 'Partner Adı', type: 'text' },
         { key: 'logoText', label: 'Logo Yazısı (UI)', type: 'text' },
         { key: 'logoUrl', label: 'Logo URL (opsiyonel)', type: 'imageUrl' },
         { key: 'websiteUrl', label: 'Web Sitesi URL (opsiyonel)', type: 'text' },

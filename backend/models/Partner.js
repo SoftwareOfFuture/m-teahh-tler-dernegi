@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       title: {
         // partner name
         type: DataTypes.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
       logoText: {
         // used in current UI as text-logo

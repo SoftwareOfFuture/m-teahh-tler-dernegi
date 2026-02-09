@@ -61,7 +61,7 @@ router.post(
   auth,
   adminOnly,
   [
-    body('title').trim().notEmpty().isLength({ max: 255 }),
+    body('title').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('logoText').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000000 }),
     body('websiteUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
@@ -72,7 +72,7 @@ router.post(
   async (req, res) => {
     try {
       const item = await db.Partner.create({
-        title: req.body.title,
+        title: req.body.title?.trim() || null,
         logoText: req.body.logoText || null,
         logoUrl: req.body.logoUrl || null,
         websiteUrl: req.body.websiteUrl || null,
@@ -93,7 +93,7 @@ router.put(
   adminOnly,
   [
     param('id').isInt().toInt(),
-    body('title').optional().trim().notEmpty().isLength({ max: 255 }),
+    body('title').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('logoText').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('logoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000000 }),
     body('websiteUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
@@ -106,7 +106,7 @@ router.put(
       const item = await db.Partner.findByPk(req.params.id);
       if (!item) return res.status(404).json({ error: 'Partner not found.' });
       await item.update({
-        ...(req.body.title !== undefined && { title: req.body.title }),
+        ...(req.body.title !== undefined && { title: req.body.title?.trim() || null }),
         ...(req.body.logoText !== undefined && { logoText: req.body.logoText }),
         ...(req.body.logoUrl !== undefined && { logoUrl: req.body.logoUrl }),
         ...(req.body.websiteUrl !== undefined && { websiteUrl: req.body.websiteUrl }),
