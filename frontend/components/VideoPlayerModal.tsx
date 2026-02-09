@@ -68,48 +68,45 @@ export function VideoPlayerModal({
   if (!open || !url) return null;
 
   return (
-    <div className="fixed inset-0 z-[80]">
-      <button type="button" className="absolute inset-0 bg-black/60" aria-label="Kapat" onClick={onClose} />
+    <div className="fixed inset-0 z-[80] flex flex-col bg-black">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-black/90 px-4 py-3 backdrop-blur-sm">
+        <div className="min-w-0">
+          <h2 id="video-modal-title" className="truncate text-sm font-bold text-white">
+            {title || 'Video'}
+          </h2>
+          <p id="video-modal-description" className="truncate text-xs text-white/70">
+            {url}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/20"
+          >
+            Yeni sekmede aç
+          </a>
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-burgundy px-3 py-2 text-xs font-semibold text-white hover:bg-burgundy-dark"
+          >
+            Kapat
+          </button>
+        </div>
+      </div>
 
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="video-modal-title"
         aria-describedby="video-modal-description"
-        className="absolute left-1/2 top-1/2 w-[calc(100vw-16px)] max-w-[min(980px,calc(100vw-24px))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-white shadow-card sm:rounded-3xl"
+        className="flex flex-1 min-h-0 w-full"
       >
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-black/10 px-3 py-3 sm:gap-3 sm:px-4">
-          <div className="min-w-0">
-            <h2 id="video-modal-title" className="truncate text-sm font-bold text-slate-900">
-              {title || 'Video'}
-            </h2>
-            <p id="video-modal-description" className="truncate text-xs text-slate-500">
-              {url}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            <a
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full border border-black/10 bg-white px-3 py-2 text-xs font-semibold text-slate-700 active:scale-[0.98] hover:bg-soft-gray"
-            >
-              Yeni sekmede aç
-            </a>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-full bg-burgundy px-3 py-2 text-xs font-semibold text-white active:scale-[0.98] hover:bg-burgundy-dark"
-            >
-              Kapat
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-black">
-          <div className="relative aspect-video w-full">
+        <div className="relative flex-1 w-full min-h-0">
             {info.kind === 'file' && info.fileUrl ? (
-              <video className="absolute inset-0 h-full w-full" controls autoPlay src={info.fileUrl} />
+              <video className="absolute inset-0 h-full w-full object-contain" controls autoPlay src={info.fileUrl} />
             ) : info.kind !== 'unknown' && info.embedUrl ? (
               <iframe
                 title={title || 'Video'}
@@ -126,7 +123,6 @@ export function VideoPlayerModal({
                 </div>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>

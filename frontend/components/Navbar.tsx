@@ -3,13 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getToken } from '../lib/api';
 import { useSiteSettings } from '../lib/useSiteSettings';
 
 /* =============================================================================
    NAVBAR - Kurumsal Beyaz Navbar
-   - Kaydırırken aşağı gidince gizlenir, yukarı veya durunca geri gelir
+   - Sayfayı takip eder (her zaman görünür), arka plan blur efekti
    ============================================================================= */
 
 export type NavItem = { href: string; label: string } | { label: string; children: { href: string; label: string }[] };
@@ -48,52 +48,20 @@ const navItems: NavItem[] = [
   { href: '/iletisim', label: 'İletişim' },
 ];
 
-const SCROLL_SHOW_TOP = 40;
-
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState<string | null>(null);
   const [hasToken, setHasToken] = useState(false);
   const social = useSiteSettings();
-  const [navbarVisible, setNavbarVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const ticking = useRef(false);
   const pathname = usePathname();
 
   useEffect(() => {
     setHasToken(!!getToken());
   }, []);
 
-  const onScroll = useCallback(() => {
-    if (ticking.current) return;
-    ticking.current = true;
-    requestAnimationFrame(() => {
-      const y = typeof window !== 'undefined' ? window.scrollY : 0;
-      const delta = y - lastScrollY.current;
-      if (y <= SCROLL_SHOW_TOP) {
-        setNavbarVisible(true);
-      } else if (delta > 8) {
-        setNavbarVisible(false);
-      } else if (delta < -8) {
-        setNavbarVisible(true);
-      }
-      lastScrollY.current = y;
-      ticking.current = false;
-    });
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    lastScrollY.current = window.scrollY;
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [onScroll]);
-
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-slate-100 bg-white shadow-soft transition-transform duration-300 ease-out safe-area-inset-top ${
-        navbarVisible ? 'translate-y-0' : '-translate-y-full'
-      }`}
+      className="sticky top-0 z-50 w-full border-b border-slate-100/80 bg-white/80 shadow-soft backdrop-blur-md supports-[backdrop-filter]:bg-white/70 safe-area-inset-top"
       role="banner"
     >
       <nav
