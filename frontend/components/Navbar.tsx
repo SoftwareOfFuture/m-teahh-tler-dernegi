@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getToken } from '../lib/api';
 import { useSiteSettings } from '../lib/useSiteSettings';
+import { MobileMenu, type MobileMenuItem } from './MobileMenu';
 
 /* =============================================================================
    NAVBAR - Kurumsal Beyaz Navbar
@@ -70,7 +71,7 @@ export function Navbar() {
     if (ticking.current) return;
     ticking.current = true;
     requestAnimationFrame(() => {
-      const y = typeof window !== 'undefined' ? window.scrollY : 0;
+      const y = typeof window !== 'undefined' ? (window.scrollY ?? document.documentElement.scrollTop) : 0;
       const delta = y - lastScrollY.current;
       if (y <= SCROLL_TOP_SHOW) {
         setNavbarVisible(true);
@@ -86,7 +87,7 @@ export function Navbar() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    lastScrollY.current = window.scrollY;
+    lastScrollY.current = window.scrollY ?? document.documentElement.scrollTop;
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, [onScroll]);
@@ -147,9 +148,13 @@ export function Navbar() {
                       <path d="M6 9l6 6 6-6" />
                     </svg>
                   </button>
+                  {/* Köprü: buton ile menü arasında boşluk - fare menüye geçerken dropdown kapanmasın */}
+                  {open ? (
+                    <div className="absolute left-0 right-0 top-full h-1 z-50" aria-hidden />
+                  ) : null}
                   {open ? (
                     <ul
-                      className="absolute left-0 top-full z-50 mt-1 min-w-[200px] list-none rounded-xl border border-slate-100 bg-white py-1 shadow-soft"
+                      className="absolute left-0 top-full z-50 pt-1 min-w-[200px] list-none rounded-xl border border-slate-100 bg-white py-1 shadow-soft"
                       role="menu"
                     >
                       {item.children.map((c) => {
@@ -224,97 +229,44 @@ export function Navbar() {
             {hasToken ? 'Profilim' : 'Üye Girişi'}
           </Link>
 
-          <button
-            type="button"
-            onClick={() => setMobileOpen((o) => !o)}
-            className="grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-lg text-slate-700 transition-colors duration-200 hover:bg-burgundy/5 lg:hidden"
-            {...(mobileOpen ? { 'aria-expanded': 'true' as const } : { 'aria-expanded': 'false' as const })}
-            aria-label="Menüyü aç/kapat"
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              {mobileOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
-            </svg>
-          </button>
+          <div className="lg:hidden">
+            <MobileMenu
+              open={mobileOpen}
+              onToggle={() => setMobileOpen((o) => !o)}
+              items={navItems as MobileMenuItem[]}
+              activeHref={pathname ?? ''}
+              footer={
+                (social?.instagramUrl || social?.facebookUrl) ? (
+                  <div className="flex gap-2">
+                    {social?.instagramUrl ? (
+                      <a
+                        href={social.instagramUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Instagram"
+                        className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10 dark:bg-slate-800 dark:text-slate-300"
+                      >
+                        <InstagramIcon />
+                      </a>
+                    ) : null}
+                    {social?.facebookUrl ? (
+                      <a
+                        href={social.facebookUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="Facebook"
+                        className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10 dark:bg-slate-800 dark:text-slate-300"
+                      >
+                        <FacebookIcon />
+                      </a>
+                    ) : null}
+                  </div>
+                ) : undefined
+              }
+            />
+          </div>
         </div>
       </nav>
-
-      {/* MOBİL MENÜ: Slide-down — hidden ile kapalıyken focusable değil */}
-      <div
-        className={`overflow-hidden border-t border-slate-100 transition-all duration-300 ease-out ${
-          mobileOpen ? 'max-h-[min(80vh,600px)] opacity-100' : 'max-h-0 opacity-0'
-        }`}
-        hidden={!mobileOpen}
-      >
-        <div className="w-full bg-white px-4 py-4 sm:px-6 lg:px-8">
-          <nav className="flex flex-col gap-0.5" aria-label="Mobil navigasyon">
-            {navItems.map((item) => {
-              if ('children' in item) {
-                return (
-                  <div key={item.label} className="flex flex-col gap-0.5">
-                    <div className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-500">{item.label}</div>
-                    {item.children.map((c) => {
-                      const isActive = pathname === c.href;
-                      return (
-                        <Link
-                          key={c.href}
-                          href={c.href}
-                          onClick={() => setMobileOpen(false)}
-                          className={`min-h-[44px] rounded-xl px-4 py-3 pl-6 text-sm font-medium transition-colors ${
-                            isActive ? 'bg-burgundy/10 text-burgundy' : 'text-slate-700 hover:bg-burgundy/5'
-                          }`}
-                        >
-                          {c.label}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                );
-              }
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileOpen(false)}
-                  className={`min-h-[48px] rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-                    isActive ? 'bg-burgundy/10 text-burgundy' : 'text-slate-700 hover:bg-burgundy/5'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            {(social?.instagramUrl || social?.facebookUrl) ? (
-              <div className="mt-3 flex gap-2 border-t border-slate-200/50 pt-3">
-                {social?.instagramUrl ? (
-                  <a
-                    href={social.instagramUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Instagram"
-                    onClick={() => setMobileOpen(false)}
-                    className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
-                  >
-                    <InstagramIcon />
-                  </a>
-                ) : null}
-                {social?.facebookUrl ? (
-                  <a
-                    href={social.facebookUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label="Facebook"
-                    onClick={() => setMobileOpen(false)}
-                    className="flex size-11 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:bg-burgundy/10"
-                  >
-                    <FacebookIcon />
-                  </a>
-                ) : null}
-              </div>
-            ) : null}
-          </nav>
-        </div>
-      </div>
     </header>
   );
 }

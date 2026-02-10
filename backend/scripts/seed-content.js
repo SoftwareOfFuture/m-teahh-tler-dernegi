@@ -49,12 +49,13 @@ async function seedMissingByKey(model, rows, name, getKey, attrs = ['id', 'title
   console.log(`${name}: inserted ${toInsert.length} missing rows`);
 }
 
+// Sadece eksik sayfaları oluştur. Mevcut sayfaları GÜNCELLEME - admin panelden
+// yapılan değişiklikler deploy sonrası silinmesin.
 async function seedPageContent(pages) {
   for (const p of pages) {
     const existing = await db.PageContent.findOne({ where: { slug: p.slug } });
     if (existing) {
-      await existing.update(p);
-      console.log(`PageContent [${p.slug}]: updated`);
+      console.log(`PageContent [${p.slug}]: mevcut, atlanıyor (admin verileri korunur)`);
     } else {
       await db.PageContent.create(p);
       console.log(`PageContent [${p.slug}]: created`);
