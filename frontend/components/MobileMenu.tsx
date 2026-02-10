@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 /* =============================================================================
    MobileMenu - Mobil uyumlu hamburger menü
@@ -114,6 +115,75 @@ export function MobileMenu({
   const linkInactiveClass =
     'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800';
 
+  const overlayContent = (
+      <>
+        {/* Backdrop: tıklanınca kapat - body'da render, parent transform'tan etkilenmez */}
+        <div
+          className={`fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out lg:hidden ${
+            open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+          }`}
+          aria-hidden
+          onClick={onToggle}
+        />
+
+        {/* Menü paneli: viewport tam yükseklik, sağdan slide-in */}
+        <div
+          id={MENU_ID}
+          role="navigation"
+          aria-label="Mobil menü"
+          className={`fixed right-0 top-0 z-[60] flex h-dvh min-h-[100vh] w-[min(320px,90vw)] flex-col overflow-y-auto rounded-l-2xl bg-white shadow-xl transition-[transform,opacity] duration-300 ease-in-out dark:bg-slate-900 dark:shadow-slate-950/50 lg:hidden pt-[calc(env(safe-area-inset-top)+56px)] ${panelClassName} ${
+            open
+              ? 'translate-x-0 opacity-100'
+              : 'translate-x-full opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="flex flex-1 flex-col gap-0.5 p-4">
+            {items.map((item) => {
+              if ('children' in item) {
+                return (
+                  <div key={item.label} className="flex flex-col gap-0.5">
+                    <div className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                      {item.label}
+                    </div>
+                    {item.children.map((c) => (
+                      <Link
+                        key={c.href}
+                        href={c.href}
+                        onClick={onToggle}
+                        className={`${linkBaseClass} ${
+                          isActive(c.href) ? linkActiveClass : linkInactiveClass
+                        } pl-6`}
+                      >
+                        {c.label}
+                      </Link>
+                    ))}
+                  </div>
+                );
+              }
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onToggle}
+                  className={`${linkBaseClass} ${
+                    isActive(item.href) ? linkActiveClass : linkInactiveClass
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+
+          {footer ? (
+            <div className="mt-auto shrink-0 border-t border-slate-200 p-4 dark:border-slate-700">
+              {footer}
+            </div>
+          ) : null}
+        </div>
+      </>
+  );
+
   return (
     <>
       {/* Hamburger / Kapat butonu */}
@@ -128,70 +198,7 @@ export function MobileMenu({
         <HamburgerIcon open={open} />
       </button>
 
-      {/* Backdrop: tıklanınca kapat */}
-      <div
-        className={`fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out lg:hidden ${
-          open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-        aria-hidden
-        onClick={onToggle}
-      />
-
-      {/* Menü paneli: sağdan slide-in + opacity */}
-      <div
-        id={MENU_ID}
-        role="navigation"
-        aria-label="Mobil menü"
-        className={`fixed right-0 top-0 z-[60] flex h-full w-[min(320px,85vw)] max-w-full flex-col overflow-y-auto rounded-l-2xl bg-white shadow-xl transition-[transform,opacity] duration-300 ease-in-out dark:bg-slate-900 dark:shadow-slate-950/50 lg:hidden safe-area-inset-top pt-14 ${panelClassName} ${
-          open
-            ? 'translate-x-0 opacity-100'
-            : 'translate-x-full opacity-0 pointer-events-none'
-        }`}
-      >
-        <div className="flex flex-col gap-0.5 p-4">
-          {items.map((item) => {
-            if ('children' in item) {
-              return (
-                <div key={item.label} className="flex flex-col gap-0.5">
-                  <div className="px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                    {item.label}
-                  </div>
-                  {item.children.map((c) => (
-                    <Link
-                      key={c.href}
-                      href={c.href}
-                      onClick={onToggle}
-                      className={`${linkBaseClass} ${
-                        isActive(c.href) ? linkActiveClass : linkInactiveClass
-                      } pl-6`}
-                    >
-                      {c.label}
-                    </Link>
-                  ))}
-                </div>
-              );
-            }
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onToggle}
-                className={`${linkBaseClass} ${
-                  isActive(item.href) ? linkActiveClass : linkInactiveClass
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </div>
-
-        {footer ? (
-          <div className="mt-auto border-t border-slate-200 p-4 dark:border-slate-700">
-            {footer}
-          </div>
-        ) : null}
-      </div>
+      {typeof document !== 'undefined' ? createPortal(overlayContent, document.body) : null}
     </>
   );
 }
