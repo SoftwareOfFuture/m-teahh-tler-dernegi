@@ -224,7 +224,7 @@ export function HomePageContent() {
             <HeroSlider items={sliderItems} />
           </div>
         )}
-        <div className={`mt-4 w-full sm:mt-5 ${sectionClass('banner')}`}>
+        <div className={`mt-3 w-full sm:mt-5 ${sectionClass('banner')}`}>
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
         </div>
         {siteSettings?.promoVideoUrl ? (
@@ -238,9 +238,17 @@ export function HomePageContent() {
                   onKeyDown={(e) => e.key === 'Enter' && setVideoPreview({ url: siteSettings.promoVideoUrl!, title: 'Tanıtım Filmi' })}
                   aria-label="Tanıtım filmi oynat"
                 >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="size-20 rounded-full bg-burgundy/90 flex items-center justify-center text-white group-hover:scale-110 transition-transform">
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" className="ml-1"><path d="M8 5v14l11-7z"/></svg>
+                  {siteSettings.promoVideoCoverUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- external URL, dynamic
+                    <img
+                      src={siteSettings.promoVideoCoverUrl}
+                      alt="Tanıtım filmi kapak"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : null}
+                  <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40">
+                    <div className="size-16 rounded-full bg-burgundy/90 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform sm:size-20">
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 sm:ml-1 sm:w-8 sm:h-8"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                   </div>
                 </div>
@@ -260,8 +268,8 @@ export function HomePageContent() {
             </div>
           </div>
         ) : null}
-        <section className="mt-8 w-full min-w-0 sm:mt-12 lg:mt-16">
-          <div className="grid w-full grid-cols-1 gap-8 min-w-0 sm:gap-12 lg:gap-20">
+        <section className="mt-6 w-full min-w-0 sm:mt-10 lg:mt-14">
+          <div className="grid w-full grid-cols-1 gap-6 min-w-0 sm:gap-10 lg:gap-16">
             <div id="dijital-platformlar" className={`${sectionClass('dijitalPlatformlar')} scroll-mt-24`}>
               <DigitalPlatformsSlider title="ANTMUTDER DİJİTAL PLATFORMLAR" />
             </div>
@@ -341,32 +349,32 @@ export function HomePageContent() {
                 </div>
               ) : null}
             </div>
-            <div className={`w-full min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-soft sm:p-5 md:p-6 ${sectionClass('publications')}`}>
-              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-5">
-                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Yayınlar</h2>
-                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+            <div className={`w-full min-w-0 overflow-hidden rounded-2xl bg-white p-3 shadow-soft sm:p-4 md:p-5 ${sectionClass('publications')}`}>
+              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-4">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 sm:text-lg md:text-xl">Yayınlar</h2>
+                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
                   Tüm Yayınlar
                 </Link>
               </div>
-              <div className="grid grid-cols-1 gap-3 min-w-0 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 min-w-0 sm:gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
                 {(publications.length ? publications : []).slice(0, 4).map((p) => (
                   <a
                     key={p.id}
                     href={p.fileUrl || '#'}
-                    className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg hover:border-burgundy/20"
+                    className="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft-lg hover:border-burgundy/20"
                   >
-                    <div className="aspect-[3/4] w-full overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100">
-                      <div className="flex h-full w-full items-center justify-center p-6 text-center">
-                        <span className="text-4xl opacity-30">📄</span>
+                    <div className="aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100 sm:aspect-[3/4]">
+                      <div className="flex h-full w-full items-center justify-center p-4 text-center sm:p-5">
+                        <span className="text-2xl opacity-30 sm:text-3xl">📄</span>
                       </div>
                     </div>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-burgundy/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <span className="text-sm font-semibold text-white">İncele / İndir</span>
-                      <span className="text-xs text-white/90">→</span>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-burgundy/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="text-xs font-semibold text-white sm:text-sm">İncele / İndir</span>
+                      <span className="text-[10px] text-white/90 sm:text-xs">→</span>
                     </div>
-                    <div className="p-4">
-                      <div className="truncate font-semibold text-slate-800">{p.title}</div>
-                      <div className="mt-1 text-xs text-slate-500">{formatDot(p.publishDate)}</div>
+                    <div className="p-2.5 sm:p-3">
+                      <div className="line-clamp-2 text-xs font-semibold text-slate-800 sm:text-sm">{p.title}</div>
+                      <div className="mt-0.5 text-[10px] text-slate-500 sm:text-xs">{formatDot(p.publishDate)}</div>
                     </div>
                   </a>
                 ))}

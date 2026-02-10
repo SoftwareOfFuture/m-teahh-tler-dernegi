@@ -744,6 +744,7 @@ const SOCIAL_LABELS: Record<keyof SiteSettings, string> = {
   youtubeUrl: 'YouTube',
   linkedinUrl: 'LinkedIn',
   promoVideoUrl: 'Tanıtım Filmi (YouTube/Vimeo URL)',
+  promoVideoCoverUrl: 'Tanıtım Filmi Kapak Görseli URL',
 };
 
 function SocialMediaPanel({ token }: { token: string | null }) {
@@ -753,6 +754,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
     twitterUrl: null,
     youtubeUrl: null,
     promoVideoUrl: null,
+    promoVideoCoverUrl: null,
     linkedinUrl: null,
   });
   const [loading, setLoading] = useState(false);
@@ -772,6 +774,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
             youtubeUrl: res.youtubeUrl ?? null,
             linkedinUrl: res.linkedinUrl ?? null,
             promoVideoUrl: res.promoVideoUrl ?? null,
+            promoVideoCoverUrl: res.promoVideoCoverUrl ?? null,
           });
     } catch (e: unknown) {
       setError((e as Error)?.message ?? 'Ayarlar yüklenemedi.');
@@ -817,6 +820,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
                   youtubeUrl: form.youtubeUrl?.trim() || null,
                   linkedinUrl: form.linkedinUrl?.trim() || null,
                   promoVideoUrl: form.promoVideoUrl?.trim() || null,
+                  promoVideoCoverUrl: form.promoVideoCoverUrl?.trim() || null,
                 });
                 setSavedMsg('Kaydedildi.');
                 setTimeout(() => setSavedMsg(null), 3000);
@@ -844,7 +848,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
       ) : null}
 
       <div className="mt-6 space-y-4 max-w-2xl">
-        {(['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl'] as const).map((key) => (
+        {(['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl', 'promoVideoCoverUrl'] as const).map((key) => (
           <Field key={key} label={SOCIAL_LABELS[key]}>
             <TextInput
               value={String(form[key] ?? '')}

@@ -20,6 +20,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
   const currentIndexRef = useRef(0);
 
   const [activeLayer, setActiveLayer] = useState<'a' | 'b'>('a');
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [layerA, setLayerA] = useState<HomeBanner | null>(() => list[0] ?? null);
   const [layerB, setLayerB] = useState<HomeBanner | null>(() => list[0] ?? null);
 
@@ -30,6 +31,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
     activeLayerRef.current = 'a';
     currentIndexRef.current = 0;
     setActiveLayer('a');
+    setCurrentIndex(0);
     setLayerA(list[0]);
     setLayerB(list[0]);
     (async () => {
@@ -78,6 +80,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
               gsap.set(activeEl, { opacity: 0, zIndex: 1 });
               gsap.set(nextEl, { opacity: 1, zIndex: 2 });
               setActiveLayer(toLayer);
+              setCurrentIndex(nextIndex);
               activeLayerRef.current = toLayer;
               currentIndexRef.current = nextIndex;
             },
@@ -86,6 +89,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
           tl.to(nextEl, { opacity: 1, duration: 0.7, ease: 'power2.out' }, 0);
         } catch {
           setActiveLayer(toLayer);
+          setCurrentIndex(nextIndex);
           activeLayerRef.current = toLayer;
           currentIndexRef.current = nextIndex;
         }
@@ -99,8 +103,8 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
 
   if (!list.length && loading) {
     return (
-      <div className="relative mx-4 mt-4 overflow-hidden rounded-2xl bg-slate-200 md:mx-6">
-        <div className="h-[180px] animate-pulse sm:h-[280px] md:h-[350px] lg:h-[450px]" />
+      <div className="relative w-full overflow-hidden rounded-xl bg-slate-200 sm:rounded-2xl">
+        <div className="h-[120px] animate-pulse sm:h-[180px] md:h-[240px] lg:h-[320px]" />
       </div>
     );
   }
@@ -111,8 +115,8 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
   const layerBEffective = layerB ?? activeBanner;
 
   const content = (
-    <div ref={rootRef} className="group relative w-full min-w-0 overflow-hidden rounded-2xl bg-slate-900 shadow-soft-lg">
-      <div className="relative h-[160px] w-full min-w-0 sm:h-[220px] md:h-[280px] lg:h-[350px] xl:h-[450px]" style={{ aspectRatio: '1920 / 450' }}>
+    <div ref={rootRef} className="group relative w-full min-w-0 overflow-hidden rounded-xl bg-slate-900 shadow-soft-lg sm:rounded-2xl">
+      <div className="relative h-[130px] w-full min-w-0 sm:h-[180px] md:h-[240px] lg:h-[300px] xl:h-[380px]" style={{ aspectRatio: '16 / 9' }}>
         {/* Layer A - animasyon dışında opacity activeLayer ile, animasyonda GSAP kontrolü */}
         <div
           ref={layerARef}
@@ -141,8 +145,20 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
             className="object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
         </div>
-
       </div>
+      {/* Mobil: dot göstergeleri */}
+      {list.length > 1 ? (
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 sm:bottom-3 md:bottom-4" aria-hidden>
+          {list.map((_, i) => (
+            <span
+              key={i}
+              className={`h-1.5 w-1.5 rounded-full transition-colors sm:h-2 sm:w-2 ${
+                i === currentIndex ? 'bg-white' : 'bg-white/50'
+              }`}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 

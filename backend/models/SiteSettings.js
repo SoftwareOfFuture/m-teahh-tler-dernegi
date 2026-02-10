@@ -25,6 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       promoVideoUrl: {
         type: DataTypes.STRING(1000),
       },
+      promoVideoCoverUrl: {
+        type: DataTypes.STRING(1000),
+      },
     },
     {
       tableName: 'site_settings',

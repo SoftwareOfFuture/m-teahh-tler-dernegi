@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
             youtubeUrl: row.youtubeUrl || null,
             linkedinUrl: row.linkedinUrl || null,
             promoVideoUrl: row.promoVideoUrl || null,
+            promoVideoCoverUrl: row.promoVideoCoverUrl || null,
           }
         : {
             facebookUrl: null,
@@ -32,6 +33,7 @@ router.get('/', async (req, res) => {
             youtubeUrl: null,
             linkedinUrl: null,
             promoVideoUrl: null,
+            promoVideoCoverUrl: null,
           }
     );
   } catch (err) {
@@ -53,6 +55,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             youtubeUrl: row.youtubeUrl || null,
             linkedinUrl: row.linkedinUrl || null,
             promoVideoUrl: row.promoVideoUrl || null,
+            promoVideoCoverUrl: row.promoVideoCoverUrl || null,
           }
         : {
             id: null,
@@ -62,6 +65,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             youtubeUrl: null,
             linkedinUrl: null,
             promoVideoUrl: null,
+            promoVideoCoverUrl: null,
           }
     );
   } catch (err) {
@@ -81,6 +85,7 @@ router.put(
     body('youtubeUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('linkedinUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('promoVideoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
+    body('promoVideoCoverUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
   ],
   validate,
   async (req, res) => {
@@ -93,6 +98,7 @@ router.put(
         youtubeUrl: req.body.youtubeUrl?.trim() || null,
         linkedinUrl: req.body.linkedinUrl?.trim() || null,
         promoVideoUrl: req.body.promoVideoUrl?.trim() || null,
+        promoVideoCoverUrl: req.body.promoVideoCoverUrl?.trim() || null,
       };
       if (row) {
         await row.update(payload);
