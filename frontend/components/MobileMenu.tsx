@@ -123,14 +123,14 @@ export function MobileMenu({
         aria-expanded={open ? 'true' : 'false'}
         aria-controls={MENU_ID}
         aria-label={open ? 'Menüyü kapat' : 'Menüyü aç'}
-        className={`grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-xl text-slate-700 transition-colors duration-200 ease-in-out hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-burgundy/30 dark:text-slate-200 dark:hover:bg-slate-800 ${buttonClassName}`}
+        className={`grid size-10 min-h-[44px] min-w-[44px] place-items-center rounded-lg text-slate-700 transition-colors duration-200 ease-in-out hover:bg-burgundy/5 hover:text-burgundy focus:outline-none focus:ring-2 focus:ring-burgundy/30 ${buttonClassName}`}
       >
         <HamburgerIcon open={open} />
       </button>
 
       {/* Backdrop: tıklanınca kapat */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out lg:hidden ${
           open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden
@@ -142,13 +142,13 @@ export function MobileMenu({
         id={MENU_ID}
         role="navigation"
         aria-label="Mobil menü"
-        className={`fixed right-0 top-0 z-50 flex h-full w-[min(320px,85vw)] max-w-full flex-col overflow-y-auto rounded-l-2xl bg-white shadow-xl transition-[transform,opacity] duration-300 ease-in-out dark:bg-slate-900 dark:shadow-slate-950/50 lg:hidden ${panelClassName} ${
+        className={`fixed right-0 top-0 z-[60] flex h-full w-[min(320px,85vw)] max-w-full flex-col overflow-y-auto rounded-l-2xl bg-white shadow-xl transition-[transform,opacity] duration-300 ease-in-out dark:bg-slate-900 dark:shadow-slate-950/50 lg:hidden safe-area-inset-top pt-14 ${panelClassName} ${
           open
             ? 'translate-x-0 opacity-100'
             : 'translate-x-full opacity-0 pointer-events-none'
         }`}
       >
-        <div className="flex flex-col gap-0.5 p-4 pt-16">
+        <div className="flex flex-col gap-0.5 p-4">
           {items.map((item) => {
             if ('children' in item) {
               return (

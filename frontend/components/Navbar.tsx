@@ -92,10 +92,12 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [onScroll]);
 
+  const showNavbar = navbarVisible || mobileOpen;
+
   return (
     <header
       className={`sticky top-0 z-50 w-full border-b border-slate-100/80 bg-white/80 shadow-soft backdrop-blur-md supports-[backdrop-filter]:bg-white/70 safe-area-inset-top transition-transform duration-300 ease-out ${
-        navbarVisible ? 'translate-y-0' : '-translate-y-full'
+        showNavbar ? 'translate-y-0' : '-translate-y-full'
       }`}
       role="banner"
     >
