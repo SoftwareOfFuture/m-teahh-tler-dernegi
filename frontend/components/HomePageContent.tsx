@@ -349,37 +349,36 @@ export function HomePageContent() {
                 </div>
               ) : null}
             </div>
-            <div className={`w-full min-w-0 overflow-hidden rounded-2xl bg-white p-3 shadow-soft sm:p-4 md:p-5 ${sectionClass('publications')}`}>
-              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-4">
-                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 sm:text-lg md:text-xl">Yayınlar</h2>
-                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+            <div className={`w-full min-w-0 overflow-hidden rounded-2xl bg-white p-3 shadow-soft sm:p-4 ${sectionClass('publications')}`}>
+              <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-3">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 sm:text-lg">Yayınlar</h2>
+                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy sm:text-sm">
                   Tüm Yayınlar
                 </Link>
               </div>
-              <div className="grid grid-cols-2 gap-2 min-w-0 sm:gap-3 md:grid-cols-3 md:gap-4 xl:grid-cols-4">
+              <div className="grid grid-cols-2 gap-2 min-w-0 sm:grid-cols-3 sm:gap-2 md:grid-cols-4 md:gap-3">
                 {(publications.length ? publications : []).slice(0, 4).map((p) => (
                   <a
                     key={p.id}
                     href={p.fileUrl || '#'}
-                    className="group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft-lg hover:border-burgundy/20"
+                    className="group relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft-lg hover:border-burgundy/20"
                   >
-                    <div className="aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100 sm:aspect-[3/4]">
-                      <div className="flex h-full w-full items-center justify-center p-4 text-center sm:p-5">
-                        <span className="text-2xl opacity-30 sm:text-3xl">📄</span>
+                    <div className="aspect-square w-full overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100">
+                      <div className="flex h-full w-full items-center justify-center p-2 text-center">
+                        <span className="text-lg opacity-30 sm:text-xl">📄</span>
                       </div>
                     </div>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-burgundy/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <span className="text-xs font-semibold text-white sm:text-sm">İncele / İndir</span>
-                      <span className="text-[10px] text-white/90 sm:text-xs">→</span>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-burgundy/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <span className="text-[10px] font-semibold text-white sm:text-xs">İncele / İndir</span>
                     </div>
-                    <div className="p-2.5 sm:p-3">
-                      <div className="line-clamp-2 text-xs font-semibold text-slate-800 sm:text-sm">{p.title}</div>
-                      <div className="mt-0.5 text-[10px] text-slate-500 sm:text-xs">{formatDot(p.publishDate)}</div>
+                    <div className="p-2">
+                      <div className="line-clamp-2 text-[11px] font-semibold text-slate-800 sm:text-xs">{p.title}</div>
+                      <div className="mt-0.5 text-[10px] text-slate-500">{formatDot(p.publishDate)}</div>
                     </div>
                   </a>
                 ))}
                 {publications.length === 0 ? (
-                  <div className="col-span-full rounded-xl bg-slate-100 px-5 py-4 text-sm text-slate-600">
+                  <div className="col-span-full rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-600 sm:text-sm">
                     Yayın bulunamadı.
                   </div>
                 ) : null}
