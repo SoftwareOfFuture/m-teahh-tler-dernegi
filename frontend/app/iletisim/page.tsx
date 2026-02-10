@@ -3,16 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
-import { getPagePublic, createContactMessage, createSmsFeedback, type PageContent } from '../../lib/api';
-
-const COUNTRY_CODES: Array<{ code: string; label: string }> = [
-  { code: '+90', label: 'TR (+90)' },
-  { code: '+49', label: 'DE (+49)' },
-  { code: '+31', label: 'NL (+31)' },
-  { code: '+7', label: 'RU/KZ (+7)' },
-  { code: '+1', label: 'US/CA (+1)' },
-  { code: '+44', label: 'UK (+44)' },
-];
+import { getPagePublic, createContactMessage, type PageContent } from '../../lib/api';
 
 function toMapsEmbedSrc(input: string | null | undefined, addressFallback: string | null | undefined): string | null {
   const raw = String(input ?? '').trim();
@@ -108,15 +99,6 @@ export default function ContactPage() {
   const [sent, setSent] = useState(false);
   const [msgLoading, setMsgLoading] = useState(false);
   const [msgError, setMsgError] = useState<string | null>(null);
-
-  const [smsName, setSmsName] = useState('');
-  const [smsEmail, setSmsEmail] = useState('');
-  const [smsPhoneCode, setSmsPhoneCode] = useState(COUNTRY_CODES[0]?.code || '+90');
-  const [smsPhone, setSmsPhone] = useState('');
-  const [smsMessage, setSmsMessage] = useState('');
-  const [smsLoading, setSmsLoading] = useState(false);
-  const [smsError, setSmsError] = useState<string | null>(null);
-  const [smsSent, setSmsSent] = useState(false);
 
   return (
     <PageLayoutWithFooter>
@@ -219,135 +201,6 @@ export default function ContactPage() {
               {msgLoading ? 'Gönderiliyor…' : 'Gönder'}
             </button>
             {sent ? <p className="text-center text-sm font-semibold text-emerald-700">Mesaj gönderildi.</p> : null}
-          </form>
-        </div>
-      </section>
-
-      <section className="mt-10">
-        <div className="rounded-2xl bg-white p-6 shadow-soft">
-          <h2 className="text-xl font-bold text-slate-800">SMS ile Geri Bildirim</h2>
-          <p className="mt-1 text-sm text-slate-600">
-            İsterseniz dönüş için iletişim bilgilerinizi bırakabilirsiniz. Kayıtlar incelenip size dönüş yapılacaktır.
-          </p>
-
-          <form
-            className="mt-6 max-w-xl space-y-4"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setSmsError(null);
-              const pn = smsPhone.replace(/\D/g, '');
-              if (!smsPhoneCode || !/^\+\d{1,4}$/.test(smsPhoneCode)) {
-                setSmsError('Lütfen geçerli bir ülke kodu seçin.');
-                return;
-              }
-              if (!pn || pn.length < 4 || pn.length > 15) {
-                setSmsError('Lütfen geçerli bir telefon numarası girin.');
-                return;
-              }
-              if (!smsMessage.trim() || smsMessage.trim().length < 5) {
-                setSmsError('Lütfen mesajınızı yazın (en az 5 karakter).');
-                return;
-              }
-
-              setSmsLoading(true);
-              try {
-                await createSmsFeedback({
-                  phoneE164: `${smsPhoneCode}${pn}`,
-                  message: smsMessage.trim(),
-                  name: smsName.trim() || undefined,
-                  email: smsEmail.trim() || undefined,
-                  source: 'iletisim',
-                });
-                setSmsSent(true);
-                setTimeout(() => setSmsSent(false), 3000);
-                setSmsName('');
-                setSmsEmail('');
-                setSmsPhone('');
-                setSmsMessage('');
-              } catch (err: unknown) {
-                setSmsError((err as Error)?.message ?? 'Geri bildirim gönderilemedi.');
-              } finally {
-                setSmsLoading(false);
-              }
-            }}
-          >
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div>
-                <label htmlFor="sms_name" className="text-sm font-semibold text-slate-700">
-                  Ad Soyad (opsiyonel)
-                </label>
-                <input
-                  id="sms_name"
-                  value={smsName}
-                  onChange={(e) => setSmsName(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
-                />
-              </div>
-              <div>
-                <label htmlFor="sms_email" className="text-sm font-semibold text-slate-700">
-                  E-posta (opsiyonel)
-                </label>
-                <input
-                  id="sms_email"
-                  value={smsEmail}
-                  onChange={(e) => setSmsEmail(e.target.value)}
-                  type="email"
-                  className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-semibold text-slate-700">Telefon</label>
-              <div className="mt-2 flex flex-wrap gap-3">
-                <select
-                  value={smsPhoneCode}
-                  onChange={(e) => setSmsPhoneCode(e.target.value)}
-                  aria-label="Ülke kodu"
-                  className="w-[140px] rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
-                >
-                  {COUNTRY_CODES.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  value={smsPhone}
-                  onChange={(e) => setSmsPhone(e.target.value)}
-                  inputMode="numeric"
-                  required
-                  className="flex-1 min-w-[160px] rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
-                  placeholder="Telefon numarası"
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="sms_message" className="text-sm font-semibold text-slate-700">
-                Mesaj
-              </label>
-              <textarea
-                id="sms_message"
-                value={smsMessage}
-                onChange={(e) => setSmsMessage(e.target.value)}
-                required
-                rows={4}
-                className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy focus:ring-2 focus:ring-burgundy/20"
-                placeholder="Geri bildiriminizi yazın…"
-              />
-            </div>
-            {smsError ? (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{smsError}</div>
-            ) : null}
-            <button
-              type="submit"
-              disabled={smsLoading}
-              className="w-full max-w-xs rounded-xl bg-burgundy px-5 py-3.5 text-sm font-semibold text-white shadow-soft transition-all hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {smsLoading ? 'Gönderiliyor…' : 'Geri Bildirim Gönder'}
-            </button>
-            {smsSent ? (
-              <p className="text-sm font-semibold text-emerald-700">Geri bildiriminiz alındı. En kısa sürede dönüş yapacağız.</p>
-            ) : null}
           </form>
         </div>
       </section>
