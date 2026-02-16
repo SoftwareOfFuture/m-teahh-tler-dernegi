@@ -56,36 +56,34 @@ router.get(
   }
 );
 
-// POST /api/board-members - admin create
-router.post(
-  '/',
-  auth,
-  adminOnly,
-  [
-    body('name').trim().notEmpty().withMessage('İsim gerekli').isLength({ max: 255 }),
-    body('unit').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
-    body('imageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000000 }),
-    body('role').optional({ checkFalsy: true }).trim().isIn(['baskan', 'uyelik']),
-    body('sortOrder').optional({ checkFalsy: true }).isInt({ min: 0 }).toInt(),
-    body('isPublished').optional({ checkFalsy: true }).isBoolean(),
-  ],
-  validate,
-  async (req, res) => {
-    try {
-      const item = await db.BoardMember.create({
-        name: req.body.name.trim(),
-        unit: req.body.unit?.trim() || null,
-        imageUrl: req.body.imageUrl || null,
-        role: req.body.role || 'uyelik',
-        sortOrder: req.body.sortOrder ?? 0,
-        isPublished: req.body.isPublished !== false,
-      });
-      res.status(201).json(item);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+// POST /api/board-members - admin create (manual validation for robustness)
+router.post('/', auth, adminOnly, async (req, res) => {
+  try {
+    const raw = req.body || {};
+    const name = String(raw.name ?? '').trim();
+    if (!name) {
+      return res.status(400).json({ errors: [{ msg: 'İsim gerekli' }] });
     }
+    const unit = raw.unit != null ? String(raw.unit).trim() || null : null;
+    const imageUrl = raw.imageUrl != null ? String(raw.imageUrl).trim() || null : null;
+    const role = ['baskan', 'uyelik'].includes(String(raw.role || '').trim())
+      ? String(raw.role).trim()
+      : 'uyelik';
+    const sortOrder = parseInt(String(raw.sortOrder ?? 0), 10) || 0;
+    const isPublished = raw.isPublished !== false && raw.isPublished !== 'false' && raw.isPublished !== 0;
+    const item = await db.BoardMember.create({
+      name,
+      unit,
+      imageUrl,
+      role,
+      sortOrder,
+      isPublished,
+    });
+    res.status(201).json(item);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-);
+});
 
 // PUT /api/board-members/:id - admin update
 router.put(
