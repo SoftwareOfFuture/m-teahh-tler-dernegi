@@ -5,7 +5,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { PdfPreviewModal } from '../../components/PdfPreviewModal';
-import { listPublicationsPublic, type Publication } from '../../lib/api';
+import { BoardPyramid } from '../../components/BoardPyramid';
+import { listPublicationsPublic, listBoardMembersPublic, type Publication } from '../../lib/api';
 
 function formatDot(iso: string | null | undefined) {
   if (!iso) return '';
@@ -17,14 +18,19 @@ function formatDot(iso: string | null | undefined) {
 export default function PublicationsPage() {
   const [items, setItems] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(false);
+  const [boardMembers, setBoardMembers] = useState<Awaited<ReturnType<typeof listBoardMembersPublic>>>([]);
   const [preview, setPreview] = useState<{ url: string; title: string } | null>(null);
 
   const load = useMemo(() => {
     return async () => {
       setLoading(true);
       try {
-        const res = await listPublicationsPublic({ page: 1, limit: 50 });
-        if (res?.items?.length) setItems(res.items);
+        const [pubRes, membersRes] = await Promise.all([
+          listPublicationsPublic({ page: 1, limit: 50 }),
+          listBoardMembersPublic(),
+        ]);
+        if (pubRes?.items?.length) setItems(pubRes.items);
+        if (Array.isArray(membersRes)) setBoardMembers(membersRes);
       } finally {
         setLoading(false);
       }
@@ -80,6 +86,9 @@ export default function PublicationsPage() {
 
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
       </section>
+
+      {/* Yönetim Kurulu Piramiti - PDFlerden sonra */}
+      <BoardPyramid members={boardMembers} />
 
       <PdfPreviewModal
         open={!!preview}

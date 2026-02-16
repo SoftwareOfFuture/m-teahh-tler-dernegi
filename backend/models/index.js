@@ -68,6 +68,7 @@ db.HomeBanner = require('./HomeBanner')(sequelize, Sequelize);
 db.Property = require('./Property')(sequelize, Sequelize);
 db.ContactMessage = require('./ContactMessage')(sequelize, Sequelize);
 db.SiteSettings = require('./SiteSettings')(sequelize, Sequelize);
+db.BoardMember = require('./BoardMember')(sequelize, Sequelize);
 
 // Associations
 db.User.hasOne(db.Member, { foreignKey: 'userId' });

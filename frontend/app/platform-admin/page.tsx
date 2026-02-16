@@ -62,6 +62,11 @@ import {
   type Property,
   type Publication,
   type Video,
+  type BoardMember,
+  listBoardMembersAdminAll,
+  createBoardMember,
+  updateBoardMember,
+  deleteBoardMember,
   type ContactMessage,
   type SmsFeedback,
   getSiteSettingsAdmin,
@@ -91,6 +96,7 @@ export default function PlatformAdminPage() {
     | 'announcements'
     | 'videos'
     | 'publications'
+    | 'boardMembers'
     | 'partners'
     | 'properties'
     | 'kurumsal'
@@ -112,6 +118,7 @@ export default function PlatformAdminPage() {
     { id: 'announcements', label: 'Duyurular' },
     { id: 'videos', label: 'Videolar' },
     { id: 'publications', label: 'Yönetim Kurulu' },
+    { id: 'boardMembers', label: 'Kurul Üyeleri' },
     { id: 'partners', label: 'Partnerler' },
     { id: 'properties', label: 'Emlak İlanları' },
     { id: 'kurumsal', label: 'Kurumsal' },
@@ -281,6 +288,8 @@ export default function PlatformAdminPage() {
               <VideosPanel token={token} />
             ) : tab === 'publications' ? (
               <PublicationsPanel token={token} />
+            ) : tab === 'boardMembers' ? (
+              <BoardMembersPanel token={token} />
             ) : tab === 'partners' ? (
               <PartnersPanel token={token} />
             ) : tab === 'properties' ? (
@@ -2097,6 +2106,28 @@ function VideosPanel({ token }: { token: string | null }) {
   />;
 }
 
+function BoardMembersPanel({ token }: { token: string | null }) {
+  return (
+    <GenericContentPanel<BoardMember>
+      token={token}
+      title="Yönetim Kurulu Üyeleri"
+      subtitle="Yönetim Kurulu sayfasında PDFlerden sonra piramit şeklinde görünen kurul üyeleri. Başkan en üstte, üyeler altta. Oval görsel, isim ve birim alanları."
+      list={(t) => listBoardMembersAdminAll(t, { page: 1, limit: 200 })}
+      create={(t, p) => createBoardMember(t, p as any)}
+      update={(t, id, p) => updateBoardMember(t, id, p as any)}
+      remove={(t, id) => deleteBoardMember(t, id)}
+      displayKey="name"
+      fields={[
+        { key: 'name', label: 'İsim', type: 'text', required: true },
+        { key: 'unit', label: 'Birim / Pozisyon', type: 'text' },
+        { key: 'imageUrl', label: 'Görsel URL (Oval)', type: 'imageUrl' },
+        { key: 'role', label: 'Rol (baskan / uyelik)', type: 'text' },
+        { key: 'sortOrder', label: 'Sıralama', type: 'text' },
+      ]}
+    />
+  );
+}
+
 function PublicationsPanel({ token }: { token: string | null }) {
   return <GenericContentPanel<Publication>
     token={token}
@@ -2164,7 +2195,7 @@ function PropertiesPanel({ token }: { token: string | null }) {
 
 type GenericField = { key: string; label: string; type: 'text' | 'textarea' | 'imageUrl'; required?: boolean };
 
-function GenericContentPanel<T extends { id: number; title: string; isPublished: boolean }>({
+function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
   token,
   title,
   subtitle,
@@ -2173,6 +2204,7 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
   update,
   remove,
   fields,
+  displayKey = 'title',
 }: {
   token: string | null;
   title: string;
@@ -2182,6 +2214,7 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
   update: (token: string, id: number, payload: Partial<T>) => Promise<any>;
   remove: (token: string, id: number) => Promise<any>;
   fields: GenericField[];
+  displayKey?: string;
 }) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
@@ -2357,7 +2390,7 @@ function GenericContentPanel<T extends { id: number; title: string; isPublished:
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <div className="truncate text-sm font-bold text-slate-900">{(it as any).title}</div>
+                    <div className="truncate text-sm font-bold text-slate-900">{(it as any)[displayKey] ?? '—'}</div>
                     <Toggle
                       value={getPublishedValue(it as any)}
                       onChange={async (v) => {

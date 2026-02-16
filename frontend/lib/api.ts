@@ -622,6 +622,58 @@ export async function listPublicationsRecent(params?: { limit?: number }) {
   );
 }
 
+// --- Board Members (Yönetim Kurulu piramit) ---
+
+export type BoardMember = {
+  id: number;
+  name: string;
+  unit: string | null;
+  imageUrl: string | null;
+  role: 'baskan' | 'uyelik';
+  sortOrder: number;
+  isPublished: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export async function listBoardMembersPublic() {
+  return await apiFetch<BoardMember[]>('/api/board-members', { method: 'GET' });
+}
+
+export async function listBoardMembersAdminAll(token: string, params?: { page?: number; limit?: number }) {
+  const qs = new URLSearchParams();
+  if (params?.page) qs.set('page', String(params.page));
+  if (params?.limit) qs.set('limit', String(params.limit));
+  const url = `/api/board-members/admin/all${qs.toString() ? `?${qs.toString()}` : ''}`;
+  return await apiFetch<{ items: BoardMember[]; total: number; page: number; limit: number; totalPages: number }>(url, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createBoardMember(token: string, payload: Partial<BoardMember> & { name: string }) {
+  return await apiFetch<BoardMember>('/api/board-members', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateBoardMember(token: string, id: number, payload: Partial<BoardMember>) {
+  return await apiFetch<BoardMember>(`/api/board-members/${id}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteBoardMember(token: string, id: number) {
+  return await apiFetch<{ success: true }>(`/api/board-members/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
 export async function listPropertiesPublic(params?: { page?: number; limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.page) qs.set('page', String(params.page));
