@@ -33,8 +33,8 @@ export const SECTION_LABELS: Record<SectionId, string> = {
   banner: 'Banner Şeridi',
   dijitalPlatformlar: 'Dijital Platformlar',
   news: 'Güncel Haberler',
-  video: 'Video Arşivi',
-  publications: 'Yayınlar',
+  video: 'Arşiv',
+  publications: 'Yönetim Kurulu',
   partners: 'Partnerler',
 };
 

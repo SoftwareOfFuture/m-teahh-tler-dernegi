@@ -111,7 +111,7 @@ export default function PlatformAdminPage() {
     { id: 'news', label: 'Haberler' },
     { id: 'announcements', label: 'Duyurular' },
     { id: 'videos', label: 'Videolar' },
-    { id: 'publications', label: 'Yayınlar' },
+    { id: 'publications', label: 'Yönetim Kurulu' },
     { id: 'partners', label: 'Partnerler' },
     { id: 'properties', label: 'Emlak İlanları' },
     { id: 'kurumsal', label: 'Kurumsal' },
@@ -2101,7 +2101,7 @@ function PublicationsPanel({ token }: { token: string | null }) {
   return <GenericContentPanel<Publication>
     token={token}
     title="Yayın Yönetimi"
-    subtitle="Yayınlar sayfasındaki rapor/bültenleri buradan yönetilir."
+    subtitle="Yönetim Kurulu sayfasındaki rapor/bültenleri buradan yönetilir."
     list={(t) => listPublicationsAdminAll(t, { page: 1, limit: 200 })}
     create={(t, p) => createPublication(t, p as any)}
     update={(t, id, p) => updatePublication(t, id, p as any)}

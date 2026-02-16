@@ -15,7 +15,7 @@ export function Header() {
       { href: '/uyelerimiz', label: 'Üyelerimiz' },
       { href: '/duyurular', label: 'Kentsel Dönüşüm' },
       { href: '/haberler', label: 'Haberler' },
-      { href: '/yayinlar', label: 'Yayınlar' },
+      { href: '/yayinlar', label: 'Yönetim Kurulu' },
       { href: '/iletisim', label: 'İletişim' },
     ],
     []

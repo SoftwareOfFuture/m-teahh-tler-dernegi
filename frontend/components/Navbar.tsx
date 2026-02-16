@@ -36,11 +36,11 @@ const navItems: NavItem[] = [
   { href: '/', label: 'Ana Sayfa' },
   { href: '/kurumsal', label: 'Kurumsal' },
   { href: '/haberler', label: 'Haberler' },
-  { href: '/videolar', label: 'Video Arşivi' },
+  { href: '/videolar', label: 'Arşiv' },
   {
-    label: 'Yayınlar',
+    label: 'Yönetim Kurulu',
     children: [
-      { href: '/yayinlar', label: 'Yayınlar' },
+      { href: '/yayinlar', label: 'Yönetim Kurulu' },
       { href: '/bugune-kadar-yaptiklarimiz', label: 'Bugüne Kadar Yaptıklarımız' },
     ],
   },

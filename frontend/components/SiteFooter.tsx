@@ -65,8 +65,8 @@ export function SiteFooter() {
               <li><Link href="/" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Ana Sayfa</Link></li>
               <li><Link href="/kurumsal" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Kurumsal</Link></li>
               <li><Link href="/haberler" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Haberler</Link></li>
-              <li><Link href="/videolar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Video Arşivi</Link></li>
-              <li><Link href="/yayinlar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Yayınlar</Link></li>
+              <li><Link href="/videolar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Arşiv</Link></li>
+              <li><Link href="/yayinlar" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Yönetim Kurulu</Link></li>
               <li><Link href="/kentsel-donusum" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Kentsel Dönüşüm</Link></li>
               <li><Link href="/emlak-ilanlari" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">Emlak İlanları</Link></li>
               <li><Link href="/iletisim" className="inline-block min-h-[44px] py-2.5 pr-2 transition-colors hover:text-white sm:min-h-0 sm:py-0">İletişim</Link></li>
