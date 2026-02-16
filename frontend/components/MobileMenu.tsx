@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 /* =============================================================================
@@ -93,6 +93,11 @@ export function MobileMenu({
   buttonClassName = '',
   panelClassName = '',
 }: MobileMenuProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Menü açıkken body scroll devre dışı
   useEffect(() => {
     if (open) {
@@ -198,7 +203,7 @@ export function MobileMenu({
         <HamburgerIcon open={open} />
       </button>
 
-      {typeof document !== 'undefined' ? createPortal(overlayContent, document.body) : null}
+      {mounted ? createPortal(overlayContent, document.body) : null}
     </>
   );
 }

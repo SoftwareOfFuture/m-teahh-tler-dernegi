@@ -27,7 +27,7 @@ export default function PublicationsPage() {
       try {
         const [pubRes, membersRes] = await Promise.all([
           listPublicationsPublic({ page: 1, limit: 50 }),
-          listBoardMembersPublic(),
+          listBoardMembersPublic().catch(() => []),
         ]);
         if (pubRes?.items?.length) setItems(pubRes.items);
         if (Array.isArray(membersRes)) setBoardMembers(membersRes);

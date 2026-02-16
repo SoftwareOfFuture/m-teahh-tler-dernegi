@@ -38,9 +38,7 @@ import { AnimatedSection } from './AnimatedSection';
 const DEFAULT_SECTION_ANIM = 'fade-in-up';
 
 function useSectionAnimations() {
-  const [animations, setAnimations] = useState<SectionAnimationsMap>(() =>
-    typeof window !== 'undefined' ? getStoredSectionAnimations() : {}
-  );
+  const [animations, setAnimations] = useState<SectionAnimationsMap>(() => ({}));
   useEffect(() => {
     setAnimations(getStoredSectionAnimations());
   }, []);
