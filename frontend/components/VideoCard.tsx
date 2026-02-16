@@ -3,10 +3,17 @@ import Link from 'next/link';
 import type { VideoItem } from '../lib/types';
 import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 
-type Props = { item: VideoItem; onOpen?: (item: VideoItem) => void };
+type Props = {
+  item: VideoItem;
+  /** Tıklanınca video oynatılacak (href varsa). Yoksa detay sayfasına gider. */
+  onOpen?: (item: VideoItem) => void;
+};
 
 export function VideoCard({ item, onOpen }: Props) {
-  const clickable = typeof onOpen === 'function' && item.href && item.href !== '#';
+  const hasVideo = item.href && item.href !== '#';
+  const openVideo = typeof onOpen === 'function' && hasVideo;
+  const linkToDetail = !hasVideo;
+  const detailHref = `/videolar/detay?id=${encodeURIComponent(item.id)}`;
 
   const content = (
     <>
@@ -20,9 +27,15 @@ export function VideoCard({ item, onOpen }: Props) {
         />
         <div className="absolute inset-0 grid place-items-center bg-black/20">
           <div className="grid size-14 place-items-center rounded-full bg-white/30 text-white backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:bg-white/50">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+            {hasVideo ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="ml-1">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
           </div>
         </div>
       </div>
@@ -37,10 +50,18 @@ export function VideoCard({ item, onOpen }: Props) {
   );
 
   const cardClass =
-    'group w-full overflow-hidden rounded-2xl bg-white shadow-soft text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-soft-xl';
+    'group block w-full overflow-hidden rounded-2xl bg-white shadow-soft text-left transition-all duration-300 hover:-translate-y-2 hover:shadow-soft-xl';
 
-  if (clickable) {
-    return <button type="button" onClick={() => onOpen!(item)} className={cardClass}>{content}</button>;
+  if (openVideo) {
+    return (
+      <button type="button" onClick={() => onOpen!(item)} className={cardClass}>
+        {content}
+      </button>
+    );
   }
-  return <Link href={item.href} className={cardClass}>{content}</Link>;
+  return (
+    <Link href={linkToDetail ? detailHref : (item.href || '#')} className={cardClass}>
+      {content}
+    </Link>
+  );
 }

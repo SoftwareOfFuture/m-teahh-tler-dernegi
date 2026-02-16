@@ -597,6 +597,10 @@ export async function listVideosPublic(params?: { page?: number; limit?: number 
   return await apiFetch<PagedResponse<Video>>(`/api/videos${qs.toString() ? `?${qs.toString()}` : ''}`, { method: 'GET' });
 }
 
+export async function getVideoPublic(id: number) {
+  return await apiFetch<Video>(`/api/videos/${id}`, { method: 'GET' });
+}
+
 export async function listVideosRecent(params?: { limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.limit) qs.set('limit', String(params.limit));

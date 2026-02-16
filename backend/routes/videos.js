@@ -66,6 +66,19 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
   }
 });
 
+// GET /api/videos/:id - public single video (for detail page)
+router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
+  try {
+    const item = await db.Video.findOne({
+      where: { id: req.params.id, isPublished: true },
+    });
+    if (!item) return res.status(404).json({ error: 'Video not found.' });
+    res.json(item);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // POST /api/videos - admin create
 router.post(
   '/',
