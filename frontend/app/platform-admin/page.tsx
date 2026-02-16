@@ -2023,14 +2023,14 @@ function BannersPanel({ token }: { token: string | null }) {
     <GenericContentPanel<HomeBanner>
       token={token}
       title="Banner Yönetimi"
-      subtitle="Ana sayfada slider’ın hemen altındaki yatay tıklanabilir banner alanı buradan yönetilir. Yayında olan ilk kayıt (sıralamaya göre) gösterilir."
+      subtitle="Ana sayfada slider’ın hemen altındaki yatay tıklanabilir banner alanı buradan yönetilir. PNG yüklemek için önerilen boyut: 1920 x 190 piksel (genişlik x yükseklik)."
       list={(t) => listBannersAdminAll(t, { page: 1, limit: 200 })}
       create={(t, p) => createBanner(t, p as any)}
       update={(t, id, p) => updateBanner(t, id, p as any)}
       remove={(t, id) => deleteBanner(t, id)}
       fields={[
         { key: 'title', label: 'Başlık (Alt yazı)', type: 'text', required: true },
-        { key: 'imageUrl', label: 'Banner Görsel URL', type: 'imageUrl', required: true },
+        { key: 'imageUrl', label: 'Banner Görsel URL (PNG önerilen: 1920×190 px)', type: 'imageUrl', required: true },
         { key: 'href', label: 'Tıklayınca gideceği link', type: 'text', required: true },
         { key: 'sortOrder', label: 'Sıralama', type: 'text' },
       ]}

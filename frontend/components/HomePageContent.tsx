@@ -12,6 +12,7 @@ import { VideoPlayerModal } from './VideoPlayerModal';
 import { LogoSlider } from './LogoSlider';
 import { SiteFooter } from './SiteFooter';
 import { AnnouncementCard } from './AnnouncementCard';
+import { PublicationCard } from './PublicationCard';
 import type { NewsItem, PartnerLogo, SliderItem, VideoItem } from '../lib/types';
 import {
   listAnnouncementsRecent,
@@ -89,7 +90,7 @@ export function HomePageContent() {
         const r2 = await Promise.allSettled([
           fetchWithRetry(() => listAnnouncementsRecent(), 1),
           fetchWithRetry(() => listVideosRecent({ limit: 3 }), 1),
-          fetchWithRetry(() => listPublicationsRecent({ limit: 3 }), 1),
+          fetchWithRetry(() => listPublicationsRecent({ limit: 6 }), 1),
           fetchWithRetry(() => listPartnersPublic({ limit: 500 }), 1),
           fetchWithRetry(() => listMembersPublic({ page: 1, limit: 500 }), 1),
         ]);
@@ -349,37 +350,20 @@ export function HomePageContent() {
                 </div>
               ) : null}
             </div>
-            <div className={`w-full min-w-0 overflow-hidden rounded-2xl bg-white p-3 shadow-soft sm:p-4 ${sectionClass('publications')}`}>
-              <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-3">
-                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 sm:text-lg">Yönetim Kurulu</h2>
-                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy sm:text-sm">
+            <div className={`min-w-0 ${sectionClass('publications')}`}>
+              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-6">
+                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Yönetim Kurulu</h2>
+                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
                   Tümünü Gör
                 </Link>
               </div>
-              <div className="grid grid-cols-2 gap-1 min-w-0 sm:grid-cols-3 sm:gap-1.5 md:grid-cols-4 md:gap-2">
-                {(publications.length ? publications : []).slice(0, 4).map((p) => (
-                  <a
-                    key={p.id}
-                    href={p.fileUrl || '#'}
-                    className="group relative overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-soft transition-all duration-300 hover:-translate-y-0.5 hover:shadow-soft-lg hover:border-burgundy/20"
-                  >
-                    <div className="aspect-square w-full overflow-hidden bg-gradient-to-br from-slate-200 to-slate-100">
-                      <div className="flex h-full w-full items-center justify-center p-1.5 text-center">
-                        <span className="text-base opacity-30 sm:text-lg">📄</span>
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-burgundy/90 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <span className="text-[9px] font-semibold text-white sm:text-[10px]">İncele / İndir</span>
-                    </div>
-                    <div className="p-1.5">
-                      <div className="line-clamp-2 text-[10px] font-semibold text-slate-800 sm:text-[11px]">{p.title}</div>
-                      <div className="mt-0.5 text-[9px] text-slate-500">{formatDot(p.publishDate)}</div>
-                    </div>
-                  </a>
+              <div className="grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">
+                {(publications.length ? publications : []).slice(0, 6).map((p) => (
+                  <PublicationCard key={p.id} item={p} formatDate={formatDot} />
                 ))}
                 {publications.length === 0 ? (
-                  <div className="col-span-full rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-600 sm:text-sm">
-                    Yayın bulunamadı.
+                  <div className="mt-6 rounded-2xl bg-slate-100 px-5 py-4 text-sm text-slate-600 col-span-full">
+                    Henüz yayın eklenmemiş.
                   </div>
                 ) : null}
               </div>
