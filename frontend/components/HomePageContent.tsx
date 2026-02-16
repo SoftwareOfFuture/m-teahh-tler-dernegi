@@ -349,7 +349,7 @@ export function HomePageContent() {
                 </div>
               ) : null}
             </div>
-            <div className={`w-full min-w-0 max-w-2xl overflow-hidden rounded-2xl bg-white p-2 shadow-soft sm:p-2 mx-auto ${sectionClass('publications')}`}>
+            <div className={`w-full min-w-0 overflow-hidden rounded-2xl bg-white p-3 shadow-soft sm:p-4 ${sectionClass('publications')}`}>
               <div className="mb-2 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-3">
                 <h2 className="min-w-0 truncate text-base font-bold text-slate-800 sm:text-lg">Yönetim Kurulu</h2>
                 <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy sm:text-sm">

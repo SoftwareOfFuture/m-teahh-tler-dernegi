@@ -15,13 +15,14 @@ function normalizeWebsiteUrl(raw: string | null | undefined): string | null {
 }
 
 export function LogoSlider({ logos }: Props) {
-  const doubled = [...logos, ...logos];
+  // En az 4 kopya ile kesintisiz sonsuz döngü
+  const repeated = logos.length > 0 ? [...logos, ...logos, ...logos, ...logos] : [];
 
   return (
     <div className="w-full min-w-0 overflow-hidden rounded-2xl bg-white p-4 shadow-soft sm:p-6">
       <div className="relative h-[100px] w-full overflow-hidden sm:h-[120px] md:h-[140px] lg:h-[160px]">
         <div className="absolute left-0 top-0 inline-flex h-full animate-marquee gap-4 will-change-transform sm:gap-6">
-          {doubled.map((logo, idx) => {
+          {repeated.map((logo, idx) => {
             const logoSrc = normalizeImageSrc(logo.logoUrl);
             const websiteUrl = normalizeWebsiteUrl(logo.websiteUrl);
 
