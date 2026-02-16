@@ -50,9 +50,9 @@ export function HeroSlider({ items }: Props) {
   }, [len]);
 
   return (
-    <section className="relative mt-2 w-full min-w-0 overflow-hidden rounded-2xl shadow-soft-lg sm:mt-4 md:mt-6">
+    <section className="relative mt-2 w-full min-w-0 overflow-hidden rounded-xl shadow-soft-lg sm:mt-4 sm:rounded-2xl md:mt-6">
       <div
-        className="relative h-[280px] min-w-0 touch-pan-y sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[560px]"
+        className="relative h-[240px] min-w-0 touch-pan-y xs:h-[280px] sm:h-[360px] md:h-[440px] lg:h-[500px] xl:h-[560px]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -67,35 +67,35 @@ export function HeroSlider({ items }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/50 to-transparent" />
 
         <div className="absolute inset-0 flex items-end">
-          <div className="w-full max-w-full min-w-0 p-4 sm:p-6 md:p-8 lg:p-12">
-            <h1 className="text-xl font-bold leading-tight text-white sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl break-words">
+          <div className="w-full max-w-full min-w-0 p-3 xs:p-4 sm:p-6 md:p-8 lg:p-12">
+            <h1 className="text-lg font-bold leading-tight text-white xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl break-words">
               {current.title}
             </h1>
-            <div className="mt-2 min-h-[2.5rem] sm:mt-3">
+            <div className="mt-1.5 min-h-[2rem] xs:mt-2 xs:min-h-[2.5rem] sm:mt-3">
               {current.description ? (
-                <p className="max-w-2xl min-w-0 text-xs leading-relaxed text-white/90 sm:text-sm md:text-base break-words">
+                <p className="max-w-2xl min-w-0 text-[11px] leading-relaxed text-white/90 xs:text-xs sm:text-sm md:text-base break-words line-clamp-2 sm:line-clamp-none">
                   {current.description}
                 </p>
               ) : null}
             </div>
-            <div className="mt-4 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
+            <div className="mt-3 flex flex-wrap items-center gap-2 xs:mt-4 sm:mt-6 sm:gap-3">
               {current.href && current.href !== '#' ? (
                 <Link
                   href={current.href}
-                  className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
+                  className="inline-flex min-h-[44px] min-w-[100px] flex-1 items-center justify-center gap-2 rounded-lg bg-burgundy px-4 py-2.5 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] xs:min-w-[110px] xs:flex-initial xs:px-5 xs:py-3 xs:text-sm sm:px-6"
                 >
                   Detay
                 </Link>
               ) : null}
               <Link
                 href="/kurumsal"
-                className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center gap-2 rounded-lg bg-burgundy px-5 py-3 text-sm font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-6"
+                className="inline-flex min-h-[44px] min-w-[100px] flex-1 items-center justify-center gap-2 rounded-lg bg-burgundy px-4 py-2.5 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] xs:min-w-[110px] xs:flex-initial xs:px-5 xs:py-3 xs:text-sm sm:px-6"
               >
                 Hakkımızda
               </Link>
               <Link
                 href="/iletisim"
-                className="inline-flex min-h-[44px] min-w-[120px] items-center justify-center gap-2 rounded-lg border-2 border-white px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900 sm:px-6"
+                className="inline-flex min-h-[44px] min-w-[100px] flex-1 items-center justify-center gap-2 rounded-lg border-2 border-white px-4 py-2.5 text-xs font-semibold text-white transition-all duration-300 hover:bg-white hover:text-slate-900 xs:min-w-[110px] xs:flex-initial xs:px-5 xs:py-3 xs:text-sm sm:px-6"
               >
                 İletişim
               </Link>
@@ -125,7 +125,7 @@ export function HeroSlider({ items }: Props) {
           </svg>
         </button>
 
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1">
+        <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-0.5 xs:bottom-4 xs:gap-1">
           {safeItems.map((it, i) => (
             <button
               key={it.id}

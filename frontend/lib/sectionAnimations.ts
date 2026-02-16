@@ -8,6 +8,7 @@ export const SECTION_IDS = [
   'banner',
   'dijitalPlatformlar',
   'news',
+  'announcements',
   'video',
   'publications',
   'partners',
@@ -24,6 +25,10 @@ export const ANIMATION_OPTIONS: { value: string; label: string }[] = [
   { value: 'slide-in-left', label: 'Slide In (Sol)' },
   { value: 'slide-in-right', label: 'Slide In (Sağ)' },
   { value: 'zoom-in', label: 'Zoom In' },
+  { value: 'blur-in', label: 'Blur In' },
+  { value: 'float-up', label: 'Float Up' },
+  { value: 'bounce-in', label: 'Bounce In' },
+  { value: 'reveal-up', label: 'Reveal Up' },
 ];
 
 export type AnimationId = (typeof ANIMATION_OPTIONS)[number]['value'];
@@ -33,6 +38,7 @@ export const SECTION_LABELS: Record<SectionId, string> = {
   banner: 'Banner Şeridi',
   dijitalPlatformlar: 'Dijital Platformlar',
   news: 'Güncel Haberler',
+  announcements: 'Duyurular',
   video: 'Arşiv',
   publications: 'Yönetim Kurulu',
   partners: 'Partnerler',

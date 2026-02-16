@@ -96,7 +96,7 @@ function PlatformBlock({
     'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=2400&q=70';
 
   const inner = (
-    <div ref={cardRef} className="relative min-h-[220px] w-full sm:min-h-[280px]">
+    <div ref={cardRef} className="relative min-h-[180px] w-full xs:min-h-[200px] sm:min-h-[280px]">
       <div ref={imageRef} className="absolute inset-0 overflow-hidden">
         <Image
           src={bg}
@@ -111,7 +111,7 @@ function PlatformBlock({
         <div ref={gradientRef} className="absolute inset-0 bg-gradient-to-r from-slate-900/40 via-burgundy/10 to-transparent" />
       </div>
 
-      <div className="relative w-full min-w-0 px-3 py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+      <div className="relative w-full min-w-0 px-3 py-6 xs:px-4 xs:py-8 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
         <div className={`flex w-full min-w-0 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
           <div
             ref={contentRef}
@@ -126,7 +126,7 @@ function PlatformBlock({
 
             <h3
               ref={titleRef}
-              className={`mt-3 line-clamp-2 text-xl font-extrabold leading-tight tracking-tight sm:line-clamp-none sm:mt-5 sm:text-4xl lg:text-5xl ${t.text}`}
+              className={`mt-2 line-clamp-2 text-lg font-extrabold leading-tight tracking-tight xs:mt-3 xs:text-xl sm:line-clamp-none sm:mt-5 sm:text-4xl lg:text-5xl ${t.text}`}
             >
               {item.title}
             </h3>
@@ -564,8 +564,8 @@ export function DigitalPlatformsSlider({
 
   return (
     <section className="w-full max-w-full overflow-hidden" aria-label="Dijital platformlar">
-      <div className="mb-6 sm:mb-8">
-        <h2 className="text-center text-xl font-bold text-slate-800 sm:text-2xl lg:text-3xl">
+      <div className="mb-4 sm:mb-8">
+        <h2 className="text-center text-base font-bold text-slate-800 xs:text-lg sm:text-2xl lg:text-3xl">
           {title}
         </h2>
       </div>

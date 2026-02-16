@@ -48,7 +48,7 @@ export function SiteFooter() {
 
   return (
     <footer className="mt-auto w-full min-w-0 overflow-hidden bg-burgundy-dark safe-area-inset-bottom" role="contentinfo">
-      <div className="w-full min-w-0 px-4 py-10 sm:px-6 sm:py-14 md:py-16 lg:px-8 lg:py-20">
+      <div className="w-full min-w-0 px-3 py-8 xs:px-4 xs:py-10 sm:px-6 sm:py-14 md:py-16 lg:px-8 lg:py-20 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))] [padding-bottom:max(2.5rem,calc(env(safe-area-inset-bottom)+1.5rem))]">
         <div className="grid grid-cols-1 gap-8 min-w-0 sm:gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
           {/* Hakkımızda */}
           <div>

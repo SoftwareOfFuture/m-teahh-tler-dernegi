@@ -10,7 +10,7 @@ export function VideoCard({ item, onOpen }: Props) {
 
   const content = (
     <>
-      <div className="relative aspect-[21/9] min-h-[100px] overflow-hidden">
+      <div className="relative aspect-[21/9] min-h-[80px] overflow-hidden xs:min-h-[100px]">
         <Image
           src={normalizeImageSrc(item.thumbnailUrl)}
           alt={item.title}
@@ -26,7 +26,7 @@ export function VideoCard({ item, onOpen }: Props) {
           </div>
         </div>
       </div>
-      <div className="min-w-0 p-4">
+      <div className="min-w-0 p-3 xs:p-4">
         <h3 className="line-clamp-2 text-sm font-semibold text-slate-800 transition-colors duration-200 group-hover:text-burgundy sm:text-base">
           {item.title}
         </h3>

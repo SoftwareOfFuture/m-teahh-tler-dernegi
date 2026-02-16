@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        xs: '375px',
+      },
       colors: {
         burgundy: '#8B1538',
         'burgundy-dark': '#6B1030',

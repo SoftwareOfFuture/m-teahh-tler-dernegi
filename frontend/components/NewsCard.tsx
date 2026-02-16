@@ -11,7 +11,7 @@ export function NewsCard({ item }: Props) {
       href={`/haberler/detay?id=${encodeURIComponent(String(item.id))}`}
       className="group block overflow-hidden rounded-2xl bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-soft-lg"
     >
-      <div className="relative aspect-[21/9] min-h-[100px] overflow-hidden">
+      <div className="relative aspect-[21/9] min-h-[80px] overflow-hidden xs:min-h-[100px]">
         <Image
           src={normalizeImageSrc(item.imageUrl)}
           alt={item.title}
@@ -23,8 +23,8 @@ export function NewsCard({ item }: Props) {
           {item.date}
         </div>
       </div>
-      <div className="min-w-0 p-4 sm:p-5">
-        <h3 className="line-clamp-2 text-base font-semibold text-slate-800 transition-colors duration-200 group-hover:text-burgundy sm:text-lg">
+      <div className="min-w-0 p-3 xs:p-4 sm:p-5">
+        <h3 className="line-clamp-2 text-sm font-semibold text-slate-800 transition-colors duration-200 group-hover:text-burgundy xs:text-base sm:text-lg">
           {item.title}
         </h3>
         <p className="mt-2 line-clamp-2 text-sm text-slate-600">{item.excerpt}</p>

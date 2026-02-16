@@ -102,7 +102,7 @@ export function Navbar() {
       role="banner"
     >
       <nav
-        className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 md:py-3 lg:px-6"
+        className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 md:py-3 lg:px-6 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))]"
         aria-label="Ana navigasyon"
       >
         {/* SOL: Logo */}

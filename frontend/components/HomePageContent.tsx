@@ -33,11 +33,22 @@ import {
   type SectionAnimationsMap,
   type SectionId,
 } from '../lib/sectionAnimations';
+import { AnimatedSection } from './AnimatedSection';
 
 const DEFAULT_SECTION_ANIM = 'fade-in-up';
 
+function useSectionAnimations() {
+  const [animations, setAnimations] = useState<SectionAnimationsMap>(() =>
+    typeof window !== 'undefined' ? getStoredSectionAnimations() : {}
+  );
+  useEffect(() => {
+    setAnimations(getStoredSectionAnimations());
+  }, []);
+  return animations;
+}
+
 export function HomePageContent() {
-  const [sectionAnimations, setSectionAnimations] = useState<SectionAnimationsMap>({});
+  const sectionAnimations = useSectionAnimations();
   const [sliderItems, setSliderItems] = useState<SliderItem[]>([]);
   const [slidesLoading, setSlidesLoading] = useState(true);
   const [banners, setBanners] = useState<HomeBanner[]>([]);
@@ -205,34 +216,31 @@ export function HomePageContent() {
     return () => { cancelled = true; };
   }, [formatDot]);
 
-  useEffect(() => {
-    setSectionAnimations(getStoredSectionAnimations());
-  }, []);
-
   const sectionClass = (id: SectionId) =>
     getAnimationClass(sectionAnimations[id] ?? DEFAULT_SECTION_ANIM);
 
   return (
     <div className="flex min-h-screen w-full min-w-0 flex-col overflow-x-hidden bg-white">
       <Navbar />
-      <main className="flex-1 w-full min-w-0 overflow-x-hidden px-3 pb-16 pt-4 sm:px-6 sm:pb-20 sm:pt-6 lg:px-8">
+      <main className="flex-1 w-full min-w-0 overflow-x-hidden pt-4 pb-16 sm:pt-6 sm:pb-20 safe-area-x safe-area-b">
         {slidesLoading ? (
-          <section className={`relative w-full overflow-hidden rounded-2xl bg-slate-100 ${sectionClass('hero')}`}>
-            <div className="h-[320px] animate-pulse sm:h-[400px] md:h-[500px]" />
+          <section className="relative w-full overflow-hidden rounded-xl bg-slate-100 sm:rounded-2xl">
+            <div className="h-[240px] animate-pulse xs:h-[280px] sm:h-[360px] md:h-[440px] lg:h-[500px]" />
           </section>
         ) : (
-          <div className={sectionClass('hero')}>
+          <AnimatedSection sectionId="hero" animationClass={sectionClass('hero')}>
             <HeroSlider items={sliderItems} />
-          </div>
+          </AnimatedSection>
         )}
-        <div className={`mt-3 w-full sm:mt-5 ${sectionClass('banner')}`}>
+        <AnimatedSection sectionId="banner" animationClass={sectionClass('banner')} className="mt-3 w-full sm:mt-5">
           <HomeBannerStrip banners={banners} loading={bannerLoading} />
-        </div>
+        </AnimatedSection>
         {siteSettings?.promoVideoUrl ? (
-          <div id="tanitim-filmi" className={`mt-8 w-full sm:mt-10 ${sectionClass('banner')} scroll-mt-24`}>
-            <div className="rounded-2xl overflow-hidden bg-slate-900 shadow-soft">
-              <div className="flex flex-col items-center justify-center gap-4 px-4 py-8 sm:py-12 md:flex-row md:gap-8 md:px-8">
-                <div className="w-full max-w-[560px] aspect-video rounded-xl overflow-hidden bg-slate-800 relative group cursor-pointer"
+          <AnimatedSection sectionId="banner" animationClass={sectionClass('banner')}>
+          <div id="tanitim-filmi" className="mt-6 w-full xs:mt-8 sm:mt-10 scroll-mt-24">
+            <div className="rounded-xl overflow-hidden bg-slate-900 shadow-soft sm:rounded-2xl">
+              <div className="flex flex-col items-center justify-center gap-4 px-3 py-6 xs:px-4 xs:py-8 sm:py-12 md:flex-row md:gap-8 md:px-8">
+                <div className="w-full max-w-[560px] aspect-video rounded-lg overflow-hidden bg-slate-800 relative group cursor-pointer xs:rounded-xl"
                   role="button"
                   tabIndex={0}
                   onClick={() => setVideoPreview({ url: siteSettings.promoVideoUrl!, title: 'Tanıtım Filmi' })}
@@ -268,20 +276,24 @@ export function HomePageContent() {
               </div>
             </div>
           </div>
+          </AnimatedSection>
         ) : null}
-        <section className="mt-6 w-full min-w-0 sm:mt-10 lg:mt-14">
-          <div className="grid w-full grid-cols-1 gap-6 min-w-0 sm:gap-10 lg:gap-16">
-            <div id="dijital-platformlar" className={`${sectionClass('dijitalPlatformlar')} scroll-mt-24`}>
-              <DigitalPlatformsSlider title="ANTMUTDER DİJİTAL PLATFORMLAR" />
-            </div>
-            <div className={`min-w-0 ${sectionClass('news')}`}>
-              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-6">
-                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Güncel Haberler</h2>
-                <Link href="/haberler" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+        <section className="mt-4 w-full min-w-0 xs:mt-6 sm:mt-10 lg:mt-14">
+          <div className="grid w-full grid-cols-1 gap-5 min-w-0 xs:gap-6 sm:gap-10 lg:gap-16">
+            <AnimatedSection sectionId="dijitalPlatformlar" animationClass={sectionClass('dijitalPlatformlar')} className="scroll-mt-24">
+              <div id="dijital-platformlar">
+                <DigitalPlatformsSlider title="ANTMUTDER DİJİTAL PLATFORMLAR" />
+              </div>
+            </AnimatedSection>
+            <AnimatedSection sectionId="news" animationClass={sectionClass('news')} className="min-w-0">
+              <div>
+              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-6">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Güncel Haberler</h2>
+                <Link href="/haberler" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
                   Tüm Haberler
                 </Link>
               </div>
-              <div className="grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-4 stagger-children">
+              <div className="grid grid-cols-1 gap-3 min-w-0 xs:gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-4 stagger-children">
                 {newsItems.slice(0, 4).map((item) => (
                   <NewsCard key={item.id} item={item} />
                 ))}
@@ -291,15 +303,17 @@ export function HomePageContent() {
                   Henüz haber eklenmemiş.
                 </div>
               ) : null}
-            </div>
-            <div className={`min-w-0 ${sectionClass('news')}`}>
-              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-6">
-                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Duyurular</h2>
-                <Link href="/duyurular" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+              </div>
+            </AnimatedSection>
+            <AnimatedSection sectionId="announcements" animationClass={sectionClass('announcements')} className="min-w-0">
+              <div>
+              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-6">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Duyurular</h2>
+                <Link href="/duyurular" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
                   Tüm Duyurular
                 </Link>
               </div>
-              <div className="grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">
+              <div className="grid grid-cols-1 gap-3 min-w-0 xs:gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">
                 {announcementItems.slice(0, 6).map((item) => (
                   <AnnouncementCard key={item.id} item={item} />
                 ))}
@@ -309,15 +323,17 @@ export function HomePageContent() {
                   Henüz duyuru eklenmemiş.
                 </div>
               ) : null}
-            </div>
-            <div className={`min-w-0 ${sectionClass('video')}`}>
-              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-6">
-                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Arşiv</h2>
-                <Link href="/videolar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+              </div>
+            </AnimatedSection>
+            <AnimatedSection sectionId="video" animationClass={sectionClass('video')} className="min-w-0">
+              <div>
+              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-6">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Arşiv</h2>
+                <Link href="/videolar" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
                   Tüm Videolar
                 </Link>
               </div>
-              <div className="grid grid-cols-1 gap-4 min-w-0 sm:gap-6 lg:grid-cols-12 stagger-children">
+              <div className="grid grid-cols-1 gap-3 min-w-0 xs:gap-4 sm:gap-6 lg:grid-cols-12 stagger-children">
                 {videoItems.length > 0 ? (
                   <>
                     <div className="min-w-0 lg:col-span-7">
@@ -349,15 +365,17 @@ export function HomePageContent() {
                   Henüz video eklenmemiş.
                 </div>
               ) : null}
-            </div>
-            <div className={`min-w-0 ${sectionClass('publications')}`}>
-              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-6">
-                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Yönetim Kurulu</h2>
-                <Link href="/yayinlar" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+              </div>
+            </AnimatedSection>
+            <AnimatedSection sectionId="publications" animationClass={sectionClass('publications')} className="min-w-0">
+              <div>
+              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-6">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Yönetim Kurulu</h2>
+                <Link href="/yayinlar" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
                   Tümünü Gör
                 </Link>
               </div>
-              <div className="grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">
+              <div className="grid grid-cols-1 gap-3 min-w-0 xs:gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">
                 {(publications.length ? publications : []).slice(0, 6).map((p) => (
                   <PublicationCard key={p.id} item={p} formatDate={formatDot} />
                 ))}
@@ -367,15 +385,17 @@ export function HomePageContent() {
                   </div>
                 ) : null}
               </div>
-            </div>
-            <div id="partnerler" className={`min-w-0 scroll-mt-24 ${sectionClass('partners')}`}>
-              <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 sm:mb-5">
-                <h2 className="min-w-0 truncate text-lg font-bold text-slate-800 sm:text-xl md:text-2xl">Partnerlerimiz</h2>
-                <Link href="/uyelerimiz" className="inline-flex items-center justify-center rounded-lg bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy">
+              </div>
+            </AnimatedSection>
+            <AnimatedSection sectionId="partners" animationClass={sectionClass('partners')} className="min-w-0 scroll-mt-24">
+              <div id="partnerler">
+              <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-5">
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Partnerlerimiz</h2>
+                <Link href="/uyelerimiz" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
                   Tüm Partnerler
                 </Link>
               </div>
-              <div className="min-w-0 overflow-hidden rounded-2xl bg-slate-100/80 p-4 sm:p-6 md:p-8">
+              <div className="min-w-0 overflow-hidden rounded-xl bg-slate-100/80 p-3 xs:p-4 sm:rounded-2xl sm:p-6 md:p-8">
                 <LogoSlider logos={partnerLogos} />
               </div>
               {!partnersLoading && partnerLogos.length === 0 ? (
@@ -383,7 +403,8 @@ export function HomePageContent() {
                   Henüz partner eklenmemiş.
                 </div>
               ) : null}
-            </div>
+              </div>
+            </AnimatedSection>
           </div>
         </section>
         <VideoPlayerModal
