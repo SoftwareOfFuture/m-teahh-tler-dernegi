@@ -48,7 +48,6 @@ export function BoardPyramid({ members }: Props) {
           )}
         </div>
         <p className="mt-2 text-center text-sm font-semibold text-slate-800 xs:text-base">{m.name}</p>
-        {m.unit ? <p className="mt-0.5 text-center text-xs text-slate-600 xs:text-sm">{m.unit}</p> : null}
       </button>
     );
   };
