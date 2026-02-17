@@ -5,6 +5,42 @@ const { auth, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Rütbe sırası: Başkan → Yardımcı/Vekili → Sayman → Sekreter → Asil → Yedek → Denetim Kurulu
+// Denetim önce (daha spesifik), sonra Yönetim Kurulu
+const DUTY_SORT_ORDER = [
+  { pattern: /Yönetim Kurulu Başkan\s*$/i, order: 1, label: 'Yönetim Kurulu Başkanı' },
+  { pattern: /Yönetim Kurulu Başkan (Vekili|Yardımcısı)/i, order: 2, label: null },
+  { pattern: /Yönetim Kurulu Sayman/i, order: 3, label: null },
+  { pattern: /Yönetim Kurulu Sekreter/i, order: 4, label: null },
+  { pattern: /Yönetim Kurulu Asıl Üye/i, order: 6, label: null },
+  { pattern: /Yönetim Kurulu Yedek Üye/i, order: 7, label: null },
+  { pattern: /Denetim Kurulu Başkan\s*$/i, order: 10, label: 'Denetim Kurulu Başkan' },
+  { pattern: /Denetim Kurulu Başkan Yardımcısı/i, order: 11, label: 'Denetim Kurulu Başkan Yardımcısı' },
+  { pattern: /Denetim Kurulu Asıl Üye/i, order: 12, label: 'Denetim Kurulu Asıl Üye' },
+  { pattern: /Denetim Kurulu Yedek Üye/i, order: 13, label: 'Denetim Kurulu Yedek Üye' },
+];
+
+function getRoleLabelAndSort(p) {
+  if (p.boardRole) {
+    return { roleLabel: p.boardRole.label, roleSortOrder: p.boardRole.sortOrder ?? 99 };
+  }
+  const duty = (p.duty || '').trim();
+  if (p.role === 'baskan') {
+    return { roleLabel: 'Yönetim Kurulu Başkanı', roleSortOrder: 1 };
+  }
+  for (const { pattern, order, label } of DUTY_SORT_ORDER) {
+    if (pattern.test(duty)) {
+      return { roleLabel: label || duty, roleSortOrder: order };
+    }
+  }
+  return { roleLabel: duty || 'Asil Üye', roleSortOrder: duty ? 99 : 6 };
+}
+
+function enrichMember(p) {
+  const { roleLabel, roleSortOrder } = getRoleLabelAndSort(p);
+  return { ...p, roleLabel, roleSortOrder };
+}
+
 const validate = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
@@ -19,12 +55,7 @@ router.get('/', async (req, res) => {
       include: [{ model: db.BoardRole, as: 'boardRole', required: false }],
       order: [['sortOrder', 'ASC'], ['id', 'ASC']],
     });
-    const plain = items.map((m) => {
-      const p = m.get ? m.get({ plain: true }) : m;
-      const roleLabel = p.boardRole ? p.boardRole.label : (p.role === 'baskan' ? 'Yönetim Kurulu Başkanı' : 'Asil Üye');
-      const roleSortOrder = p.boardRole ? p.boardRole.sortOrder : (p.role === 'baskan' ? 0 : 1);
-      return { ...p, roleLabel, roleSortOrder };
-    });
+    const plain = items.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m));
     plain.sort((a, b) => {
       if (a.roleSortOrder !== b.roleSortOrder) return a.roleSortOrder - b.roleSortOrder;
       return (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id;
@@ -54,12 +85,7 @@ router.get(
         limit,
         offset,
       });
-      const items = rows.map((m) => {
-        const p = m.get ? m.get({ plain: true }) : m;
-        const roleLabel = p.boardRole ? p.boardRole.label : (p.role === 'baskan' ? 'Yönetim Kurulu Başkanı' : 'Asil Üye');
-        const roleSortOrder = p.boardRole ? p.boardRole.sortOrder : (p.role === 'baskan' ? 0 : 1);
-        return { ...p, roleLabel, roleSortOrder };
-      });
+      const items = rows.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m));
       items.sort((a, b) => (a.roleSortOrder !== b.roleSortOrder ? a.roleSortOrder - b.roleSortOrder : (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id));
       res.json({ items, total: count, page, limit, totalPages: Math.ceil(count / limit) });
     } catch (err) {
@@ -98,8 +124,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
       isPublished,
     });
     const withRole = await db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] });
-    const p = withRole.get({ plain: true });
-    res.status(201).json({ ...p, roleLabel: p.boardRole ? p.boardRole.label : 'Asil Üye', roleSortOrder: p.boardRole ? p.boardRole.sortOrder : 1 });
+    res.status(201).json(enrichMember(withRole.get({ plain: true })));
   } catch (err) {
     console.error('[board-members POST]', err);
     res.status(500).json({ error: err.message });
@@ -140,8 +165,7 @@ router.put(
       if (req.body.isPublished !== undefined) updates.isPublished = req.body.isPublished;
       await item.update(updates);
       const withRole = await db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] });
-      const p = withRole.get({ plain: true });
-      res.json({ ...p, roleLabel: p.boardRole ? p.boardRole.label : 'Asil Üye', roleSortOrder: p.boardRole ? p.boardRole.sortOrder : 1 });
+      res.json(enrichMember(withRole.get({ plain: true })));
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
