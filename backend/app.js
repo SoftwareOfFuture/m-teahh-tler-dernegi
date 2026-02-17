@@ -19,6 +19,7 @@ const siteSettingsRoutes = require('./routes/site-settings');
 const bannersRoutes = require('./routes/banners');
 const propertiesRoutes = require('./routes/properties');
 const boardMembersRoutes = require('./routes/board-members');
+const boardRolesRoutes = require('./routes/board-roles');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/partners', partnersRoutes);
 app.use('/api/banners', bannersRoutes);
 app.use('/api/properties', propertiesRoutes);
 app.use('/api/board-members', boardMembersRoutes);
+app.use('/api/board-roles', boardRolesRoutes);
 app.use('/api/sms-feedback', smsFeedbackRoutes);
 app.use('/api/contact-messages', contactMessagesRoutes);
 app.use('/api/site-settings', siteSettingsRoutes);

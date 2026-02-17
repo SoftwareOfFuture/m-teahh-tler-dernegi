@@ -110,6 +110,30 @@ async function seed() {
     ];
     await seedPageContent(pageContents);
 
+    // BOARD ROLES - Yönetim Kurulu kategorileri (piramit sırasına göre)
+    const defaultBoardRoles = [
+      { label: 'Yönetim Kurulu Başkanı', sortOrder: 1 },
+      { label: 'Yönetim Kurulu Başkan Yardımcısı', sortOrder: 2 },
+      { label: 'Muhasip Üye', sortOrder: 3 },
+      { label: 'Yönetim Kurulu Sekreteri', sortOrder: 4 },
+      { label: 'Teşkilatlanma ve Medya Sekreteri', sortOrder: 5 },
+      { label: 'Asil Üye', sortOrder: 6 },
+      { label: 'Yedek Üye', sortOrder: 7 },
+    ];
+    for (const r of defaultBoardRoles) {
+      const existing = await db.BoardRole.findOne({ where: { label: r.label } });
+      if (!existing) {
+        await db.BoardRole.create(r);
+        console.log(`BoardRole [${r.label}]: created`);
+      }
+    }
+    const roleBaskan = await db.BoardRole.findOne({ where: { label: 'Yönetim Kurulu Başkanı' } });
+    const roleAsil = await db.BoardRole.findOne({ where: { label: 'Asil Üye' } });
+    if (roleBaskan && roleAsil) {
+      await db.BoardMember.update({ boardRoleId: roleBaskan.id }, { where: { role: 'baskan', boardRoleId: null } });
+      await db.BoardMember.update({ boardRoleId: roleAsil.id }, { where: { role: 'uyelik', boardRoleId: null } });
+    }
+
     const seedDefault = String(process.env.SEED_DEFAULT_CONTENT || '').toLowerCase() === 'true';
     if (!seedDefault) {
       console.log('seed-content: slides/news/etc. skipped (SEED_DEFAULT_CONTENT is not true)');

@@ -63,10 +63,15 @@ import {
   type Publication,
   type Video,
   type BoardMember,
+  type BoardRole,
   listBoardMembersAdminAll,
   createBoardMember,
   updateBoardMember,
   deleteBoardMember,
+  listBoardRolesAdminAll,
+  createBoardRole,
+  updateBoardRole,
+  deleteBoardRole,
   type ContactMessage,
   type SmsFeedback,
   getSiteSettingsAdmin,
@@ -97,6 +102,7 @@ export default function PlatformAdminPage() {
     | 'videos'
     | 'publications'
     | 'boardMembers'
+    | 'boardRoles'
     | 'partners'
     | 'properties'
     | 'kurumsal'
@@ -119,6 +125,7 @@ export default function PlatformAdminPage() {
     { id: 'videos', label: 'Videolar' },
     { id: 'publications', label: 'Yönetim Kurulu' },
     { id: 'boardMembers', label: 'Kurul Üyeleri' },
+    { id: 'boardRoles', label: 'Kurul Kategorileri' },
     { id: 'partners', label: 'Partnerler' },
     { id: 'properties', label: 'Emlak İlanları' },
     { id: 'kurumsal', label: 'Kurumsal' },
@@ -290,6 +297,8 @@ export default function PlatformAdminPage() {
               <PublicationsPanel token={token} />
             ) : tab === 'boardMembers' ? (
               <BoardMembersPanel token={token} />
+            ) : tab === 'boardRoles' ? (
+              <BoardRolesPanel token={token} />
             ) : tab === 'partners' ? (
               <PartnersPanel token={token} />
             ) : tab === 'properties' ? (
@@ -2106,22 +2115,47 @@ function VideosPanel({ token }: { token: string | null }) {
   />;
 }
 
+function BoardRolesPanel({ token }: { token: string | null }) {
+  return (
+    <GenericContentPanel<BoardRole>
+      token={token}
+      title="Kurul Kategorileri"
+      subtitle="Yönetim Kurulu piramitinde kullanılan roller (Başkan, Yardımcı, Muhasip, Sekreter, Asil Üye vb.). Sıra numarası küçük olan en üstte görünür. Yeni kategori ekleyebilirsiniz."
+      list={async (t) => ({ items: await listBoardRolesAdminAll(t) })}
+      create={(t, p) => createBoardRole(t, p as { label: string; sortOrder?: number })}
+      update={(t, id, p) => updateBoardRole(t, id, p as Partial<BoardRole>)}
+      remove={(t, id) => deleteBoardRole(t, id)}
+      displayKey="label"
+      fields={[
+        { key: 'label', label: 'Kategori adı', type: 'text', required: true },
+        { key: 'sortOrder', label: 'Sıra (1=en üst)', type: 'text' },
+      ]}
+    />
+  );
+}
+
 function BoardMembersPanel({ token }: { token: string | null }) {
+  const [roleOptions, setRoleOptions] = useState<Array<{ value: number; label: string }>>([]);
+  useEffect(() => {
+    if (!token) return;
+    listBoardRolesAdminAll(token).then((roles) => setRoleOptions(roles.map((r) => ({ value: r.id, label: r.label }))));
+  }, [token]);
   return (
     <GenericContentPanel<BoardMember>
       token={token}
       title="Yönetim Kurulu Üyeleri"
-      subtitle="Yönetim Kurulu sayfasında PDFlerden sonra piramit şeklinde görünen kurul üyeleri. Başkan en üstte, üyeler altta. Oval görsel, isim ve birim alanları."
+      subtitle="Piramitte görünen kurul üyeleri. Kategori seçerek başkan, yardımcı, muhasip, sekreter, asil üye vb. atayın."
       list={(t) => listBoardMembersAdminAll(t, { page: 1, limit: 200 })}
       create={(t, p) => createBoardMember(t, p as any)}
       update={(t, id, p) => updateBoardMember(t, id, p as any)}
       remove={(t, id) => deleteBoardMember(t, id)}
       displayKey="name"
+      selectOptions={{ boardRoleId: roleOptions }}
       fields={[
         { key: 'name', label: 'İsim', type: 'text', required: true },
         { key: 'unit', label: 'Birim / Pozisyon', type: 'text' },
         { key: 'imageUrl', label: 'Görsel URL (Oval)', type: 'imageUrl' },
-        { key: 'role', label: 'Rol (baskan / uyelik)', type: 'text' },
+        { key: 'boardRoleId', label: 'Kurul üyesi rolü', type: 'select', optionsKey: 'boardRoleId' },
         { key: 'sortOrder', label: 'Sıralama', type: 'text' },
       ]}
     />
@@ -2193,9 +2227,15 @@ function PropertiesPanel({ token }: { token: string | null }) {
   );
 }
 
-type GenericField = { key: string; label: string; type: 'text' | 'textarea' | 'imageUrl'; required?: boolean };
+type GenericField = {
+  key: string;
+  label: string;
+  type: 'text' | 'textarea' | 'imageUrl' | 'select';
+  required?: boolean;
+  optionsKey?: string;
+};
 
-function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
+function GenericContentPanel<T extends { id: number; isPublished?: boolean }>({
   token,
   title,
   subtitle,
@@ -2205,6 +2245,7 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
   remove,
   fields,
   displayKey = 'title',
+  selectOptions = {},
 }: {
   token: string | null;
   title: string;
@@ -2215,6 +2256,7 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
   remove: (token: string, id: number) => Promise<any>;
   fields: GenericField[];
   displayKey?: string;
+  selectOptions?: Record<string, Array<{ value: number; label: string }>>;
 }) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
@@ -2313,6 +2355,20 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
                     onChange={(v) => setCreateForm((s) => ({ ...s, [f.key]: v }))}
                     placeholder="URL veya dosya seçin"
                   />
+                ) : f.type === 'select' && f.optionsKey && selectOptions[f.optionsKey] ? (
+                  <select
+                    aria-label={f.label}
+                    value={String(createForm[f.key] ?? '')}
+                    onChange={(e) => setCreateForm((s) => ({ ...s, [f.key]: e.target.value ? Number(e.target.value) : '' }))}
+                    className="w-full rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:border-burgundy"
+                  >
+                    <option value="">Seçin</option>
+                    {selectOptions[f.optionsKey].map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
                 ) : (
                   <TextInput
                     value={String(createForm[f.key] ?? '')}
@@ -2349,6 +2405,11 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
                       const parsed = parseInt(String(v), 10);
                       v = isNaN(parsed) ? 0 : parsed;
                     }
+                  }
+                  if (f.key === 'boardRoleId' && (v === '' || v === undefined || v === null)) continue;
+                  if (f.key === 'boardRoleId' && v !== undefined && v !== null) {
+                    const parsed = parseInt(String(v), 10);
+                    v = Number.isFinite(parsed) ? parsed : null;
                   }
                   
                   if (f.required) {
@@ -2444,6 +2505,20 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
                             onChange={(v) => setEdit((s) => ({ ...s, [f.key]: v }))}
                             placeholder="URL veya dosya seçin"
                           />
+                        ) : f.type === 'select' && f.optionsKey && selectOptions[f.optionsKey] ? (
+                          <select
+                            aria-label={f.label}
+                            value={String(edit[f.key] ?? '')}
+                            onChange={(e) => setEdit((s) => ({ ...s, [f.key]: e.target.value ? Number(e.target.value) : null }))}
+                            className="w-full rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:border-burgundy"
+                          >
+                            <option value="">Seçin</option>
+                            {selectOptions[f.optionsKey].map((opt) => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </select>
                         ) : (
                           <TextInput value={String(edit[f.key] ?? '')} onChange={(e) => setEdit((s) => ({ ...s, [f.key]: e.target.value }))} />
                         )}
@@ -2473,7 +2548,9 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
                               v = isNaN(parsed) ? 0 : parsed;
                             }
                           }
-                          
+                          if (f.key === 'boardRoleId') {
+                            v = v === '' || v === undefined || v === null ? null : (Number.isFinite(Number(v)) ? Number(v) : null);
+                          }
                           if (f.required) {
                             if (v === undefined || v === null || (typeof v === 'string' && v.length === 0)) {
                               setError(`${f.label} alanı zorunludur.`);
@@ -2483,7 +2560,7 @@ function GenericContentPanel<T extends { id: number; isPublished: boolean }>({
                             continue;
                           }
                           if (v === undefined || v === null) continue;
-                          if (typeof v === 'string' && v.length === 0) continue;
+                          if (typeof v === 'string' && v.length === 0 && f.key !== 'boardRoleId') continue;
                           payload[f.key] = v;
                         }
                         await update(token, it.id, payload as any);

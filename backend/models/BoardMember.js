@@ -19,9 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
       },
       role: {
-        // 'baskan' | 'uyelik' - başkan en üstte, üyeler altta
+        // legacy: 'baskan' | 'uyelik' - used when boardRoleId is null
         type: DataTypes.STRING(50),
-        defaultValue: 'uyelik',
+        allowNull: true,
+      },
+      boardRoleId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: { model: 'board_roles', key: 'id' },
       },
       sortOrder: {
         type: DataTypes.INTEGER,

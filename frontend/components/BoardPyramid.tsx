@@ -7,10 +7,17 @@ import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 type Props = { members: BoardMember[] };
 
 export function BoardPyramid({ members }: Props) {
-  const baskan = members.filter((m) => m.role === 'baskan');
-  const uyeler = members.filter((m) => m.role === 'uyelik');
-
   if (members.length === 0) return null;
+
+  const byRole = new Map<string, BoardMember[]>();
+  for (const m of members) {
+    const label = m.roleLabel || (m.role === 'baskan' ? 'Yönetim Kurulu Başkanı' : 'Asil Üye');
+    if (!byRole.has(label)) byRole.set(label, []);
+    byRole.get(label)!.push(m);
+  }
+  const roleOrder = Array.from(byRole.entries()).sort(
+    (a, b) => (a[1][0]?.roleSortOrder ?? 999) - (b[1][0]?.roleSortOrder ?? 999)
+  );
 
   const MemberCard = ({ m }: { m: BoardMember }) => {
     const src = normalizeImageSrc(m.imageUrl);
@@ -41,34 +48,23 @@ export function BoardPyramid({ members }: Props) {
     <section className="mt-16">
       <h2 className="mb-8 text-center text-xl font-bold text-slate-900 sm:text-2xl">Yönetim Kurulu</h2>
       <div className="flex flex-col items-center gap-10">
-        {/* Başkan - en üstte, tek */}
-        {baskan.length > 0 && (
-          <div className="flex flex-col items-center">
-            <div className="rounded-2xl bg-white px-6 py-4 shadow-soft">
-              <MemberCard m={baskan[0]} />
+        {roleOrder.map(([roleLabel, roleMembers]) => (
+          <div key={roleLabel} className="flex flex-col items-center">
+            <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-burgundy sm:text-sm">
+              {roleLabel}
+            </p>
+            <div className="flex flex-wrap justify-center gap-6 xs:gap-8 sm:gap-10 md:gap-12">
+              {roleMembers.map((m) => (
+                <div
+                  key={m.id}
+                  className="flex rounded-2xl bg-white px-4 py-4 shadow-soft transition-all hover:shadow-soft-lg xs:px-5 xs:py-5"
+                >
+                  <MemberCard m={m} />
+                </div>
+              ))}
             </div>
-            <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-burgundy">Başkan</p>
           </div>
-        )}
-
-        {/* Başkan ile üyeler arasında çizgi */}
-        {baskan.length > 0 && uyeler.length > 0 && (
-          <div className="h-px w-12 bg-slate-200" aria-hidden />
-        )}
-
-        {/* Üyeler - piramit şeklinde (yuvarlak/oval kartlar) */}
-        {uyeler.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-6 xs:gap-8 sm:gap-10 md:gap-12">
-            {uyeler.map((m) => (
-              <div
-                key={m.id}
-                className="flex rounded-2xl bg-white px-4 py-4 shadow-soft transition-all hover:shadow-soft-lg xs:px-5 xs:py-5"
-              >
-                <MemberCard m={m} />
-              </div>
-            ))}
-          </div>
-        )}
+        ))}
       </div>
     </section>
   );

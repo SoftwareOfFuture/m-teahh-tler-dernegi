@@ -628,6 +628,52 @@ export async function listPublicationsRecent(params?: { limit?: number }) {
   );
 }
 
+// --- Board Roles (Yönetim Kurulu kategorileri) ---
+
+export type BoardRole = {
+  id: number;
+  label: string;
+  sortOrder: number;
+  isPublished?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export async function listBoardRolesPublic() {
+  return await apiFetch<BoardRole[]>('/api/board-roles', { method: 'GET' });
+}
+
+export async function listBoardRolesAdminAll(token: string) {
+  const res = await apiFetch<{ items: BoardRole[] }>('/api/board-roles/admin/all', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.items || [];
+}
+
+export async function createBoardRole(token: string, payload: { label: string; sortOrder?: number }) {
+  return await apiFetch<BoardRole>('/api/board-roles', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateBoardRole(token: string, id: number, payload: Partial<BoardRole>) {
+  return await apiFetch<BoardRole>(`/api/board-roles/${id}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteBoardRole(token: string, id: number) {
+  return await apiFetch<{ success: true }>(`/api/board-roles/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
 // --- Board Members (Yönetim Kurulu piramit) ---
 
 export type BoardMember = {
@@ -635,7 +681,10 @@ export type BoardMember = {
   name: string;
   unit: string | null;
   imageUrl: string | null;
-  role: 'baskan' | 'uyelik';
+  role?: string | null;
+  boardRoleId?: number | null;
+  roleLabel?: string;
+  roleSortOrder?: number;
   sortOrder: number;
   isPublished: boolean;
   createdAt?: string;
