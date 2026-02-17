@@ -1,14 +1,13 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Postgres-only (Vercel Postgres / managed Postgres)
-//
-// Prefer direct (NON_POOLING) URL to avoid intermittent proxy/pooler upstream errors.
+// Postgres-only (Vercel Postgres / Neon)
+// Serverless: pooled URL often works better. Migrations/scripts: prefer NON_POOLING.
+const isVercel = !!process.env.VERCEL;
 let pgUrl =
-  process.env.POSTGRES_URL_NON_POOLING ||
-  process.env.POSTGRES_URL ||
-  process.env.DATABASE_URL ||
-  process.env.POSTGRES_PRISMA_URL;
+  isVercel
+    ? (process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL)
+    : (process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL);
 
 // Some environments use "prisma+postgres://" which pg can't parse; normalize to "postgres://".
 if (pgUrl && typeof pgUrl === 'string' && pgUrl.startsWith('prisma+postgres://')) {
@@ -21,16 +20,14 @@ if (!pgUrl || !pgUrl.startsWith('postgres')) {
   );
 }
 
-// Some managed Postgres providers add sslmode=require in the URL query.
-// pg-connection-string currently treats some sslmodes as verify-full; we prefer explicit ssl config.
+// Neon/Vercel: uselibpqcompat can resolve SSL handshake issues
 try {
   const u = new URL(pgUrl);
-  if (u.searchParams.has('sslmode')) {
-    u.searchParams.delete('sslmode');
-    pgUrl = u.toString();
-  }
+  if (!u.searchParams.has('connect_timeout')) u.searchParams.set('connect_timeout', '15');
+  if (!u.searchParams.has('sslmode') && !pgUrl.includes('localhost')) u.searchParams.set('sslmode', 'require');
+  pgUrl = u.toString();
 } catch {
-  // If URL parsing fails, keep original string.
+  /* keep original */
 }
 
 const needsSsl = !pgUrl.includes('localhost') && !pgUrl.includes('127.0.0.1');
@@ -38,10 +35,9 @@ const needsSsl = !pgUrl.includes('localhost') && !pgUrl.includes('127.0.0.1');
 const sequelize = new Sequelize(pgUrl, {
   dialect: 'postgres',
   logging: false,
-  dialectOptions: needsSsl ? { ssl: { require: true, rejectUnauthorized: false } } : {},
+  dialectOptions: needsSsl ? { ssl: { require: true, rejectUnauthorized: false }, connectTimeout: 15000 } : {},
   pool: {
-    // serverless-friendly defaults
-    max: 2,
+    max: isVercel ? 1 : 2,
     min: 0,
     acquire: 60000,
     idle: 10000,
