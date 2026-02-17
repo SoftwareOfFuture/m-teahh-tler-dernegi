@@ -61,6 +61,15 @@ const validate = (req, res, next) => {
   next();
 };
 
+async function getBoardRolesSafe() {
+  try {
+    const rows = await db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true });
+    return (rows || []).map((r) => ({ ...r, dutyPattern: r.duty_pattern ?? r.dutyPattern }));
+  } catch {
+    return [];
+  }
+}
+
 // GET /api/board-members - public list (published only), with BoardRole
 router.get('/', async (req, res) => {
   try {
@@ -70,7 +79,7 @@ router.get('/', async (req, res) => {
         include: [{ model: db.BoardRole, as: 'boardRole', required: false }],
         order: [['sortOrder', 'ASC'], ['id', 'ASC']],
       }),
-      db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+      getBoardRolesSafe(),
     ]);
     const plain = items.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m, roles));
     plain.sort((a, b) => {
@@ -103,7 +112,7 @@ router.get(
           limit,
           offset,
         }),
-        db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+        getBoardRolesSafe(),
       ]);
       const { count, rows } = result;
       const items = rows.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m, roles));
@@ -146,7 +155,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
     });
     const [withRole, roles] = await Promise.all([
       db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] }),
-      db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+      getBoardRolesSafe(),
     ]);
     res.status(201).json(enrichMember(withRole.get({ plain: true }), roles));
   } catch (err) {
@@ -190,7 +199,7 @@ router.put(
       await item.update(updates);
       const [withRole, roles] = await Promise.all([
         db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] }),
-        db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+        getBoardRolesSafe(),
       ]);
       res.json(enrichMember(withRole.get({ plain: true }), roles));
     } catch (err) {

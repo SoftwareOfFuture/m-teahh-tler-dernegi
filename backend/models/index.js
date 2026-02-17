@@ -20,11 +20,10 @@ if (!pgUrl || !pgUrl.startsWith('postgres')) {
   );
 }
 
-// Neon/Vercel: uselibpqcompat can resolve SSL handshake issues
+// URL'dan sslmode kaldır - pg driver ile dialectOptions.ssl çakışabiliyor
 try {
   const u = new URL(pgUrl);
-  if (!u.searchParams.has('connect_timeout')) u.searchParams.set('connect_timeout', '15');
-  if (!u.searchParams.has('sslmode') && !pgUrl.includes('localhost')) u.searchParams.set('sslmode', 'require');
+  u.searchParams.delete('sslmode');
   pgUrl = u.toString();
 } catch {
   /* keep original */
