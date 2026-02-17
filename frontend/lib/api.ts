@@ -680,6 +680,9 @@ export type BoardMember = {
   id: number;
   name: string;
   unit: string | null;
+  profession: string | null;
+  duty: string | null;
+  residenceAddress: string | null;
   imageUrl: string | null;
   role?: string | null;
   boardRoleId?: number | null;

@@ -76,6 +76,9 @@ router.post('/', auth, adminOnly, async (req, res) => {
       return res.status(400).json({ errors: [{ msg: 'İsim gerekli' }] });
     }
     const unit = raw.unit != null ? String(raw.unit).trim() || null : null;
+    const profession = raw.profession != null ? String(raw.profession).trim() || null : null;
+    const duty = raw.duty != null ? String(raw.duty).trim() || null : null;
+    const residenceAddress = raw.residenceAddress != null ? String(raw.residenceAddress).trim() || null : null;
     const imageUrl = raw.imageUrl != null ? String(raw.imageUrl).trim() || null : null;
     const boardRoleId = raw.boardRoleId != null && raw.boardRoleId !== '' ? parseInt(String(raw.boardRoleId), 10) : null;
     const sortOrder = parseInt(String(raw.sortOrder ?? 0), 10) || 0;
@@ -83,6 +86,9 @@ router.post('/', auth, adminOnly, async (req, res) => {
     const item = await db.BoardMember.create({
       name,
       unit,
+      profession,
+      duty,
+      residenceAddress,
       imageUrl,
       boardRoleId: Number.isFinite(boardRoleId) ? boardRoleId : null,
       role: null,
@@ -106,6 +112,9 @@ router.put(
     param('id').isInt().toInt(),
     body('name').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
     body('unit').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
+    body('profession').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
+    body('duty').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
+    body('residenceAddress').optional({ checkFalsy: true }).trim().isLength({ max: 5000 }),
     body('imageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000000 }),
     body('boardRoleId').optional({ checkFalsy: true }).isInt().toInt(),
     body('sortOrder').optional({ checkFalsy: true }).isInt({ min: 0 }).toInt(),
@@ -119,6 +128,9 @@ router.put(
       const updates = {};
       if (req.body.name !== undefined) updates.name = req.body.name?.trim() || item.name;
       if (req.body.unit !== undefined) updates.unit = req.body.unit?.trim() || null;
+      if (req.body.profession !== undefined) updates.profession = req.body.profession?.trim() || null;
+      if (req.body.duty !== undefined) updates.duty = req.body.duty?.trim() || null;
+      if (req.body.residenceAddress !== undefined) updates.residenceAddress = req.body.residenceAddress?.trim() || null;
       if (req.body.imageUrl !== undefined) updates.imageUrl = req.body.imageUrl || null;
       if (req.body.boardRoleId !== undefined) updates.boardRoleId = req.body.boardRoleId ? req.body.boardRoleId : null;
       if (req.body.sortOrder !== undefined) updates.sortOrder = req.body.sortOrder;

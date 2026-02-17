@@ -2154,6 +2154,9 @@ function BoardMembersPanel({ token }: { token: string | null }) {
       fields={[
         { key: 'name', label: 'İsim', type: 'text', required: true },
         { key: 'unit', label: 'Birim / Pozisyon', type: 'text' },
+        { key: 'profession', label: 'Meslek', type: 'text' },
+        { key: 'duty', label: 'Görevi', type: 'text' },
+        { key: 'residenceAddress', label: 'Yerleşim yeri adresi', type: 'textarea' },
         { key: 'imageUrl', label: 'Görsel URL (Oval)', type: 'imageUrl' },
         { key: 'boardRoleId', label: 'Kurul üyesi rolü', type: 'select', optionsKey: 'boardRoleId' },
         { key: 'sortOrder', label: 'Sıralama', type: 'text' },

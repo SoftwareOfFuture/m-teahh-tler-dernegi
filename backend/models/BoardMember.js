@@ -15,6 +15,18 @@ module.exports = (sequelize, DataTypes) => {
         // birim / pozisyon
         type: DataTypes.STRING(255),
       },
+      profession: {
+        // meslek
+        type: DataTypes.STRING(255),
+      },
+      duty: {
+        // görevi
+        type: DataTypes.STRING(255),
+      },
+      residenceAddress: {
+        // yerleşim yeri adresi
+        type: DataTypes.TEXT,
+      },
       imageUrl: {
         type: DataTypes.TEXT,
       },

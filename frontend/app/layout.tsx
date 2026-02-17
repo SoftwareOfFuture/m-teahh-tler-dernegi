@@ -50,12 +50,9 @@ export const metadata: Metadata = {
     description: SEO.defaultDescription,
   },
   icons: {
-    icon: [
-      { url: '/logo.png', type: 'image/png', sizes: 'any' },
-      { url: '/favicon.ico', sizes: 'any' },
-    ],
-    shortcut: '/logo.png',
-    apple: '/logo.png',
+    icon: [{ url: '/favicon.ico', type: 'image/x-icon', sizes: '32x32' }],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   verification: {},
 };

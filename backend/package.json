@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "db:sync": "node scripts/sync-db.js",
     "seed:admin": "node scripts/seed-admin.js",
-    "seed:content": "node scripts/seed-content.js"
+    "seed:content": "node scripts/seed-content.js",
+    "fix:board-members": "node scripts/fix-board-members.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
