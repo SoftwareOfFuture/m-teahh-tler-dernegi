@@ -77,7 +77,7 @@ db.Member.belongsTo(db.User, { foreignKey: 'userId' });
 db.Member.hasMany(db.MemberDocument, { foreignKey: 'memberId', as: 'documents' });
 db.MemberDocument.belongsTo(db.Member, { foreignKey: 'memberId' });
 
-db.BoardRole.hasMany(db.BoardMember, { foreignKey: 'boardRoleId' });
-db.BoardMember.belongsTo(db.BoardRole, { foreignKey: 'boardRoleId' });
+db.BoardRole.hasMany(db.BoardMember, { foreignKey: 'boardRoleId', as: 'members' });
+db.BoardMember.belongsTo(db.BoardRole, { foreignKey: 'boardRoleId', as: 'boardRole' });
 
 module.exports = db;
