@@ -11,6 +11,7 @@ export type AuthMeResponse = {
     profileImageUrl: string | null;
     websiteUrl?: string | null;
     joinDate: string;
+    isApproved?: boolean;
   };
 };
 
