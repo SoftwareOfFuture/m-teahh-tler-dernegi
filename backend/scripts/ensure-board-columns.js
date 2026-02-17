@@ -35,19 +35,25 @@ const sequelize = new Sequelize(pgUrl, {
 
 async function main() {
   try {
-    const [results] = await sequelize.query(`
-      SELECT column_name FROM information_schema.columns 
-      WHERE table_name = 'board_members'
+    const [memberCols] = await sequelize.query(`
+      SELECT column_name FROM information_schema.columns WHERE table_name = 'board_members'
     `);
-    const cols = new Set((results || []).map((r) => r.column_name));
-    const toAdd = [];
-    if (!cols.has('profession')) toAdd.push('profession VARCHAR(255)');
-    if (!cols.has('duty')) toAdd.push('duty VARCHAR(255)');
-    if (!cols.has('residence_address')) toAdd.push('residence_address TEXT');
-    for (const def of toAdd) {
-      const col = def.split(' ')[0];
-      await sequelize.query(`ALTER TABLE board_members ADD COLUMN IF NOT EXISTS ${def}`);
-      console.log('[ensure-board-columns] Eklendi:', col);
+    const mCols = new Set((memberCols || []).map((r) => r.column_name));
+    const memberAdd = [];
+    if (!mCols.has('profession')) memberAdd.push({ table: 'board_members', def: 'profession VARCHAR(255)' });
+    if (!mCols.has('duty')) memberAdd.push({ table: 'board_members', def: 'duty VARCHAR(255)' });
+    if (!mCols.has('residence_address')) memberAdd.push({ table: 'board_members', def: 'residence_address TEXT' });
+    for (const { table, def } of memberAdd) {
+      await sequelize.query(`ALTER TABLE ${table} ADD COLUMN IF NOT EXISTS ${def}`);
+      console.log('[ensure-board-columns] Eklendi:', table, def.split(' ')[0]);
+    }
+    const [roleCols] = await sequelize.query(`
+      SELECT column_name FROM information_schema.columns WHERE table_name = 'board_roles'
+    `);
+    const rCols = new Set((roleCols || []).map((r) => r.column_name));
+    if (!rCols.has('duty_pattern')) {
+      await sequelize.query(`ALTER TABLE board_roles ADD COLUMN IF NOT EXISTS duty_pattern VARCHAR(500)`);
+      console.log('[ensure-board-columns] Eklendi: board_roles duty_pattern');
     }
   } catch (err) {
     console.error('[ensure-board-columns] Hata:', err.message);

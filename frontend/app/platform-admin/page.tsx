@@ -2120,15 +2120,16 @@ function BoardRolesPanel({ token }: { token: string | null }) {
     <GenericContentPanel<BoardRole>
       token={token}
       title="Kurul Kategorileri"
-      subtitle="Yönetim Kurulu piramitinde kullanılan roller (Başkan, Yardımcı, Muhasip, Sekreter, Asil Üye vb.). Sıra numarası küçük olan en üstte görünür. Yeni kategori ekleyebilirsiniz."
+      subtitle="Yönetim Kurulu piramitinde kullanılan roller. Sıra numarası küçük olan en üstte görünür. Görev eşleşmesi: üyenin görevi bu kelimelerden birini içeriyorsa bu kategoriye atanır (virgülle ayırın, örn: Yönetim Kurulu Başkan Yardımcısı,Başkan Vekili)."
       list={async (t) => ({ items: await listBoardRolesAdminAll(t) })}
-      create={(t, p) => createBoardRole(t, p as { label: string; sortOrder?: number })}
+      create={(t, p) => createBoardRole(t, p as { label: string; sortOrder?: number; dutyPattern?: string | null })}
       update={(t, id, p) => updateBoardRole(t, id, p as Partial<BoardRole>)}
       remove={(t, id) => deleteBoardRole(t, id)}
       displayKey="label"
       fields={[
         { key: 'label', label: 'Kategori adı', type: 'text', required: true },
-        { key: 'sortOrder', label: 'Sıra (1=en üst)', type: 'text' },
+        { key: 'sortOrder', label: 'Sıra (1=en üst, 2=ikinci, vb.)', type: 'text' },
+        { key: 'dutyPattern', label: 'Görev eşleşmesi (virgülle anahtar kelimeler)', type: 'text' },
       ]}
     />
   );

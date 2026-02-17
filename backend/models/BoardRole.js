@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      dutyPattern: {
+        // Virgülle ayrılmış anahtar kelimeler; üyenin "görevi" bu kelimelerden birini içeriyorsa bu role atanır
+        type: DataTypes.STRING(500),
+        allowNull: true,
+      },
     },
     {
       tableName: 'board_roles',

@@ -5,9 +5,8 @@ const { auth, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Rütbe sırası: Başkan → Yardımcı/Vekili → Sayman → Sekreter → Asil → Yedek → Denetim Kurulu
-// Denetim önce (daha spesifik), sonra Yönetim Kurulu
-const DUTY_SORT_ORDER = [
+// Varsayılan eşleşme (DB'de dutyPattern yoksa)
+const FALLBACK_PATTERNS = [
   { pattern: /Yönetim Kurulu Başkan\s*$/i, order: 1, label: 'Yönetim Kurulu Başkanı' },
   { pattern: /Yönetim Kurulu Başkan (Vekili|Yardımcısı)/i, order: 2, label: null },
   { pattern: /Yönetim Kurulu Sayman/i, order: 3, label: null },
@@ -20,7 +19,14 @@ const DUTY_SORT_ORDER = [
   { pattern: /Denetim Kurulu Yedek Üye/i, order: 13, label: 'Denetim Kurulu Yedek Üye' },
 ];
 
-function getRoleLabelAndSort(p) {
+function dutyMatchesPattern(duty, patternStr) {
+  if (!patternStr || !duty) return false;
+  const keywords = patternStr.split(',').map((k) => k.trim()).filter(Boolean);
+  const dutyLower = duty.toLowerCase();
+  return keywords.some((k) => dutyLower.includes(k.toLowerCase()));
+}
+
+function getRoleLabelAndSort(p, rolesFromDb = []) {
   if (p.boardRole) {
     return { roleLabel: p.boardRole.label, roleSortOrder: p.boardRole.sortOrder ?? 99 };
   }
@@ -28,7 +34,15 @@ function getRoleLabelAndSort(p) {
   if (p.role === 'baskan') {
     return { roleLabel: 'Yönetim Kurulu Başkanı', roleSortOrder: 1 };
   }
-  for (const { pattern, order, label } of DUTY_SORT_ORDER) {
+  // Önce DB'deki rollerden dutyPattern ile eşleşme (sortOrder'a göre)
+  const sortedRoles = [...rolesFromDb].sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99));
+  for (const r of sortedRoles) {
+    if (r.dutyPattern && dutyMatchesPattern(duty, r.dutyPattern)) {
+      return { roleLabel: r.label, roleSortOrder: r.sortOrder ?? 99 };
+    }
+  }
+  // Fallback: hardcoded pattern
+  for (const { pattern, order, label } of FALLBACK_PATTERNS) {
     if (pattern.test(duty)) {
       return { roleLabel: label || duty, roleSortOrder: order };
     }
@@ -36,8 +50,8 @@ function getRoleLabelAndSort(p) {
   return { roleLabel: duty || 'Asil Üye', roleSortOrder: duty ? 99 : 6 };
 }
 
-function enrichMember(p) {
-  const { roleLabel, roleSortOrder } = getRoleLabelAndSort(p);
+function enrichMember(p, rolesFromDb = []) {
+  const { roleLabel, roleSortOrder } = getRoleLabelAndSort(p, rolesFromDb);
   return { ...p, roleLabel, roleSortOrder };
 }
 
@@ -50,12 +64,15 @@ const validate = (req, res, next) => {
 // GET /api/board-members - public list (published only), with BoardRole
 router.get('/', async (req, res) => {
   try {
-    const items = await db.BoardMember.findAll({
-      where: { isPublished: true },
-      include: [{ model: db.BoardRole, as: 'boardRole', required: false }],
-      order: [['sortOrder', 'ASC'], ['id', 'ASC']],
-    });
-    const plain = items.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m));
+    const [items, roles] = await Promise.all([
+      db.BoardMember.findAll({
+        where: { isPublished: true },
+        include: [{ model: db.BoardRole, as: 'boardRole', required: false }],
+        order: [['sortOrder', 'ASC'], ['id', 'ASC']],
+      }),
+      db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+    ]);
+    const plain = items.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m, roles));
     plain.sort((a, b) => {
       if (a.roleSortOrder !== b.roleSortOrder) return a.roleSortOrder - b.roleSortOrder;
       return (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id;
@@ -79,13 +96,17 @@ router.get(
       const page = req.query.page || 1;
       const limit = req.query.limit || 50;
       const offset = (page - 1) * limit;
-      const { count, rows } = await db.BoardMember.findAndCountAll({
-        include: [{ model: db.BoardRole, as: 'boardRole', required: false }],
-        order: [['sortOrder', 'ASC'], ['id', 'ASC']],
-        limit,
-        offset,
-      });
-      const items = rows.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m));
+      const [result, roles] = await Promise.all([
+        db.BoardMember.findAndCountAll({
+          include: [{ model: db.BoardRole, as: 'boardRole', required: false }],
+          order: [['sortOrder', 'ASC'], ['id', 'ASC']],
+          limit,
+          offset,
+        }),
+        db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+      ]);
+      const { count, rows } = result;
+      const items = rows.map((m) => enrichMember(m.get ? m.get({ plain: true }) : m, roles));
       items.sort((a, b) => (a.roleSortOrder !== b.roleSortOrder ? a.roleSortOrder - b.roleSortOrder : (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id));
       res.json({ items, total: count, page, limit, totalPages: Math.ceil(count / limit) });
     } catch (err) {
@@ -123,8 +144,11 @@ router.post('/', auth, adminOnly, async (req, res) => {
       sortOrder,
       isPublished,
     });
-    const withRole = await db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] });
-    res.status(201).json(enrichMember(withRole.get({ plain: true })));
+    const [withRole, roles] = await Promise.all([
+      db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] }),
+      db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+    ]);
+    res.status(201).json(enrichMember(withRole.get({ plain: true }), roles));
   } catch (err) {
     console.error('[board-members POST]', err);
     res.status(500).json({ error: err.message });
@@ -164,8 +188,11 @@ router.put(
       if (req.body.sortOrder !== undefined) updates.sortOrder = req.body.sortOrder;
       if (req.body.isPublished !== undefined) updates.isPublished = req.body.isPublished;
       await item.update(updates);
-      const withRole = await db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] });
-      res.json(enrichMember(withRole.get({ plain: true })));
+      const [withRole, roles] = await Promise.all([
+        db.BoardMember.findByPk(item.id, { include: [{ model: db.BoardRole, as: 'boardRole', required: false }] }),
+        db.BoardRole.findAll({ order: [['sortOrder', 'ASC']], raw: true }),
+      ]);
+      res.json(enrichMember(withRole.get({ plain: true }), roles));
     } catch (err) {
       res.status(500).json({ error: err.message });
     }

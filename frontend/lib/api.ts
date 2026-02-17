@@ -634,7 +634,7 @@ export type BoardRole = {
   id: number;
   label: string;
   sortOrder: number;
-  isPublished?: boolean;
+  dutyPattern?: string | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -651,7 +651,7 @@ export async function listBoardRolesAdminAll(token: string) {
   return res.items || [];
 }
 
-export async function createBoardRole(token: string, payload: { label: string; sortOrder?: number }) {
+export async function createBoardRole(token: string, payload: { label: string; sortOrder?: number; dutyPattern?: string | null }) {
   return await apiFetch<BoardRole>('/api/board-roles', {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },

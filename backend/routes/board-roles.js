@@ -40,14 +40,20 @@ router.post(
   '/',
   auth,
   adminOnly,
-  [body('label').trim().notEmpty().withMessage('Kategori adı gerekli'), body('sortOrder').optional({ checkFalsy: true }).isInt({ min: 0 }).toInt()],
+  [
+    body('label').trim().notEmpty().withMessage('Kategori adı gerekli'),
+    body('sortOrder').optional({ checkFalsy: true }).isInt({ min: 0 }).toInt(),
+    body('dutyPattern').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+  ],
   validate,
   async (req, res) => {
     try {
       const sortOrder = req.body.sortOrder ?? (await db.BoardRole.max('sortOrder')) + 1;
+      const dutyPattern = req.body.dutyPattern != null ? (req.body.dutyPattern.trim() || null) : null;
       const item = await db.BoardRole.create({
         label: req.body.label.trim(),
         sortOrder,
+        dutyPattern,
       });
       res.status(201).json(item);
     } catch (err) {
@@ -61,16 +67,22 @@ router.put(
   '/:id',
   auth,
   adminOnly,
-  [param('id').isInt().toInt(), body('label').optional({ checkFalsy: true }).trim().notEmpty(), body('sortOrder').optional({ checkFalsy: true }).isInt({ min: 0 }).toInt()],
+  [
+    param('id').isInt().toInt(),
+    body('label').optional({ checkFalsy: true }).trim().notEmpty(),
+    body('sortOrder').optional({ checkFalsy: true }).isInt({ min: 0 }).toInt(),
+    body('dutyPattern').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+  ],
   validate,
   async (req, res) => {
     try {
       const item = await db.BoardRole.findByPk(req.params.id);
       if (!item) return res.status(404).json({ error: 'Kategori bulunamadı.' });
-      await item.update({
-        ...(req.body.label !== undefined && { label: req.body.label.trim() }),
-        ...(req.body.sortOrder !== undefined && { sortOrder: req.body.sortOrder }),
-      });
+      const updates = {};
+      if (req.body.label !== undefined) updates.label = req.body.label.trim();
+      if (req.body.sortOrder !== undefined) updates.sortOrder = req.body.sortOrder;
+      if (req.body.dutyPattern !== undefined) updates.dutyPattern = req.body.dutyPattern?.trim() || null;
+      await item.update(updates);
       res.json(item);
     } catch (err) {
       res.status(500).json({ error: err.message });
