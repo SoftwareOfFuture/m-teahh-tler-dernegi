@@ -30,7 +30,8 @@ router.get('/', async (req, res) => {
       return (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id;
     });
     res.json(plain);
-  } catch (err) {
+    } catch (err) {
+    console.error('[board-members GET /]', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -62,6 +63,7 @@ router.get(
       items.sort((a, b) => (a.roleSortOrder !== b.roleSortOrder ? a.roleSortOrder - b.roleSortOrder : (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id));
       res.json({ items, total: count, page, limit, totalPages: Math.ceil(count / limit) });
     } catch (err) {
+      console.error('[board-members GET /admin/all]', err);
       res.status(500).json({ error: err.message });
     }
   }
@@ -99,6 +101,7 @@ router.post('/', auth, adminOnly, async (req, res) => {
     const p = withRole.get({ plain: true });
     res.status(201).json({ ...p, roleLabel: p.boardRole ? p.boardRole.label : 'Asil Üye', roleSortOrder: p.boardRole ? p.boardRole.sortOrder : 1 });
   } catch (err) {
+    console.error('[board-members POST]', err);
     res.status(500).json({ error: err.message });
   }
 });
