@@ -1,12 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import type { BoardMember } from '../lib/api';
 import { normalizeImageSrc } from '../lib/normalizeImageSrc';
+import { BoardMemberModal } from './BoardMemberModal';
 
 type Props = { members: BoardMember[] };
 
 export function BoardPyramid({ members }: Props) {
+  const [selectedMember, setSelectedMember] = useState<BoardMember | null>(null);
+
   if (members.length === 0) return null;
 
   const byRole = new Map<string, BoardMember[]>();
@@ -21,8 +25,13 @@ export function BoardPyramid({ members }: Props) {
 
   const MemberCard = ({ m }: { m: BoardMember }) => {
     const src = normalizeImageSrc(m.imageUrl);
+    const hasDetails = m.profession || m.unit || m.duty || m.residenceAddress;
     return (
-      <div className="flex flex-col items-center">
+      <button
+        type="button"
+        onClick={() => setSelectedMember(m)}
+        className={`flex flex-col items-center text-left ${hasDetails ? 'cursor-pointer' : 'cursor-default'}`}
+      >
         <div className="relative size-20 overflow-hidden rounded-full border-2 border-burgundy/30 bg-slate-100 shadow-soft xs:size-24 sm:size-28 md:size-32">
           {src ? (
             <Image
@@ -40,7 +49,7 @@ export function BoardPyramid({ members }: Props) {
         </div>
         <p className="mt-2 text-center text-sm font-semibold text-slate-800 xs:text-base">{m.name}</p>
         {m.unit ? <p className="mt-0.5 text-center text-xs text-slate-600 xs:text-sm">{m.unit}</p> : null}
-      </div>
+      </button>
     );
   };
 
@@ -66,6 +75,7 @@ export function BoardPyramid({ members }: Props) {
           </div>
         ))}
       </div>
+      <BoardMemberModal member={selectedMember} onClose={() => setSelectedMember(null)} />
     </section>
   );
 }
