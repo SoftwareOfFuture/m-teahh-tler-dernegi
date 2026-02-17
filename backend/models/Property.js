@@ -36,6 +36,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      memberId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: { model: 'members', key: 'id' },
+      },
       isPublished: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,

@@ -224,12 +224,29 @@ export function Navbar() {
             ) : null}
           </div>
 
-          <Link
-            href={hasToken ? '/profilim' : '/login'}
-            className="inline-flex min-w-[100px] shrink-0 items-center justify-center rounded-lg bg-burgundy px-3 py-2 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-4 sm:py-2 sm:text-xs"
-          >
-            {hasToken ? 'Profilim' : 'Üye Girişi'}
-          </Link>
+          {hasToken ? (
+            <>
+              <Link
+                href="/ilanlarim"
+                className="hidden shrink-0 items-center justify-center rounded-lg border border-burgundy/30 bg-white px-3 py-2 text-xs font-semibold text-burgundy transition-all hover:bg-burgundy/5 sm:inline-flex sm:px-4"
+              >
+                İlanlarım
+              </Link>
+              <Link
+                href="/profilim"
+                className="inline-flex min-w-[100px] shrink-0 items-center justify-center rounded-lg bg-burgundy px-3 py-2 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-4 sm:py-2 sm:text-xs"
+              >
+                Profilim
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex min-w-[100px] shrink-0 items-center justify-center rounded-lg bg-burgundy px-3 py-2 text-xs font-semibold text-white shadow-soft transition-all duration-300 hover:bg-burgundy-dark hover:shadow-glow active:scale-[0.98] sm:px-4 sm:py-2 sm:text-xs"
+            >
+              Üye Girişi
+            </Link>
+          )}
 
           <div className="lg:hidden">
             <MobileMenu

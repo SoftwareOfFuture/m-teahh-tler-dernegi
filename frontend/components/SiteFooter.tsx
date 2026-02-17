@@ -122,10 +122,17 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="w-full px-4 py-4 sm:px-6 lg:px-8">
-          <p className="text-center text-sm text-white/70">
-            © Antalya İnşaat Müteahhitleri Derneği. Tüm Hakları Saklıdır.
-          </p>
+        <div className="w-full px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-center text-sm text-white/70">
+          <p>© Antalya İnşaat Müteahhitleri Derneği. Tüm Hakları Saklıdır.</p>
+          <span className="hidden sm:inline">·</span>
+          <a
+            href="https://www.technochef.com.tr/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-colors hover:text-white"
+          >
+            TechnoChef Dijital Çözümler
+          </a>
         </div>
       </div>
     </footer>

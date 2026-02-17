@@ -50,9 +50,10 @@ export default function EmlakIlanlariPage() {
 
         <div className="mt-6 grid grid-cols-1 gap-4 min-w-0 sm:gap-5 md:grid-cols-2 xl:grid-cols-3">
           {items.map((p) => (
-            <div
+            <Link
               key={p.id}
-              className="group min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-burgundy/20 hover:shadow-soft-lg"
+              href={`/emlak-ilanlari/detay?id=${p.id}`}
+              className="group block min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition-all duration-300 hover:-translate-y-1 hover:border-burgundy/20 hover:shadow-soft-lg"
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
                 <Image
@@ -86,7 +87,7 @@ export default function EmlakIlanlariPage() {
                   </p>
                 )}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

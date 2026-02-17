@@ -174,6 +174,7 @@ export type Property = {
   area: string | null;
   sortOrder: number;
   isPublished: boolean;
+  memberId?: number | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -686,6 +687,40 @@ export async function listPropertiesPublic(params?: { page?: number; limit?: num
     `/api/properties${qs.toString() ? `?${qs.toString()}` : ''}`,
     { method: 'GET' }
   );
+}
+
+export async function getPropertyPublic(id: number) {
+  return await apiFetch<Property>(`/api/properties/${id}`, { method: 'GET' });
+}
+
+export async function listMyProperties(token: string) {
+  return await apiFetch<{ items: Property[] }>('/api/properties/member/mine', {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function createMyProperty(token: string, payload: Partial<Property> & { title: string }) {
+  return await apiFetch<Property>('/api/properties/member', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function updateMyProperty(token: string, id: number, payload: Partial<Property>) {
+  return await apiFetch<Property>(`/api/properties/member/${id}`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteMyProperty(token: string, id: number) {
+  return await apiFetch<{ success: true }>(`/api/properties/member/${id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
 }
 
 // --- Content (admin) ---

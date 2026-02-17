@@ -160,8 +160,18 @@ export default function MyProfilePage() {
       ) : (
         <section className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
           <div className="rounded-3xl bg-white p-6 shadow-card">
-            <h2 className="text-lg font-bold text-slate-900">Bilgilerim</h2>
-            <p className="mt-1 text-sm text-slate-600">Bu bilgiler sadece sizin profiliniz içindir.</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 className="text-lg font-bold text-slate-900">Bilgilerim</h2>
+                <p className="mt-1 text-sm text-slate-600">Bu bilgiler sadece sizin profiliniz içindir.</p>
+              </div>
+              <Link
+                href="/ilanlarim"
+                className="rounded-lg border border-burgundy/30 bg-white px-4 py-2 text-sm font-semibold text-burgundy transition-colors hover:bg-burgundy/5"
+              >
+                Emlak İlanlarım →
+              </Link>
+            </div>
 
             <form
               className="mt-6 space-y-4"
