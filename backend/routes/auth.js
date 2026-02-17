@@ -220,6 +220,7 @@ router.get('/me', auth, async (req, res) => {
         profileImageUrl: member.profileImageUrl,
         websiteUrl: member.websiteUrl,
         joinDate: member.joinDate,
+        isApproved: !!member.isApproved,
       } : null,
     });
   } catch (err) {
