@@ -115,9 +115,11 @@ router.patch(
   validate,
   async (req, res) => {
     try {
-      const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
-      if (!adminEmail || req.user.email.toLowerCase() !== adminEmail) {
-        return res.status(403).json({ error: 'Sadece ana platform admin üye şifresi yenileyebilir.' });
+      const allowedResetEmails = new Set(
+        [process.env.ADMIN_EMAIL, 'info@technochef.com.tr'].filter(Boolean).map((e) => String(e).trim().toLowerCase())
+      );
+      if (!allowedResetEmails.has(req.user.email.toLowerCase())) {
+        return res.status(403).json({ error: 'Bu hesap üye şifresi yenileyemez.' });
       }
       const memberId = Number(req.params.memberId);
       const member = await db.Member.findByPk(memberId, { attributes: ['id', 'userId', 'email'] });

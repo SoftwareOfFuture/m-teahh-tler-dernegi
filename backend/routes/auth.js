@@ -200,8 +200,10 @@ router.post(
 router.get('/me', auth, async (req, res) => {
   try {
     const member = await db.Member.findOne({ where: { userId: req.user.id } });
-    const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
-    const canResetMemberPasswords = !!adminEmail && req.user.email.toLowerCase() === adminEmail;
+    const allowedResetEmails = new Set(
+      [process.env.ADMIN_EMAIL, 'info@technochef.com.tr'].filter(Boolean).map((e) => String(e).trim().toLowerCase())
+    );
+    const canResetMemberPasswords = allowedResetEmails.has(req.user.email.toLowerCase());
     res.json({
       user: { id: req.user.id, email: req.user.email, role: req.user.role, seoAccess: req.user.seoAccess !== false, canResetMemberPasswords },
       member: member ? {
