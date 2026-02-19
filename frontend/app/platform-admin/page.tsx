@@ -44,7 +44,6 @@ import {
   rejectMember,
   requestMemberResubmission,
   reviewMemberDocumentAdmin,
-  setMemberPassword,
   updateBanner,
   updatePartner,
   updateProperty,
