@@ -59,7 +59,7 @@ router.get(
       const where = {
         isApproved: true,
         [Op.and]: [
-          Sequelize.literal(`(members.user_id IS NULL OR (SELECT u.role FROM users u WHERE u.id = members.user_id LIMIT 1) IS NULL OR (SELECT u.role FROM users u WHERE u.id = members.user_id LIMIT 1) NOT IN ('platform_admin', 'admin'))`),
+          Sequelize.literal(`("Member"."user_id" IS NULL OR (SELECT u.role FROM users u WHERE u.id = "Member"."user_id" LIMIT 1) IS NULL OR (SELECT u.role FROM users u WHERE u.id = "Member"."user_id" LIMIT 1) NOT IN ('platform_admin', 'admin'))`),
         ],
       };
       if (HIDDEN_EMAILS.size > 0) {
