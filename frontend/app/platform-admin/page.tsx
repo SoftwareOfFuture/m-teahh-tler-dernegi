@@ -94,6 +94,7 @@ export default function PlatformAdminPage() {
   const [error, setError] = useState<string | null>(null);
 
   type TabId =
+    | 'guide'
     | 'members'
     | 'slides'
     | 'banners'
@@ -115,8 +116,10 @@ export default function PlatformAdminPage() {
     | 'seo';
   const [tab, setTab] = useState<TabId>('members');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [meUser, setMeUser] = useState<{ role: string; seoAccess?: boolean } | null>(null);
 
-  const adminTabs: { id: TabId; label: string }[] = [
+  const adminTabsAll: { id: TabId; label: string }[] = [
+    { id: 'guide', label: 'Kullanım Kılavuzu' },
     { id: 'members', label: 'Üyeler' },
     { id: 'slides', label: 'Slider' },
     { id: 'banners', label: 'Banner' },
@@ -137,6 +140,14 @@ export default function PlatformAdminPage() {
     { id: 'animations', label: 'Animasyonlar' },
     { id: 'seo', label: 'SEO' },
   ];
+  const adminTabs = useMemo(() => {
+    if (meUser?.seoAccess === false) return adminTabsAll.filter((t) => t.id !== 'seo');
+    return adminTabsAll;
+  }, [meUser?.seoAccess]);
+
+  useEffect(() => {
+    if (meUser?.seoAccess === false && tab === 'seo') setTab('members');
+  }, [meUser?.seoAccess, tab]);
 
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -153,6 +164,7 @@ export default function PlatformAdminPage() {
         }
         const res = await me(token);
         if (cancelled) return;
+        setMeUser(res.user);
         setAuthorized(res.user.role === 'platform_admin');
       } catch (e: any) {
         if (cancelled) return;
@@ -317,6 +329,8 @@ export default function PlatformAdminPage() {
               <AnimationsPanel />
             ) : tab === 'seo' ? (
               <SeoPanel token={token} />
+            ) : tab === 'guide' ? (
+              <UsageGuidePanel />
             ) : (
               <KurumsalPanel token={token} />
             )}
@@ -1066,6 +1080,43 @@ function SeoPanel({ token }: { token: string | null }) {
       <p className="mt-6 text-xs text-slate-500">
         Bu ayarlar &quot;seo&quot; sayfası olarak kaydedilir. Kurumsal ve İletişim sayfalarının meta bilgileri kendi sayfa içeriklerinden (hero başlık / alt başlık) türetilir. Sitemap ve robots.txt otomatik üretilir.
       </p>
+    </div>
+  );
+}
+
+function UsageGuidePanel() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-lg font-bold text-slate-900">Platform Admin Kullanım Kılavuzu</h2>
+      <p className="text-sm text-slate-600">
+        Bu panel sadece platform admin hesapları tarafından görülebilir. Üyeler bu sayfaya ve kılavuza erişemez.
+      </p>
+      <div className="prose prose-slate max-w-none text-sm">
+        <h3 className="font-semibold text-slate-800">Üyeler</h3>
+        <p>Yeni üye başvurularını onaylayın veya reddedin. Belgeleri inceleyip onay/red/tekrar gönderim isteyebilirsiniz.</p>
+        <h3 className="font-semibold text-slate-800">Slider</h3>
+        <p>Anasayfadaki hero slider öğelerini ekleyin, düzenleyin, sıralayın. Görsel, başlık, açıklama ve link girebilirsiniz.</p>
+        <h3 className="font-semibold text-slate-800">Banner</h3>
+        <p>Sayfa içi banner’ları yönetin. Görsel ve tıklanabilir link ayarlayın.</p>
+        <h3 className="font-semibold text-slate-800">Haberler / Duyurular</h3>
+        <p>Haber ve duyuru ekleyin, düzenleyin, yayına alın veya kaldırın. Yayında olmayan içerik sadece admin listesinde görünür.</p>
+        <h3 className="font-semibold text-slate-800">Videolar / Yönetim Kurulu (Yayınlar)</h3>
+        <p>Video arşivi ve yayınlar (PDF/dosya) ekleyip yayınlayın.</p>
+        <h3 className="font-semibold text-slate-800">Kurul Üyeleri ve Kurul Kategorileri</h3>
+        <p>Yönetim kurulu üyelerini ve görev kategorilerini (Başkan, Asil Üye vb.) buradan yönetin.</p>
+        <h3 className="font-semibold text-slate-800">Partnerler / Emlak İlanları</h3>
+        <p>Partner logoları ve emlak ilanlarını ekleyip sıralayın.</p>
+        <h3 className="font-semibold text-slate-800">Kurumsal, Bugüne Kadar Yaptıklarımız, İletişim</h3>
+        <p>İlgili sayfaların metin, başlık ve iletişim bilgilerini düzenleyin.</p>
+        <h3 className="font-semibold text-slate-800">İletişim Mesajları / SMS Geri Bildirimleri</h3>
+        <p>Formdan gelen mesajları ve SMS geri bildirimlerini görüntüleyin.</p>
+        <h3 className="font-semibold text-slate-800">Sosyal Medya</h3>
+        <p>Site ayarlarındaki sosyal medya linklerini güncelleyin.</p>
+        <h3 className="font-semibold text-slate-800">Animasyonlar</h3>
+        <p>Anasayfa bölümleri için animasyon tercihlerini seçin (localStorage’da saklanır).</p>
+        <h3 className="font-semibold text-slate-800">SEO</h3>
+        <p>Varsayılan meta başlık, açıklama ve anahtar kelimeleri düzenleyin. Bu sekmeye sadece SEO yetkisi açık olan platform admin hesapları erişebilir.</p>
+      </div>
     </div>
   );
 }

@@ -1,15 +1,12 @@
 const { Sequelize } = require('sequelize');
 require('dotenv').config();
 
-// Postgres-only (Vercel Postgres / Neon)
-// Serverless: pooled URL often works better. Migrations/scripts: prefer NON_POOLING.
 const isVercel = !!process.env.VERCEL;
 let pgUrl =
   isVercel
     ? (process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_PRISMA_URL)
     : (process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL);
 
-// Some environments use "prisma+postgres://" which pg can't parse; normalize to "postgres://".
 if (pgUrl && typeof pgUrl === 'string' && pgUrl.startsWith('prisma+postgres://')) {
   pgUrl = pgUrl.replace(/^prisma\+/, '');
 }
@@ -20,14 +17,11 @@ if (!pgUrl || !pgUrl.startsWith('postgres')) {
   );
 }
 
-// URL'dan sslmode kaldır - pg driver ile dialectOptions.ssl çakışabiliyor
 try {
   const u = new URL(pgUrl);
   u.searchParams.delete('sslmode');
   pgUrl = u.toString();
-} catch {
-  /* keep original */
-}
+} catch {}
 
 const needsSsl = !pgUrl.includes('localhost') && !pgUrl.includes('127.0.0.1');
 
@@ -66,7 +60,6 @@ db.SiteSettings = require('./SiteSettings')(sequelize, Sequelize);
 db.BoardMember = require('./BoardMember')(sequelize, Sequelize);
 db.BoardRole = require('./BoardRole')(sequelize, Sequelize);
 
-// Associations
 db.User.hasOne(db.Member, { foreignKey: 'userId' });
 db.Member.belongsTo(db.User, { foreignKey: 'userId' });
 db.Member.hasMany(db.MemberDocument, { foreignKey: 'memberId', as: 'documents' });

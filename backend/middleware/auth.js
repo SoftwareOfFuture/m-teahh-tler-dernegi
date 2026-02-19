@@ -25,7 +25,6 @@ const auth = async (req, res, next) => {
   }
 };
 
-// admin veya platform_admin (haber, duyuru, üye yönetimi)
 const adminOnly = (req, res, next) => {
   if (req.user.role !== 'admin' && req.user.role !== 'platform_admin') {
     return res.status(403).json({ error: 'Admin access required.' });
@@ -33,7 +32,6 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-// sadece platform_admin (üye onaylama, tam yetki)
 const platformAdminOnly = (req, res, next) => {
   if (req.user.role !== 'platform_admin') {
     return res.status(403).json({ error: 'Platform admin access required.' });

@@ -1,7 +1,6 @@
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 
-// Use NON_POOLING connection for schema sync/migrations.
 if (process.env.POSTGRES_URL_NON_POOLING) {
   process.env.POSTGRES_URL = process.env.POSTGRES_URL_NON_POOLING;
   process.env.DATABASE_URL = process.env.POSTGRES_URL_NON_POOLING;
@@ -18,12 +17,21 @@ const PLATFORM_ADMINS = [
     password: process.env.ADMIN_PASSWORD,
     name: 'Site Admin',
     company: 'Antalya İnşaat Müteahhitleri Derneği',
+    seoAccess: true,
   },
   {
     email: 'info@technochef.com.tr',
     password: 'TechnoChef2026',
     name: 'TechnoChef Admin',
     company: 'TechnoChef',
+    seoAccess: true,
+  },
+  {
+    email: 'info@antmutder.org',
+    password: 'Antmutder2026!',
+    name: 'ANTMUTDER Info',
+    company: 'Antalya İnşaat Müteahhitleri Derneği',
+    seoAccess: false,
   },
 ].filter((a) => a.email && a.password);
 
@@ -31,12 +39,15 @@ if (PLATFORM_ADMINS.length === 0) {
   throw new Error('At least one platform_admin required. Set ADMIN_EMAIL and ADMIN_PASSWORD.');
 }
 
-async function ensurePlatformAdmin({ email, password, name, company }) {
+async function ensurePlatformAdmin({ email, password, name, company, seoAccess = true }) {
   const existing = await db.User.findOne({ where: { email } });
   if (existing) {
     if (existing.role !== 'platform_admin') {
       await existing.update({ role: 'platform_admin' });
       console.log('Admin upgraded to platform_admin:', email);
+    }
+    if (typeof seoAccess === 'boolean') {
+      await existing.update({ seoAccess });
     }
     const looksLikeBcrypt = existing.password && typeof existing.password === 'string' && /^\$2[aby]\$/.test(String(existing.password));
     if (!existing.password || !looksLikeBcrypt) {
@@ -64,6 +75,7 @@ async function ensurePlatformAdmin({ email, password, name, company }) {
     email,
     password: hashed,
     role: 'platform_admin',
+    seoAccess: seoAccess !== false,
   });
   await db.Member.create({
     userId: user.id,

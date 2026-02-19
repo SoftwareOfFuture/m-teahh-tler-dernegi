@@ -16,7 +16,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-// POST /api/auth/register
 router.post(
   '/register',
   [
@@ -74,7 +73,7 @@ router.post(
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
       res.status(201).json({
         token,
-        user: { id: user.id, email: user.email, role: user.role },
+        user: { id: user.id, email: user.email, role: user.role, seoAccess: user.seoAccess !== false },
         member: { id: member.id, name: member.name, company: member.company },
       });
     } catch (err) {
@@ -83,7 +82,6 @@ router.post(
   }
 );
 
-// POST /api/auth/login
 router.post(
   '/login',
   [
@@ -103,16 +101,13 @@ router.post(
       const isAdminEmail =
         adminEmail && String(adminEmail).toLowerCase() === String(email).toLowerCase();
 
-      // Defensive: ensure we have a usable password hash stored.
       const hasHash = !!user.password && typeof user.password === 'string';
       const looksLikeBcrypt = hasHash && /^\$2[aby]\$/.test(String(user.password));
       if (!hasHash || !looksLikeBcrypt) {
-        // Auto-repair for platform admin if env vars exist (helps after historical bad data)
         if (isAdminEmail && adminPass) {
           const repairedHash = await bcrypt.hash(String(adminPass), 10);
           await user.update({ password: repairedHash });
         } else {
-          // Do not leak details; treat like invalid credentials but with a clearer message.
           return res.status(401).json({ error: 'Şifre ayarlı değil veya geçersiz. Lütfen şifre sıfırlayın.' });
         }
       }
@@ -121,7 +116,6 @@ router.post(
       try {
         valid = await bcrypt.compare(password, String(user.password));
       } catch (e) {
-        // If bcrypt hash is malformed, allow auto-repair for platform admin.
         if (isAdminEmail && adminPass) {
           const repairedHash = await bcrypt.hash(String(adminPass), 10);
           await user.update({ password: repairedHash });
@@ -137,7 +131,7 @@ router.post(
       const member = await db.Member.findOne({ where: { userId: user.id } });
       res.json({
         token,
-        user: { id: user.id, email: user.email, role: user.role },
+        user: { id: user.id, email: user.email, role: user.role, seoAccess: user.seoAccess !== false },
         member: member ? { id: member.id, name: member.name, company: member.company } : null,
       });
     } catch (err) {
@@ -146,7 +140,6 @@ router.post(
   }
 );
 
-// POST /api/auth/forgot-password - create reset token; frontend sends email via EmailJS
 router.post(
   '/forgot-password',
   [body('email').isEmail().normalizeEmail()],
@@ -173,7 +166,6 @@ router.post(
   }
 );
 
-// POST /api/auth/reset-password - set new password with token
 router.post(
   '/reset-password',
   [
@@ -205,12 +197,11 @@ router.post(
   }
 );
 
-// GET /api/auth/me - validate token and return current user
 router.get('/me', auth, async (req, res) => {
   try {
     const member = await db.Member.findOne({ where: { userId: req.user.id } });
     res.json({
-      user: { id: req.user.id, email: req.user.email, role: req.user.role },
+      user: { id: req.user.id, email: req.user.email, role: req.user.role, seoAccess: req.user.seoAccess !== false },
       member: member ? {
         id: member.id,
         name: member.name,

@@ -1,4 +1,4 @@
-export type AuthUser = { id: number; email: string; role: string };
+export type AuthUser = { id: number; email: string; role: string; seoAccess?: boolean };
 
 export type AuthMeResponse = {
   user: AuthUser;

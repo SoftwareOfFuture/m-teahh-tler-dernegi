@@ -11,3 +11,4 @@ frontend/out/
 .vercel
 backend/board-list.xls
 backend/board-list-2.xlsx
+backend/backup-*.sql

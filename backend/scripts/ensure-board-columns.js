@@ -1,7 +1,3 @@
-/**
- * board_members tablosuna eksik kolonları ekler (SİLMEZ).
- * Build sırasında çalıştırılır - production DB'de kolonların olmasını sağlar.
- */
 require('dotenv').config();
 
 if (process.env.POSTGRES_URL_NON_POOLING) {
@@ -54,6 +50,14 @@ async function main() {
     if (!rCols.has('duty_pattern')) {
       await sequelize.query(`ALTER TABLE board_roles ADD COLUMN IF NOT EXISTS duty_pattern VARCHAR(500)`);
       console.log('[ensure-board-columns] Eklendi: board_roles duty_pattern');
+    }
+    const [userCols] = await sequelize.query(`
+      SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'users'
+    `);
+    const uCols = new Set((userCols || []).map((r) => r.column_name));
+    if (!uCols.has('seo_access')) {
+      await sequelize.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS seo_access BOOLEAN NOT NULL DEFAULT true`);
+      console.log('[ensure-board-columns] Eklendi: users seo_access');
     }
   } catch (err) {
     console.error('[ensure-board-columns] Hata:', err.message);

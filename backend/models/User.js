@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 'member',
       allowNull: false,
     },
+    seoAccess: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
+    },
     passwordResetToken: {
       type: DataTypes.STRING(255),
       allowNull: true,

@@ -1,7 +1,7 @@
 const express = require('express');
 const { body, param, validationResult } = require('express-validator');
 const db = require('../models');
-const { auth, adminOnly } = require('../middleware/auth');
+const { auth, adminOnly, platformAdminOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -11,10 +11,15 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/pages/admin/:slug - admin
-router.get('/admin/:slug', auth, adminOnly, [param('slug').trim().isLength({ min: 1, max: 64 })], validate, async (req, res) => {
+router.get('/admin/:slug', auth, [param('slug').trim().isLength({ min: 1, max: 64 })], validate, async (req, res) => {
   try {
     const slug = req.params.slug;
+    if (slug === 'seo') {
+      if (req.user.role !== 'platform_admin') return res.status(403).json({ error: 'Platform admin required.' });
+      if (req.user.seoAccess === false) return res.status(403).json({ error: 'SEO access not allowed for this account.' });
+    } else {
+      if (req.user.role !== 'admin' && req.user.role !== 'platform_admin') return res.status(403).json({ error: 'Admin access required.' });
+    }
     const page = await db.PageContent.findOne({ where: { slug } });
     res.json(page);
   } catch (err) {
@@ -22,11 +27,9 @@ router.get('/admin/:slug', auth, adminOnly, [param('slug').trim().isLength({ min
   }
 });
 
-// PUT /api/pages/admin/:slug - admin upsert
 router.put(
   '/admin/:slug',
   auth,
-  adminOnly,
   [
     param('slug').trim().isLength({ min: 1, max: 64 }),
     body('heroTitle').optional({ checkFalsy: true }).trim().isLength({ max: 255 }),
@@ -49,6 +52,12 @@ router.put(
   async (req, res) => {
     try {
       const slug = req.params.slug;
+      if (slug === 'seo') {
+        if (req.user.role !== 'platform_admin') return res.status(403).json({ error: 'Platform admin required.' });
+        if (req.user.seoAccess === false) return res.status(403).json({ error: 'SEO access not allowed for this account.' });
+      } else {
+        if (req.user.role !== 'admin' && req.user.role !== 'platform_admin') return res.status(403).json({ error: 'Admin access required.' });
+      }
       const payload = {
         slug,
         ...(req.body.heroTitle !== undefined && { heroTitle: req.body.heroTitle }),

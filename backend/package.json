@@ -11,7 +11,9 @@
     "seed:content": "node scripts/seed-content.js",
     "fix:board-members": "node scripts/fix-board-members.js",
     "ensure-board-columns": "node scripts/ensure-board-columns.js",
-    "import:board-xls": "node scripts/import-board-from-xls.js"
+    "import:board-xls": "node scripts/import-board-from-xls.js",
+    "backup:db": "node scripts/backup-db.js",
+    "restore:db": "node scripts/restore-db.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
