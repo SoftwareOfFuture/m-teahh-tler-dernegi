@@ -1,4 +1,4 @@
-export type AuthUser = { id: number; email: string; role: string; seoAccess?: boolean };
+export type AuthUser = { id: number; email: string; role: string; seoAccess?: boolean; canResetMemberPasswords?: boolean };
 
 export type AuthMeResponse = {
   user: AuthUser;
@@ -392,6 +392,14 @@ export async function approveMember(token: string, memberId: number) {
   return await apiFetch(`/api/members/${memberId}/approve`, {
     method: 'PATCH',
     headers: { Authorization: `Bearer ${token}` },
+  });
+}
+
+export async function setMemberPassword(token: string, memberId: number, newPassword: string) {
+  return await apiFetch(`/api/members/${memberId}/set-password`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ newPassword: newPassword.trim() }),
   });
 }
 

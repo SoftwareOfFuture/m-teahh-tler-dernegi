@@ -200,8 +200,10 @@ router.post(
 router.get('/me', auth, async (req, res) => {
   try {
     const member = await db.Member.findOne({ where: { userId: req.user.id } });
+    const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    const canResetMemberPasswords = !!adminEmail && req.user.email.toLowerCase() === adminEmail;
     res.json({
-      user: { id: req.user.id, email: req.user.email, role: req.user.role, seoAccess: req.user.seoAccess !== false },
+      user: { id: req.user.id, email: req.user.email, role: req.user.role, seoAccess: req.user.seoAccess !== false, canResetMemberPasswords },
       member: member ? {
         id: member.id,
         name: member.name,

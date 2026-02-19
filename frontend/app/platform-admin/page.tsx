@@ -6,6 +6,7 @@ import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { ImageUrlInput } from '../../components/ImageUrlInput';
 import {
   approveMember,
+  setMemberPassword,
   clearToken,
   createAnnouncement,
   createBanner,
@@ -43,6 +44,7 @@ import {
   rejectMember,
   requestMemberResubmission,
   reviewMemberDocumentAdmin,
+  setMemberPassword,
   updateBanner,
   updatePartner,
   updateProperty,
@@ -88,61 +90,62 @@ import {
   type AnimationId,
 } from '../../lib/sectionAnimations';
 
+type TabId =
+  | 'guide'
+  | 'members'
+  | 'slides'
+  | 'banners'
+  | 'news'
+  | 'announcements'
+  | 'videos'
+  | 'publications'
+  | 'boardMembers'
+  | 'boardRoles'
+  | 'partners'
+  | 'properties'
+  | 'kurumsal'
+  | 'buguneKadarYaptiklarimiz'
+  | 'iletisim'
+  | 'contactMessages'
+  | 'smsFeedback'
+  | 'social'
+  | 'animations'
+  | 'seo';
+
+const ADMIN_TABS_ALL: { id: TabId; label: string }[] = [
+  { id: 'guide', label: 'Kullanım Kılavuzu' },
+  { id: 'members', label: 'Üyeler' },
+  { id: 'slides', label: 'Slider' },
+  { id: 'banners', label: 'Banner' },
+  { id: 'news', label: 'Haberler' },
+  { id: 'announcements', label: 'Duyurular' },
+  { id: 'videos', label: 'Videolar' },
+  { id: 'publications', label: 'Yönetim Kurulu' },
+  { id: 'boardMembers', label: 'Kurul Üyeleri' },
+  { id: 'boardRoles', label: 'Kurul Kategorileri' },
+  { id: 'partners', label: 'Partnerler' },
+  { id: 'properties', label: 'Emlak İlanları' },
+  { id: 'kurumsal', label: 'Kurumsal' },
+  { id: 'buguneKadarYaptiklarimiz', label: 'Bugüne Kadar Yaptıklarımız' },
+  { id: 'iletisim', label: 'İletişim' },
+  { id: 'contactMessages', label: 'İletişim Mesajları' },
+  { id: 'smsFeedback', label: 'SMS Geri Bildirimleri' },
+  { id: 'social', label: 'Sosyal Medya' },
+  { id: 'animations', label: 'Animasyonlar' },
+  { id: 'seo', label: 'SEO' },
+];
+
 export default function PlatformAdminPage() {
   const [checking, setChecking] = useState(true);
   const [authorized, setAuthorized] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  type TabId =
-    | 'guide'
-    | 'members'
-    | 'slides'
-    | 'banners'
-    | 'news'
-    | 'announcements'
-    | 'videos'
-    | 'publications'
-    | 'boardMembers'
-    | 'boardRoles'
-    | 'partners'
-    | 'properties'
-    | 'kurumsal'
-    | 'buguneKadarYaptiklarimiz'
-    | 'iletisim'
-    | 'contactMessages'
-    | 'smsFeedback'
-    | 'social'
-    | 'animations'
-    | 'seo';
   const [tab, setTab] = useState<TabId>('members');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [meUser, setMeUser] = useState<{ role: string; seoAccess?: boolean } | null>(null);
 
-  const adminTabsAll: { id: TabId; label: string }[] = [
-    { id: 'guide', label: 'Kullanım Kılavuzu' },
-    { id: 'members', label: 'Üyeler' },
-    { id: 'slides', label: 'Slider' },
-    { id: 'banners', label: 'Banner' },
-    { id: 'news', label: 'Haberler' },
-    { id: 'announcements', label: 'Duyurular' },
-    { id: 'videos', label: 'Videolar' },
-    { id: 'publications', label: 'Yönetim Kurulu' },
-    { id: 'boardMembers', label: 'Kurul Üyeleri' },
-    { id: 'boardRoles', label: 'Kurul Kategorileri' },
-    { id: 'partners', label: 'Partnerler' },
-    { id: 'properties', label: 'Emlak İlanları' },
-    { id: 'kurumsal', label: 'Kurumsal' },
-    { id: 'buguneKadarYaptiklarimiz', label: 'Bugüne Kadar Yaptıklarımız' },
-    { id: 'iletisim', label: 'İletişim' },
-    { id: 'contactMessages', label: 'İletişim Mesajları' },
-    { id: 'smsFeedback', label: 'SMS Geri Bildirimleri' },
-    { id: 'social', label: 'Sosyal Medya' },
-    { id: 'animations', label: 'Animasyonlar' },
-    { id: 'seo', label: 'SEO' },
-  ];
   const adminTabs = useMemo(() => {
-    if (meUser?.seoAccess === false) return adminTabsAll.filter((t) => t.id !== 'seo');
-    return adminTabsAll;
+    if (meUser?.seoAccess === false) return ADMIN_TABS_ALL.filter((t) => t.id !== 'seo');
+    return ADMIN_TABS_ALL;
   }, [meUser?.seoAccess]);
 
   useEffect(() => {
@@ -288,6 +291,7 @@ export default function PlatformAdminPage() {
             {tab === 'members' ? (
               <MembersPanel
                 token={token}
+                canResetMemberPasswords={meUser?.canResetMemberPasswords ?? false}
                 items={items}
                 loading={loading}
                 error={error}
@@ -1402,6 +1406,7 @@ function BuguneKadarYaptiklarimizPanel({ token }: { token: string | null }) {
 
 function MembersPanel({
   token,
+  canResetMemberPasswords,
   items,
   loading,
   error,
@@ -1410,6 +1415,7 @@ function MembersPanel({
   approve,
 }: {
   token: string | null;
+  canResetMemberPasswords: boolean;
   items: any[];
   loading: boolean;
   error: string | null;
@@ -1423,6 +1429,11 @@ function MembersPanel({
   const [memberActionNote, setMemberActionNote] = useState('');
   const [docsActionError, setDocsActionError] = useState<string | null>(null);
   const [docsActionLoadingId, setDocsActionLoadingId] = useState<number | null>(null);
+  const [passwordModalMember, setPasswordModalMember] = useState<{ id: number; name: string; email: string } | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [passwordModalLoading, setPasswordModalLoading] = useState(false);
+  const [passwordModalError, setPasswordModalError] = useState<string | null>(null);
 
   async function openDocs(memberId: number) {
     if (!token) return;
@@ -1564,6 +1575,17 @@ function MembersPanel({
                     >
                       Belgeler
                     </button>
+
+                    {canResetMemberPasswords ? (
+                      <button
+                        type="button"
+                        className="rounded-full border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                        disabled={loading}
+                        onClick={() => setPasswordModalMember({ id: m.id, name: m.name || '', email: m.email || '' })}
+                      >
+                        Şifresini yenile
+                      </button>
+                    ) : null}
 
                     {!isApproved ? (
                       <button
@@ -1793,6 +1815,85 @@ function MembersPanel({
                   </div>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {passwordModalMember ? (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-labelledby="password-modal-title">
+          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-card p-5">
+            <h2 id="password-modal-title" className="text-sm font-bold text-slate-900">Üye şifresini yenile</h2>
+            <p className="mt-1 text-xs text-slate-600">{passwordModalMember.name} • {passwordModalMember.email}</p>
+            {passwordModalError ? <div className="mt-3 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">{passwordModalError}</div> : null}
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Yeni şifre (en az 6 karakter)</label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => { setNewPassword(e.target.value); setPasswordModalError(null); }}
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:border-burgundy"
+                  placeholder="Yeni şifre"
+                  autoComplete="new-password"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wide text-slate-500">Yeni şifre (tekrar)</label>
+                <input
+                  type="password"
+                  value={newPasswordConfirm}
+                  onChange={(e) => { setNewPasswordConfirm(e.target.value); setPasswordModalError(null); }}
+                  className="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm outline-none focus:border-burgundy"
+                  placeholder="Yeni şifre tekrar"
+                  autoComplete="new-password"
+                />
+              </div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <button
+                type="button"
+                className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700"
+                disabled={passwordModalLoading}
+                onClick={() => {
+                  setPasswordModalMember(null);
+                  setNewPassword('');
+                  setNewPasswordConfirm('');
+                  setPasswordModalError(null);
+                }}
+              >
+                İptal
+              </button>
+              <button
+                type="button"
+                className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white hover:bg-burgundy-dark disabled:opacity-50"
+                disabled={passwordModalLoading || newPassword.trim().length < 6 || newPassword !== newPasswordConfirm}
+                onClick={async () => {
+                  if (!token || !passwordModalMember) return;
+                  if (newPassword.trim().length < 6) {
+                    setPasswordModalError('Şifre en az 6 karakter olmalı.');
+                    return;
+                  }
+                  if (newPassword !== newPasswordConfirm) {
+                    setPasswordModalError('Şifreler eşleşmiyor.');
+                    return;
+                  }
+                  setPasswordModalLoading(true);
+                  setPasswordModalError(null);
+                  try {
+                    await setMemberPassword(token, passwordModalMember.id, newPassword.trim());
+                    setPasswordModalMember(null);
+                    setNewPassword('');
+                    setNewPasswordConfirm('');
+                  } catch (e: any) {
+                    setPasswordModalError(e?.message ?? 'Şifre güncellenemedi.');
+                  } finally {
+                    setPasswordModalLoading(false);
+                  }
+                }}
+              >
+                {passwordModalLoading ? 'Kaydediliyor…' : 'Şifreyi güncelle'}
+              </button>
             </div>
           </div>
         </div>

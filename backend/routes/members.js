@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const { body, query, param, validationResult } = require('express-validator');
 const db = require('../models');
 const { auth, adminOnly, platformAdminOnly } = require('../middleware/auth');
@@ -6,10 +7,10 @@ const { Op, Sequelize } = require('sequelize');
 
 const router = express.Router();
 
-/** Bu emaillere sahip üyeler sitede hiçbir yerde görünmez (Site Admin / gizli üyeler) */
 const HIDDEN_EMAILS = new Set([
   'softwareoffuture@gmail.com',
   'info@technochef.com.tr',
+  'info@antmutder.org',
 ].map((e) => e.toLowerCase().trim()));
 
 const REQUIRED_DOC_KINDS = ['contractor_license', 'tax_certificate', 'trade_registry'];
@@ -57,7 +58,9 @@ router.get(
       const company = req.query.company || '';
       const where = {
         isApproved: true,
-        role: { [Op.notIn]: ['platform_admin', 'admin'] },
+        [Op.and]: [
+          Sequelize.literal(`(members.user_id IS NULL OR (SELECT u.role FROM users u WHERE u.id = members.user_id LIMIT 1) IS NULL OR (SELECT u.role FROM users u WHERE u.id = members.user_id LIMIT 1) NOT IN ('platform_admin', 'admin'))`),
+        ],
       };
       if (HIDDEN_EMAILS.size > 0) {
         where.email = { [Op.notIn]: Array.from(HIDDEN_EMAILS) };
@@ -104,7 +107,34 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
   }
 });
 
-// GET /api/members/:id - public profile
+router.patch(
+  '/:memberId/set-password',
+  auth,
+  platformAdminOnly,
+  [param('memberId').isInt().toInt(), body('newPassword').isLength({ min: 6 }).trim()],
+  validate,
+  async (req, res) => {
+    try {
+      const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+      if (!adminEmail || req.user.email.toLowerCase() !== adminEmail) {
+        return res.status(403).json({ error: 'Sadece ana platform admin üye şifresi yenileyebilir.' });
+      }
+      const memberId = Number(req.params.memberId);
+      const member = await db.Member.findByPk(memberId, { attributes: ['id', 'userId', 'email'] });
+      if (!member || !member.userId) {
+        return res.status(404).json({ error: 'Üye veya giriş hesabı bulunamadı.' });
+      }
+      const user = await db.User.findByPk(member.userId);
+      if (!user) return res.status(404).json({ error: 'Kullanıcı bulunamadı.' });
+      const hashed = await bcrypt.hash(String(req.body.newPassword).trim(), 10);
+      await user.update({ password: hashed });
+      res.json({ success: true });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
 router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const member = await db.Member.findByPk(req.params.id, {
