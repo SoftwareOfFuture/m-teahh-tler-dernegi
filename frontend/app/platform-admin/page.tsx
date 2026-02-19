@@ -140,7 +140,7 @@ export default function PlatformAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<TabId>('members');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [meUser, setMeUser] = useState<{ role: string; seoAccess?: boolean } | null>(null);
+  const [meUser, setMeUser] = useState<{ role: string; seoAccess?: boolean; canResetMemberPasswords?: boolean } | null>(null);
 
   const adminTabs = useMemo(() => {
     if (meUser?.seoAccess === false) return ADMIN_TABS_ALL.filter((t) => t.id !== 'seo');
