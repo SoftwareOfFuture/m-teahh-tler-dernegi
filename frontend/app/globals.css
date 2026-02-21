@@ -278,3 +278,69 @@ iframe {
   outline: 2px solid theme('colors.burgundy');
   outline-offset: 2px;
 }
+
+/* Maintenance screen – modern animations */
+@keyframes maintenance-float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -15px) scale(1.05); }
+}
+@keyframes maintenance-float-slower {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-15px, 20px); }
+}
+@keyframes maintenance-float-icon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes maintenance-pulse-slow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+@keyframes maintenance-gradient {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes maintenance-countdown-pop {
+  0% { transform: scale(1.15); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-maintenance-float-slow { animation: maintenance-float-slow 12s ease-in-out infinite; }
+.animate-maintenance-float-slower { animation: maintenance-float-slower 15s ease-in-out infinite; }
+.animate-maintenance-float-icon { animation: maintenance-float-icon 4s ease-in-out infinite; }
+.animate-maintenance-pulse-slow { animation: maintenance-pulse-slow 6s ease-in-out infinite; }
+.animate-maintenance-gradient { animation: maintenance-gradient 8s ease-in-out infinite; }
+.animate-maintenance-countdown-pop { animation: maintenance-countdown-pop 0.4s ease-out; }
+
+.maintenance-bg-mesh {
+  background: radial-gradient(ellipse 100% 80% at 50% -30%, rgba(196,30,58,0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 80% 50%, rgba(139,21,56,0.35) 0%, transparent 45%),
+    radial-gradient(ellipse 60% 80% at 20% 80%, rgba(139,21,56,0.25) 0%, transparent 45%),
+    linear-gradient(180deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%);
+}
+.maintenance-glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 100%);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.25), 0 0 0 1px rgba(255,255,255,0.1);
+  backdrop-filter: blur(16px);
+}
+.maintenance-glass-icon {
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+  box-shadow: 0 24px 48px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2), 0 0 0 1px rgba(255,255,255,0.1);
+  backdrop-filter: blur(20px);
+}
+.maintenance-title-gradient {
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.maintenance-grid-overlay {
+  background-image: linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.maintenance-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+.maintenance-spin-slow {
+  animation-duration: 6s;
+}

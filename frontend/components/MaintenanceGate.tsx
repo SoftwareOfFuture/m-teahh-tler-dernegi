@@ -36,12 +36,26 @@ function useCountdown(endAt: string | null) {
 }
 
 function CountdownBlock({ value, label }: { value: number; label: string }) {
+  const [displayValue, setDisplayValue] = useState(value);
+  const [key, setKey] = useState(0);
+  useEffect(() => {
+    if (value !== displayValue) {
+      setDisplayValue(value);
+      setKey((k) => k + 1);
+    }
+  }, [value, displayValue]);
   return (
-    <div className="flex flex-col items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 px-4 py-5 min-w-[72px] shadow-lg">
-      <span className="text-3xl sm:text-4xl font-bold tabular-nums text-white drop-shadow-sm">
-        {String(value).padStart(2, '0')}
+    <div className="group relative flex flex-col items-center justify-center rounded-2xl min-w-[78px] sm:min-w-[88px] overflow-hidden maintenance-glass-card">
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <span
+        key={key}
+        className="relative text-4xl sm:text-5xl font-bold tabular-nums text-white drop-shadow-lg animate-maintenance-countdown-pop"
+      >
+        {String(displayValue).padStart(2, '0')}
       </span>
-      <span className="mt-1 text-xs font-medium uppercase tracking-wider text-white/80">{label}</span>
+      <span className="relative mt-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
+        {label}
+      </span>
     </div>
   );
 }
@@ -67,10 +81,10 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   if (isPlatformAdmin) return <>{children}</>;
   if (settings === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100">
-        <div className="animate-pulse flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-full border-2 border-burgundy border-t-transparent animate-spin" />
-          <p className="text-slate-500 text-sm">Yükleniyor…</p>
+      <div className="min-h-screen flex items-center justify-center bg-slate-950">
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-full border-2 border-[#c41e3a] border-t-transparent animate-spin" />
+          <p className="text-white/60 text-sm font-medium">Yükleniyor…</p>
         </div>
       </div>
     );
@@ -78,24 +92,37 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   if (!settings.maintenanceMode) return <>{children}</>;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-900 via-[#8B1538]/90 to-slate-900">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.15),transparent)]" />
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-60" />
-      <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-burgundy/20 blur-[120px] animate-pulse" />
-      <div className="relative z-10 w-full max-w-lg mx-auto px-6 py-10 text-center">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur border border-white/20 mb-8 animate-spin" style={{ animationDuration: '8s' }}>
-          <svg className="w-10 h-10 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-slate-950">
+      <div className="absolute inset-0 opacity-90 maintenance-bg-mesh" />
+      <div className="absolute inset-0 animate-maintenance-gradient opacity-70" />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-burgundy/30 blur-[100px] animate-maintenance-float-slow" />
+      <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-rose-900/25 blur-[80px] animate-maintenance-float-slower" />
+      <div className="absolute top-1/2 left-1/2 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-burgundy/15 blur-[120px] animate-maintenance-pulse-slow" />
+      <div className="absolute inset-0 opacity-[0.04] maintenance-grid-overlay" />
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none maintenance-grain" />
+
+      <div className="relative z-10 w-full max-w-xl mx-auto px-6 py-12 sm:py-16 text-center">
+        <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-10 animate-maintenance-float-icon maintenance-glass-icon">
+          <svg
+            className="w-12 h-12 text-white animate-spin maintenance-spin-slow"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
             <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
           </svg>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight drop-shadow-sm">
+
+        <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight maintenance-title-gradient">
           Site Bakımda
         </h1>
-        <p className="mt-3 text-white/85 text-base sm:text-lg max-w-sm mx-auto leading-relaxed">
+        <p className="mt-4 text-white/80 text-base sm:text-lg max-w-md mx-auto leading-relaxed font-medium">
           Antalya İnşaat Müteahhitleri Derneği web sitemiz kısa süreli bakım çalışmasındadır. Anlayışınız için teşekkür ederiz.
         </p>
+
         {endAt && diff && (
-          <div className="mt-10 flex flex-wrap justify-center gap-3 sm:gap-4">
+          <div className="mt-12 flex flex-wrap justify-center gap-3 sm:gap-5">
             <CountdownBlock value={diff.d} label="Gün" />
             <CountdownBlock value={diff.h} label="Saat" />
             <CountdownBlock value={diff.m} label="Dakika" />
@@ -103,13 +130,16 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
           </div>
         )}
         {endAt && isPast && (
-          <p className="mt-8 text-white/90 font-medium">Bakım tamamlanmak üzere. Lütfen kısa süre sonra tekrar deneyin.</p>
+          <p className="mt-10 px-4 py-3 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 text-white/95 font-semibold text-sm sm:text-base inline-block">
+            Bakım tamamlanmak üzere. Lütfen kısa süre sonra tekrar deneyin.
+          </p>
         )}
         {!endAt && (
-          <p className="mt-8 text-white/80 text-sm">Yakında tekrar hizmetinizdeyiz.</p>
+          <p className="mt-10 text-white/70 text-sm font-medium">Yakında tekrar hizmetinizdeyiz.</p>
         )}
-        <div className="mt-12 pt-8 border-t border-white/10">
-          <p className="text-white/60 text-xs">© Antalya İnşaat Müteahhitleri Derneği</p>
+
+        <div className="mt-14 pt-8 border-t border-white/10">
+          <p className="text-white/50 text-xs font-medium">© Antalya İnşaat Müteahhitleri Derneği</p>
         </div>
       </div>
     </div>
