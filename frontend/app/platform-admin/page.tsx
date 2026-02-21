@@ -142,7 +142,9 @@ export default function PlatformAdminPage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [meUser, setMeUser] = useState<{ role: string; seoAccess?: boolean; canResetMemberPasswords?: boolean } | null>(null);
   const [maintenanceMode, setMaintenanceMode] = useState<boolean | null>(null);
+  const [maintenanceEndAt, setMaintenanceEndAt] = useState<string>('');
   const [maintenanceToggling, setMaintenanceToggling] = useState(false);
+  const [maintenanceEndSaving, setMaintenanceEndSaving] = useState(false);
 
   const adminTabs = useMemo(() => {
     if (meUser?.seoAccess === false) return ADMIN_TABS_ALL.filter((t) => t.id !== 'seo');
@@ -209,7 +211,11 @@ export default function PlatformAdminPage() {
   useEffect(() => {
     if (!authorized || !token) return;
     getSiteSettingsAdmin(token)
-      .then((s) => setMaintenanceMode(!!s.maintenanceMode))
+      .then((s) => {
+        setMaintenanceMode(!!s.maintenanceMode);
+        const end = (s as { maintenanceEndAt?: string | null }).maintenanceEndAt;
+        setMaintenanceEndAt(end ? new Date(end).toISOString().slice(0, 16) : '');
+      })
       .catch(() => setMaintenanceMode(false));
   }, [authorized, token]);
 
@@ -225,6 +231,34 @@ export default function PlatformAdminPage() {
       setError(e?.message ?? 'Bakım modu güncellenemedi.');
     } finally {
       setMaintenanceToggling(false);
+    }
+  };
+
+  const saveMaintenanceEndAt = async () => {
+    if (!token) return;
+    setMaintenanceEndSaving(true);
+    try {
+      const current = await getSiteSettingsAdmin(token);
+      const value = maintenanceEndAt.trim() ? new Date(maintenanceEndAt.trim()).toISOString() : null;
+      await updateSiteSettingsAdmin(token, { ...current, maintenanceEndAt: value });
+    } catch (e: any) {
+      setError(e?.message ?? 'Bakım bitiş saati güncellenemedi.');
+    } finally {
+      setMaintenanceEndSaving(false);
+    }
+  };
+
+  const clearMaintenanceEndAt = async () => {
+    if (!token) return;
+    setMaintenanceEndSaving(true);
+    try {
+      const current = await getSiteSettingsAdmin(token);
+      await updateSiteSettingsAdmin(token, { ...current, maintenanceEndAt: null });
+      setMaintenanceEndAt('');
+    } catch (e: any) {
+      setError(e?.message ?? 'Bakım bitiş saati kaldırılamadı.');
+    } finally {
+      setMaintenanceEndSaving(false);
     }
   };
 
@@ -310,20 +344,51 @@ export default function PlatformAdminPage() {
 
           {/* İçerik alanı */}
           <section className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <span className="text-sm font-semibold text-slate-700">Bakım modu</span>
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-slate-600">{maintenanceMode === null ? '…' : maintenanceMode ? 'Açık' : 'Kapalı'}</span>
+            <div className="mb-4 space-y-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-sm font-semibold text-slate-700">Bakım modu</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-slate-600">{maintenanceMode === null ? '…' : maintenanceMode ? 'Açık' : 'Kapalı'}</span>
+                  <button
+                    type="button"
+                    disabled={maintenanceMode === null || maintenanceToggling}
+                    onClick={toggleMaintenance}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50 ${
+                      maintenanceMode ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-emerald-600 text-white hover:bg-emerald-700'
+                    }`}
+                  >
+                    {maintenanceToggling ? 'Kaydediliyor…' : maintenanceMode ? 'Kapat' : 'Aç'}
+                  </button>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 border-t border-slate-200 pt-3">
+                <label htmlFor="maintenance-end-datetime" className="text-sm font-medium text-slate-700">Bakım bitiş (sayfa sayacı):</label>
+                <input
+                  id="maintenance-end-datetime"
+                  type="datetime-local"
+                  value={maintenanceEndAt}
+                  onChange={(e) => setMaintenanceEndAt(e.target.value)}
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800"
+                  aria-label="Bakım bitiş tarihi ve saati"
+                />
                 <button
                   type="button"
-                  disabled={maintenanceMode === null || maintenanceToggling}
-                  onClick={toggleMaintenance}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors disabled:opacity-50 ${
-                    maintenanceMode ? 'bg-amber-500 text-white hover:bg-amber-600' : 'bg-emerald-600 text-white hover:bg-emerald-700'
-                  }`}
+                  disabled={maintenanceEndSaving}
+                  onClick={saveMaintenanceEndAt}
+                  className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white hover:bg-burgundy-dark disabled:opacity-50"
                 >
-                  {maintenanceToggling ? 'Kaydediliyor…' : maintenanceMode ? 'Kapat' : 'Aç'}
+                  {maintenanceEndSaving ? 'Kaydediliyor…' : 'Kaydet'}
                 </button>
+                {maintenanceEndAt ? (
+                  <button
+                    type="button"
+                    disabled={maintenanceEndSaving}
+                    onClick={clearMaintenanceEndAt}
+                    className="rounded-full border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-50"
+                  >
+                    Temizle
+                  </button>
+                ) : null}
               </div>
             </div>
             <div>

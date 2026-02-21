@@ -26,6 +26,7 @@ router.get('/', async (req, res) => {
             promoVideoUrl: row.promoVideoUrl || null,
             promoVideoCoverUrl: row.promoVideoCoverUrl || null,
             maintenanceMode: !!row.maintenanceMode,
+            maintenanceEndAt: row.maintenanceEndAt ? row.maintenanceEndAt.toISOString() : null,
           }
         : {
             facebookUrl: null,
@@ -36,6 +37,7 @@ router.get('/', async (req, res) => {
             promoVideoUrl: null,
             promoVideoCoverUrl: null,
             maintenanceMode: false,
+            maintenanceEndAt: null,
           }
     );
   } catch (err) {
@@ -59,6 +61,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             promoVideoUrl: row.promoVideoUrl || null,
             promoVideoCoverUrl: row.promoVideoCoverUrl || null,
             maintenanceMode: !!row.maintenanceMode,
+            maintenanceEndAt: row.maintenanceEndAt ? row.maintenanceEndAt.toISOString() : null,
           }
         : {
             id: null,
@@ -70,6 +73,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             promoVideoUrl: null,
             promoVideoCoverUrl: null,
             maintenanceMode: false,
+            maintenanceEndAt: null,
           }
     );
   } catch (err) {
@@ -91,6 +95,7 @@ router.put(
     body('promoVideoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
     body('promoVideoCoverUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
     body('maintenanceMode').optional().isBoolean().toBoolean(),
+    body('maintenanceEndAt').optional({ checkFalsy: true }).trim(),
   ],
   validate,
   async (req, res) => {
@@ -106,6 +111,7 @@ router.put(
         promoVideoCoverUrl: req.body.promoVideoCoverUrl?.trim() || null,
       };
       if (typeof req.body.maintenanceMode === 'boolean') payload.maintenanceMode = req.body.maintenanceMode;
+      if (req.body.maintenanceEndAt !== undefined) payload.maintenanceEndAt = req.body.maintenanceEndAt ? new Date(req.body.maintenanceEndAt) : null;
       if (row) {
         await row.update(payload);
       } else {

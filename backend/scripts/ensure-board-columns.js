@@ -67,6 +67,10 @@ async function main() {
       await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS maintenance_mode BOOLEAN NOT NULL DEFAULT false`);
       console.log('[ensure-board-columns] Eklendi: site_settings maintenance_mode');
     }
+    if (!sCols.has('maintenance_end_at')) {
+      await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS maintenance_end_at TIMESTAMP WITH TIME ZONE`);
+      console.log('[ensure-board-columns] Eklendi: site_settings maintenance_end_at');
+    }
   } catch (err) {
     console.error('[ensure-board-columns] Hata:', err.message);
   } finally {

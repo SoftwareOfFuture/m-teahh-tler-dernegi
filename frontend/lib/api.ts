@@ -267,6 +267,7 @@ export type SiteSettings = {
   promoVideoUrl: string | null;
   promoVideoCoverUrl: string | null;
   maintenanceMode?: boolean;
+  maintenanceEndAt?: string | null;
 };
 
 export async function getSiteSettingsPublic() {
