@@ -25,6 +25,7 @@ router.get('/', async (req, res) => {
             linkedinUrl: row.linkedinUrl || null,
             promoVideoUrl: row.promoVideoUrl || null,
             promoVideoCoverUrl: row.promoVideoCoverUrl || null,
+            maintenanceMode: !!row.maintenanceMode,
           }
         : {
             facebookUrl: null,
@@ -34,6 +35,7 @@ router.get('/', async (req, res) => {
             linkedinUrl: null,
             promoVideoUrl: null,
             promoVideoCoverUrl: null,
+            maintenanceMode: false,
           }
     );
   } catch (err) {
@@ -56,6 +58,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             linkedinUrl: row.linkedinUrl || null,
             promoVideoUrl: row.promoVideoUrl || null,
             promoVideoCoverUrl: row.promoVideoCoverUrl || null,
+            maintenanceMode: !!row.maintenanceMode,
           }
         : {
             id: null,
@@ -66,6 +69,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             linkedinUrl: null,
             promoVideoUrl: null,
             promoVideoCoverUrl: null,
+            maintenanceMode: false,
           }
     );
   } catch (err) {
@@ -86,6 +90,7 @@ router.put(
     body('linkedinUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
     body('promoVideoUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
     body('promoVideoCoverUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
+    body('maintenanceMode').optional().isBoolean().toBoolean(),
   ],
   validate,
   async (req, res) => {
@@ -100,6 +105,7 @@ router.put(
         promoVideoUrl: req.body.promoVideoUrl?.trim() || null,
         promoVideoCoverUrl: req.body.promoVideoCoverUrl?.trim() || null,
       };
+      if (typeof req.body.maintenanceMode === 'boolean') payload.maintenanceMode = req.body.maintenanceMode;
       if (row) {
         await row.update(payload);
       } else {

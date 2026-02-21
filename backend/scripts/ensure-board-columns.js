@@ -59,6 +59,14 @@ async function main() {
       await sequelize.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS seo_access BOOLEAN NOT NULL DEFAULT true`);
       console.log('[ensure-board-columns] Eklendi: users seo_access');
     }
+    const [settingsCols] = await sequelize.query(`
+      SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'site_settings'
+    `);
+    const sCols = new Set((settingsCols || []).map((r) => r.column_name));
+    if (!sCols.has('maintenance_mode')) {
+      await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS maintenance_mode BOOLEAN NOT NULL DEFAULT false`);
+      console.log('[ensure-board-columns] Eklendi: site_settings maintenance_mode');
+    }
   } catch (err) {
     console.error('[ensure-board-columns] Hata:', err.message);
   } finally {

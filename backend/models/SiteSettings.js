@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       promoVideoCoverUrl: {
         type: DataTypes.STRING(1000),
       },
+      maintenanceMode: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       tableName: 'site_settings',

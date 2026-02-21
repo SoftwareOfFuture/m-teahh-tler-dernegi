@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ChunkErrorAutoReload } from '../components/ChunkErrorAutoReload';
+import { MaintenanceGate } from '../components/MaintenanceGate';
 import { SEO, organizationJsonLd, websiteJsonLd, absoluteUrl } from '../lib/seo';
 import './globals.css';
 
@@ -57,25 +58,7 @@ export const metadata: Metadata = {
   verification: {},
 };
 
-const MAINTENANCE_MODE = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== 'false';
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  if (MAINTENANCE_MODE) {
-    return (
-      <html lang="tr">
-        <head>
-          <title>Bakımda | Antalya İnşaat Müteahhitleri Derneği</title>
-          <meta name="robots" content="noindex, nofollow" />
-        </head>
-        <body style={{ margin: 0, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontFamily: 'system-ui, sans-serif' }}>
-          <div style={{ textAlign: 'center', padding: '2rem', maxWidth: '28rem' }}>
-            <h1 style={{ color: '#8B1538', fontSize: '1.75rem', fontWeight: 700, marginBottom: '0.75rem' }}>Site Bakımda</h1>
-            <p style={{ color: '#475569', fontSize: '1rem', lineHeight: 1.6 }}>Antalya İnşaat Müteahhitleri Derneği web sitesi kısa süreli bakım çalışması nedeniyle geçici olarak kapalıdır. Yakında tekrar hizmetinizdeyiz.</p>
-          </div>
-        </body>
-      </html>
-    );
-  }
   const orgJsonLd = organizationJsonLd();
   const webJsonLd = websiteJsonLd();
   return (
@@ -92,7 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-sans antialiased">
         <ChunkErrorAutoReload />
-        {children}
+        <MaintenanceGate>{children}</MaintenanceGate>
       </body>
     </html>
   );
