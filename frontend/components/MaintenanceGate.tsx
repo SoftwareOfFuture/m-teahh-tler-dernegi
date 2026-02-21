@@ -35,6 +35,20 @@ function useCountdown(endAt: string | null) {
   return { diff, isPast };
 }
 
+function formatEndDate(iso: string) {
+  try {
+    const d = new Date(iso);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    const h = String(d.getHours()).padStart(2, '0');
+    const min = String(d.getMinutes()).padStart(2, '0');
+    return `${day}.${month}.${year} ${h}:${min}`;
+  } catch {
+    return '';
+  }
+}
+
 function CountdownBlock({ value, label, staggerIndex }: { value: number; label: string; staggerIndex: number }) {
   const [displayValue, setDisplayValue] = useState(value);
   const [key, setKey] = useState(0);
@@ -48,18 +62,26 @@ function CountdownBlock({ value, label, staggerIndex }: { value: number; label: 
       setKey((k) => k + 1);
     }
   }, [value, displayValue]);
+  const staggerClass =
+    staggerIndex === 1
+      ? 'maintenance-countdown-stagger-1'
+      : staggerIndex === 2
+        ? 'maintenance-countdown-stagger-2'
+        : staggerIndex === 3
+          ? 'maintenance-countdown-stagger-3'
+          : 'maintenance-countdown-stagger-4';
   return (
     <div
-      className={`group relative flex flex-col items-center justify-center rounded-2xl min-w-[80px] sm:min-w-[92px] overflow-hidden maintenance-glass-card maintenance-card-glow maintenance-countdown-block ${mounted ? 'maintenance-countdown-in' : ''} ${staggerIndex === 1 ? 'maintenance-countdown-stagger-1' : staggerIndex === 2 ? 'maintenance-countdown-stagger-2' : staggerIndex === 3 ? 'maintenance-countdown-stagger-3' : 'maintenance-countdown-stagger-4'}`}
+      className={`group relative flex flex-col items-center justify-center rounded-2xl min-w-[72px] sm:min-w-[84px] overflow-hidden maintenance-glass-card maintenance-card-glow maintenance-countdown-block ${mounted ? 'maintenance-countdown-in' : ''} ${staggerClass}`}
     >
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <span
         key={key}
-        className="relative text-4xl sm:text-5xl font-bold tabular-nums text-white drop-shadow-lg animate-maintenance-countdown-pop"
+        className="relative text-3xl sm:text-4xl font-bold tabular-nums text-white drop-shadow-lg animate-maintenance-countdown-pop"
       >
         {String(displayValue).padStart(2, '0')}
       </span>
-      <span className="relative mt-2 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
+      <span className="relative mt-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-[0.18em] text-white/85">
         {label}
       </span>
     </div>
@@ -109,7 +131,7 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
   if (!settings.maintenanceMode) return <>{children}</>;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden bg-slate-950">
+    <div className="min-h-screen flex flex-col relative overflow-hidden bg-slate-950">
       <div className="absolute inset-0 opacity-90 maintenance-bg-mesh" />
       <div className="absolute inset-0 animate-maintenance-gradient opacity-70" />
       <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-burgundy/30 blur-[100px] animate-maintenance-float-slow maintenance-glow-orb" />
@@ -131,19 +153,17 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
       <div className="absolute inset-0 opacity-[0.04] maintenance-grid-overlay" />
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none maintenance-grain" />
 
-      <div className="relative z-10 w-full max-w-xl mx-auto px-6 py-12 sm:py-16">
-        <div className="relative rounded-3xl maintenance-shimmer-border px-6 sm:px-10 py-10 sm:py-14 text-center opacity-0 maintenance-content-in">
-          <div className="absolute inset-0 rounded-3xl bg-white/[0.03] backdrop-blur-sm border border-white/10" />
-
-          <div className="relative">
-            <div className="maintenance-badge-shine inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 mb-8">
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-6 lg:gap-8 items-stretch">
+          {/* Sol: Mesaj kartı */}
+          <div className="relative rounded-3xl overflow-hidden border border-white/10 maintenance-message-card px-6 sm:px-8 py-8 sm:py-10 flex flex-col justify-center opacity-0 maintenance-slide-left-in">
+            <div className="maintenance-badge-shine inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 w-fit mb-6">
               <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-              <span className="text-xs font-semibold uppercase tracking-widest text-white/90">Bakım Modu</span>
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-white/90">Bakım Modu</span>
             </div>
-
-            <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-8 animate-maintenance-float-icon maintenance-glass-icon">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-6 animate-maintenance-float-icon maintenance-glass-icon">
               <svg
-                className="w-12 h-12 text-white animate-spin maintenance-spin-slow"
+                className="w-10 h-10 text-white animate-spin maintenance-spin-slow"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -152,36 +172,55 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
               </svg>
             </div>
-
-            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight maintenance-title-gradient">
+            <p className="maintenance-subtitle font-medium mb-2">Geçici olarak kapalıyız</p>
+            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight maintenance-title-gradient">
               Site Bakımda
             </h1>
-            <p className="mt-4 text-white/80 text-base sm:text-lg max-w-md mx-auto leading-relaxed font-medium">
+            <p className="mt-4 text-white/75 text-sm sm:text-base leading-relaxed">
               Antalya İnşaat Müteahhitleri Derneği web sitemiz kısa süreli bakım çalışmasındadır. Anlayışınız için teşekkür ederiz.
             </p>
-
-            {endAt && diff && (
-              <div className="mt-12 flex flex-wrap justify-center gap-3 sm:gap-5">
-                <CountdownBlock value={diff.d} label="Gün" staggerIndex={1} />
-                <CountdownBlock value={diff.h} label="Saat" staggerIndex={2} />
-                <CountdownBlock value={diff.m} label="Dakika" staggerIndex={3} />
-                <CountdownBlock value={diff.s} label="Saniye" staggerIndex={4} />
-              </div>
-            )}
-            {endAt && isPast && (
-              <p className="mt-10 px-5 py-3.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10 text-white/95 font-semibold text-sm sm:text-base inline-block">
-                Bakım tamamlanmak üzere. Lütfen kısa süre sonra tekrar deneyin.
-              </p>
-            )}
             {!endAt && (
-              <p className="mt-10 text-white/70 text-sm font-medium">Yakında tekrar hizmetinizdeyiz.</p>
+              <p className="mt-6 text-white/60 text-sm font-medium">Yakında tekrar hizmetinizdeyiz.</p>
             )}
+          </div>
 
-            <div className="mt-12 maintenance-divider-gradient" />
-            <p className="mt-6 text-white/50 text-xs font-medium">© Antalya İnşaat Müteahhitleri Derneği</p>
+          {/* Sağ: Sayaç hero kartı */}
+          <div className="relative rounded-3xl overflow-hidden border border-white/10 maintenance-shimmer-border maintenance-hero-card px-6 sm:px-8 py-8 sm:py-10 flex flex-col justify-center opacity-0 maintenance-slide-right-in">
+            <div className="absolute inset-0 rounded-3xl bg-white/[0.02]" />
+            <div className="relative">
+              {endAt && diff ? (
+                <>
+                  <p className="maintenance-subtitle font-medium mb-4">Kalan süre</p>
+                  <div className="flex flex-wrap justify-center sm:justify-start gap-2 sm:gap-3">
+                    <CountdownBlock value={diff.d} label="Gün" staggerIndex={1} />
+                    <CountdownBlock value={diff.h} label="Saat" staggerIndex={2} />
+                    <CountdownBlock value={diff.m} label="Dakika" staggerIndex={3} />
+                    <CountdownBlock value={diff.s} label="Saniye" staggerIndex={4} />
+                  </div>
+                  <p className="mt-6 text-white/60 text-xs sm:text-sm font-medium">
+                    Tahmini bitiş: <span className="text-white/80 font-semibold">{formatEndDate(endAt)}</span>
+                  </p>
+                  {isPast && (
+                    <p className="mt-4 px-4 py-2.5 rounded-xl bg-white/10 border border-white/10 text-white/90 font-semibold text-sm inline-block">
+                      Bakım tamamlanmak üzere. Kısa süre sonra tekrar deneyin.
+                    </p>
+                  )}
+                </>
+              ) : (
+                <div className="text-center sm:text-left py-4">
+                  <p className="maintenance-subtitle font-medium mb-3">Bilgi</p>
+                  <p className="text-white/80 text-base font-medium">Bakım süresi belirtilmedi. Yakında tekrar hizmetinizdeyiz.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      <footer className="relative z-10 w-full mt-auto pt-6 pb-5">
+        <div className="maintenance-divider-gradient w-full mb-4" />
+        <p className="text-center text-white/45 text-xs font-medium">© Antalya İnşaat Müteahhitleri Derneği</p>
+      </footer>
     </div>
   );
 }
