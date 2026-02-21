@@ -812,7 +812,8 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
   );
 }
 
-const SOCIAL_LABELS: Record<keyof SiteSettings, string> = {
+const SOCIAL_KEYS = ['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl', 'promoVideoCoverUrl'] as const;
+const SOCIAL_LABELS: Record<(typeof SOCIAL_KEYS)[number], string> = {
   facebookUrl: 'Facebook',
   instagramUrl: 'Instagram',
   twitterUrl: 'Twitter / X',
@@ -923,7 +924,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
       ) : null}
 
       <div className="mt-6 space-y-4 max-w-2xl">
-        {(['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl', 'promoVideoCoverUrl'] as const).map((key) => (
+        {SOCIAL_KEYS.map((key) => (
           <Field key={key} label={SOCIAL_LABELS[key]}>
             <TextInput
               value={String(form[key] ?? '')}
