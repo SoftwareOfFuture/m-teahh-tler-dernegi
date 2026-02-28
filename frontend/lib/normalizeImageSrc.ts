@@ -2,6 +2,11 @@ export function normalizeImageSrc(src: string | null | undefined): string {
   const s = String(src ?? '').trim();
   if (!s) return '';
 
+  // Relative path: tarayıcıda aynı origin ile tam URL yap (görsellerin yüklenmesi için)
+  if (typeof window !== 'undefined' && s.startsWith('/') && !s.startsWith('//')) {
+    return window.location.origin + s;
+  }
+
   // Already a valid URL-ish src for next/image
   if (s.startsWith('data:') || s.startsWith('http://') || s.startsWith('https://') || s.startsWith('/')) return s;
 

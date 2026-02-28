@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SliderItem } from '../lib/types';
@@ -9,6 +8,7 @@ import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 type Props = { items: SliderItem[] };
 
 const SWIPE_THRESHOLD = 50;
+const FALLBACK_SLIDER_IMAGE = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=2400&q=70';
 
 export function HeroSlider({ items }: Props) {
   const safeItems = useMemo(() => {
@@ -19,16 +19,21 @@ export function HeroSlider({ items }: Props) {
         date: '',
         title: 'ANTMUTDER DİJİTAL PLATFORMLAR',
         description: 'Sektörel birliktelik, güncel içerikler ve güçlü iletişim için dijital platformlarımızla yanınızdayız.',
-        imageUrl: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=2400&q=70',
+        imageUrl: FALLBACK_SLIDER_IMAGE,
         href: '#',
       }];
     }
-    return arr;
+    return arr.map((it) => ({
+      ...it,
+      imageUrl: it.imageUrl && normalizeImageSrc(it.imageUrl) ? normalizeImageSrc(it.imageUrl) : FALLBACK_SLIDER_IMAGE,
+    }));
   }, [items]);
   const [idx, setIdx] = useState(0);
+  const [imgError, setImgError] = useState<Record<string, boolean>>({});
   const len = safeItems.length;
   const current = safeItems[idx % len];
   const touchStartX = useRef<number | null>(null);
+  const currentSrc = imgError[current?.id] ? FALLBACK_SLIDER_IMAGE : (current?.imageUrl || FALLBACK_SLIDER_IMAGE);
 
   useEffect(() => {
     if (len <= 1) return;
@@ -56,13 +61,12 @@ export function HeroSlider({ items }: Props) {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        <Image
-          src={normalizeImageSrc(current.imageUrl)}
+        {/* Native img: tüm kaynaklar (API, data URL, harici) sorunsuz yüklensin; hata durumunda yedek gösterilir */}
+        <img
+          src={currentSrc}
           alt={current.title}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover object-center transition-transform duration-700 ease-out"
+          className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 ease-out"
+          onError={() => setImgError((prev) => ({ ...prev, [current?.id]: true }))}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/95 via-slate-900/50 to-transparent" />
 

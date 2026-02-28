@@ -96,8 +96,9 @@ export function Navbar() {
   const showNavbar = navbarVisible || mobileOpen;
 
   return (
+    <>
     <header
-      className={`sticky top-0 z-50 w-full border-b border-slate-100/80 bg-white/80 shadow-soft backdrop-blur-md supports-[backdrop-filter]:bg-white/70 safe-area-inset-top transition-transform duration-300 ease-out ${
+      className={`fixed left-0 right-0 top-0 z-50 w-full border-b border-slate-100/80 bg-white/80 shadow-soft backdrop-blur-md supports-[backdrop-filter]:bg-white/70 safe-area-inset-top transition-transform duration-300 ease-out ${
         showNavbar ? 'translate-y-0' : '-translate-y-full'
       }`}
       role="banner"
@@ -288,5 +289,8 @@ export function Navbar() {
         </div>
       </nav>
     </header>
+    {/* Spacer: fixed navbar için yer kaplar, kaydırınca içerik zıplamaz */}
+    <div className="h-14 flex-shrink-0 sm:h-14" aria-hidden />
+    </>
   );
 }
