@@ -47,8 +47,8 @@ export default function DuyurularPage() {
   return (
     <PageLayoutWithFooter>
       <PageHero
-        title="Üyelik Hakkında"
-        subtitle="ANTMUTDER üyelik hakkında bilgiler, güncel duyurular ve dernek haberleri."
+        title="Üyelik"
+        subtitle="ANTMUTDER üyelik bilgileri, güncel duyurular ve dernek haberleri."
       />
 
       <section className="mt-8 min-w-0">
