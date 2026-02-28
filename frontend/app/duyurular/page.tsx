@@ -47,13 +47,13 @@ export default function DuyurularPage() {
   return (
     <PageLayoutWithFooter>
       <PageHero
-        title="Duyurular"
-        subtitle="ANTMUTDER ve Antalya inşaat sektöründen güncel duyurular. Dernek haberleri ve bilgilendirmeleri."
+        title="Üyelik Hakkında"
+        subtitle="ANTMUTDER üyelik hakkında bilgiler, güncel duyurular ve dernek haberleri."
       />
 
       <section className="mt-8 min-w-0">
         <div className="flex min-w-0 flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-bold text-slate-900 sm:text-xl">Duyuru Arşivi</h2>
+          <h2 className="text-lg font-bold text-slate-900 sm:text-xl">Üyelik Duyuruları</h2>
           <Link
             href="/"
             className="text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark"

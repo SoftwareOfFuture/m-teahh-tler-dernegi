@@ -306,9 +306,9 @@ export function HomePageContent() {
             <AnimatedSection sectionId="announcements" animationClass={sectionClass('announcements')} className="min-w-0">
               <div>
               <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-6">
-                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Duyurular</h2>
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Üyelik Hakkında</h2>
                 <Link href="/duyurular" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
-                  Tüm Duyurular
+                  Tümü
                 </Link>
               </div>
               <div className="grid grid-cols-1 gap-3 min-w-0 xs:gap-4 sm:gap-5 md:grid-cols-2 md:gap-6 xl:grid-cols-3 stagger-children">

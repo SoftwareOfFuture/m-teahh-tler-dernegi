@@ -67,7 +67,7 @@ export function DuyuruDetayView() {
       <section className="mt-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Link href="/duyurular" className="text-sm font-semibold text-burgundy transition-colors hover:text-burgundy-dark">
-            ← Duyurular
+            ← Üyelik Hakkında
           </Link>
           {item?.publishDate ? (
             <div className="text-xs font-semibold text-slate-500">{formatDot(item.publishDate)}</div>
