@@ -86,8 +86,9 @@ Vercel projesinde Settings → Environment Variables’a ekle:
 | `DATABASE_URL` | PostgreSQL bağlantı URL’si (Vercel Postgres veya Neon/Supabase) |
 | `JWT_SECRET` | Güçlü bir gizli anahtar (örn. rastgele uzun bir string) |
 | `NEXT_PUBLIC_SITE_URL` | Canlı link: Sitenin tam adresi (canonical, Open Graph, sitemap). Örn: `https://www.antmutder.org`. Varsayılan: `https://www.antmutder.org`. |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | (İsteğe bağlı) Cloudinary cloud name — admin panelde “Yerelden görsel yükle” ile yüklenen görseller canlı URL olur (örn. https://res.cloudinary.com/.../xxx.jpg). |
-| `NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET` | (İsteğe bağlı) Cloudinary unsigned upload preset — yukarıdaki ile birlikte kullanılır. |
+| `CLOUDINARY_CLOUD_NAME` | (İsteğe bağlı) Cloudinary cloud name — admin panelde “Yerelden görsel yükle” backend üzerinden canlı URL. Backend .env. |
+| `CLOUDINARY_API_KEY` | (İsteğe bağlı) Cloudinary API Key — backend .env, sunucuda kalır. |
+| `CLOUDINARY_API_SECRET` | (İsteğe bağlı) Cloudinary API Secret — backend .env, sunucuda kalır. |
 | `ADMIN_EMAIL` | (İsteğe bağlı) Admin e-posta |
 | `ADMIN_PASSWORD` | (İsteğe bağlı) Admin şifre |
 

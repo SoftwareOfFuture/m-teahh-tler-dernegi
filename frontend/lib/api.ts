@@ -307,6 +307,15 @@ export async function updateSiteSettingsAdmin(token: string, payload: Partial<Si
   return result;
 }
 
+/** Görseli backend üzerinden Cloudinary'e yükler (API Key/Secret sadece sunucuda). Canlı URL döner. */
+export async function uploadImage(token: string, imageDataUri: string): Promise<{ url: string }> {
+  return await apiFetch<{ url: string }>('/api/upload/image', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ image: imageDataUri }),
+  });
+}
+
 // --- Contact Message (public) ---
 
 export async function createContactMessage(payload: { name: string; email: string; message: string }) {
