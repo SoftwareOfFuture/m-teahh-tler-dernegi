@@ -4,10 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { getToken } from '../lib/api';
+import { useSiteSettings } from '../lib/useSiteSettings';
 
 type NavItem = { href: string; label: string };
 
 export function Header() {
+  const social = useSiteSettings();
   const navItems: NavItem[] = useMemo(
     () => [
       { href: '/', label: 'Ana Sayfa' },
@@ -31,7 +33,6 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full safe-area-inset-top">
-      {}
       <div className="mx-4 mt-4 rounded-2xl border border-white/20 bg-white/70 px-4 py-3 shadow-soft backdrop-blur-xl md:mx-6 md:mt-6 md:rounded-full md:px-6 md:py-3">
         <div className="flex w-full items-center justify-between gap-4">
           <Link href="/" className="group flex items-center gap-3">
@@ -58,9 +59,15 @@ export function Header() {
 
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden items-center gap-1 xl:flex">
-              <SocialLink href="#" ariaLabel="LinkedIn"><LinkedInIcon /></SocialLink>
-              <SocialLink href="#" ariaLabel="X"><XIcon /></SocialLink>
-              <SocialLink href="#" ariaLabel="Instagram"><InstagramIcon /></SocialLink>
+              {social?.linkedinUrl ? (
+                <SocialLink href={social.linkedinUrl} ariaLabel="LinkedIn"><LinkedInIcon /></SocialLink>
+              ) : null}
+              {social?.twitterUrl ? (
+                <SocialLink href={social.twitterUrl} ariaLabel="X"><XIcon /></SocialLink>
+              ) : null}
+              {social?.instagramUrl ? (
+                <SocialLink href={social.instagramUrl} ariaLabel="Instagram"><InstagramIcon /></SocialLink>
+              ) : null}
             </div>
 
             <Link
@@ -88,7 +95,6 @@ export function Header() {
         </div>
       </div>
 
-      {}
       <div
         className={`overflow-hidden transition-all duration-300 ease-out ${
           open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
@@ -118,6 +124,8 @@ function SocialLink({ href, ariaLabel, children }: { href: string; ariaLabel: st
   return (
     <a
       href={href}
+      target="_blank"
+      rel="noreferrer"
       aria-label={ariaLabel}
       className="grid size-9 place-items-center rounded-lg text-slate-500 transition-all duration-300 hover:bg-burgundy/10 hover:text-burgundy"
     >

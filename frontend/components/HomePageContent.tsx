@@ -247,7 +247,6 @@ export function HomePageContent() {
                 >
                   {siteSettings.promoVideoCoverUrl ? (
                     <>
-                      {}
                       <img
                       src={normalizeImageSrc(siteSettings.promoVideoCoverUrl) || siteSettings.promoVideoCoverUrl}
                       alt="Tanıtım filmi kapak"

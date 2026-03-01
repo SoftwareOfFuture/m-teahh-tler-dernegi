@@ -72,7 +72,7 @@ export function Navbar() {
           aria-label="Ana sayfa"
         >
           <div className="relative size-9 shrink-0 overflow-hidden rounded-full sm:size-10">
-            <Image src="/logo.png" alt="" fill className="object-contain p-1" priority sizes="44px" />
+            <Image src="/logo.png" alt="ANTMUTDER logosu" fill className="object-contain p-1" priority sizes="44px" />
           </div>
           <div className="hidden min-w-0 shrink sm:block">
             <span className="block truncate text-xs font-bold text-slate-900 sm:text-sm">Antalya İnşaat Müteahhitleri Derneği</span>

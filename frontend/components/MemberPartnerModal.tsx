@@ -149,22 +149,20 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
         }
       }}
     >
-      {}
       <div
         ref={overlayRef}
         className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-200"
         style={{ opacity: visible ? 1 : 0 }}
       />
 
-      {}
       <div
         ref={contentRef}
         className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl transition-all duration-300 ease-out"
         style={{ opacity: visible ? 1 : 0, transform: visible ? 'scale(1) translateY(0)' : 'scale(0.95) translateY(12px)' }}
         onClick={(e) => e.stopPropagation()}
       >
-        {}
         <button
+          type="button"
           onClick={handleClose}
           className="absolute right-4 top-4 z-20 grid size-10 place-items-center rounded-full bg-white/90 shadow-lg transition-colors hover:bg-white"
           aria-label="Kapat"
@@ -174,10 +172,8 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
           </svg>
         </button>
 
-        {}
         <div className="relative border-b border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 sm:p-8">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-            {}
             <div className="shrink-0">
               {logoSrc ? (
                 <div className="relative size-24 overflow-hidden rounded-2xl bg-white shadow-lg ring-2 ring-slate-100 sm:size-32">
@@ -190,7 +186,6 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
               )}
             </div>
 
-            {}
             <div className="flex-1 text-center sm:text-left">
               <h2 id="modal-title" className="text-2xl font-bold text-slate-900 sm:text-3xl">
                 {company}
@@ -222,7 +217,6 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
           </div>
         </div>
 
-        {}
         <div id="modal-description" className="p-6 sm:p-8">
           {loading ? (
             <div className="py-12 text-center">
@@ -233,7 +227,6 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
             <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
           ) : (
             <div className="space-y-6">
-              {}
               {(email || phone) && (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-700">İletişim Bilgileri</h3>
@@ -262,7 +255,6 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
                 </div>
               )}
 
-              {}
               {!isPartner && documents.length > 0 && (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-700">Belgeler</h3>
@@ -286,7 +278,6 @@ export function MemberPartnerModal({ item, partner, onClose }: Props) {
                 </div>
               )}
 
-              {}
               {!isPartner && documents.some((d) => d.kind === 'contractor_license') && (
                 <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-6 text-center">
                   <h3 className="mb-4 text-sm font-bold uppercase tracking-wide text-slate-700">Yapı Pasaportu</h3>

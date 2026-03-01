@@ -1530,7 +1530,7 @@ function LinksPanel({ token }: { token: string | null }) {
                     {editImageUrl.trim() ? (
                       <div className="flex shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50/80 p-1">
                         <span className="flex max-h-24 max-w-32 items-center justify-center overflow-hidden">
-                          <img src={editImageUrl.trim()} alt="" className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                          <img src={editImageUrl.trim()} alt="Düzenleme önizleme görseli" className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                         </span>
                       </div>
                     ) : null}
