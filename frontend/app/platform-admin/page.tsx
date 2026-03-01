@@ -1099,12 +1099,13 @@ function AnimationsPanel() {
   );
 }
 
-type SiteLink = { url: string; label: string };
+type SiteLink = { url: string; label: string; imageUrl?: string | null };
 
 function LinksPanel({ token }: { token: string | null }) {
   const [links, setLinks] = useState<SiteLink[]>([]);
   const [newUrl, setNewUrl] = useState('');
   const [newLabel, setNewLabel] = useState('');
+  const [newImageUrl, setNewImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1112,6 +1113,7 @@ function LinksPanel({ token }: { token: string | null }) {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editUrl, setEditUrl] = useState('');
   const [editLabel, setEditLabel] = useState('');
+  const [editImageUrl, setEditImageUrl] = useState('');
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -1154,11 +1156,24 @@ function LinksPanel({ token }: { token: string | null }) {
     const url = newUrl.trim();
     const label = newLabel.trim() || url;
     if (!url) return;
-    const next = [...links, { url, label }];
+    const imageUrl = newImageUrl.trim() || null;
+    const next = [...links, { url, label, imageUrl }];
     setLinks(next);
     setNewUrl('');
     setNewLabel('');
+    setNewImageUrl('');
     saveToBackend(next);
+  };
+
+  const linkToImage = () => {
+    if (newUrl.trim()) setNewImageUrl(newUrl.trim());
+  };
+
+  const imageToLink = () => {
+    if (newImageUrl.trim()) {
+      if (!newUrl.trim()) setNewUrl(newImageUrl.trim());
+      setNewLabel(newLabel.trim() || newImageUrl.trim());
+    }
   };
 
   const handleDelete = (index: number) => {
@@ -1172,6 +1187,7 @@ function LinksPanel({ token }: { token: string | null }) {
     setEditIndex(index);
     setEditUrl(links[index].url);
     setEditLabel(links[index].label);
+    setEditImageUrl(links[index].imageUrl || '');
   };
 
   const applyEdit = () => {
@@ -1179,7 +1195,8 @@ function LinksPanel({ token }: { token: string | null }) {
     const url = editUrl.trim();
     const label = editLabel.trim() || url;
     if (!url) return;
-    const next = links.map((item, i) => (i === editIndex ? { url, label } : item));
+    const imageUrl = editImageUrl.trim() || null;
+    const next = links.map((item, i) => (i === editIndex ? { ...item, url, label, imageUrl } : item));
     setLinks(next);
     setEditIndex(null);
     saveToBackend(next);
@@ -1190,35 +1207,65 @@ function LinksPanel({ token }: { token: string | null }) {
       <div className="mb-4">
         <h2 className="text-lg font-bold text-slate-900">Linke dönüştür</h2>
         <p className="mt-1 text-sm text-slate-600">
-          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Eklediğiniz linkler sitede istediğiniz yerde (footer, metin vb.) kullanılabilir. Link ekle, düzenle veya sil; değişiklikler kaydedilir.
+          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Görsel URL ile linki görsel olarak gösterebilir (görseli linke); link alanına girilen adresi görsel URL&apos;ye kopyalayarak linki görsele dönüştürebilirsiniz.
         </p>
       </div>
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <Field label="URL">
-          <TextInput
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)}
-            placeholder="https://..."
-            className="min-w-[200px]"
-          />
-        </Field>
-        <Field label="Etiket (görünen metin)">
-          <TextInput
-            value={newLabel}
-            onChange={(e) => setNewLabel(e.target.value)}
-            placeholder="Boş bırakılırsa URL kullanılır"
-            className="min-w-[180px]"
-          />
-        </Field>
-        <button
-          type="button"
-          onClick={handleAdd}
-          disabled={!newUrl.trim() || saving}
-          className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50 hover:bg-burgundy-dark"
-        >
-          Linke dönüştür / Ekle
-        </button>
+      <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <Field label="Link URL">
+            <TextInput
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+              placeholder="https://..."
+              className="min-w-[200px]"
+            />
+          </Field>
+          <Field label="Etiket (görünen metin)">
+            <TextInput
+              value={newLabel}
+              onChange={(e) => setNewLabel(e.target.value)}
+              placeholder="Boş bırakılırsa URL kullanılır"
+              className="min-w-[180px]"
+            />
+          </Field>
+          <Field label="Görsel URL (opsiyonel)">
+            <TextInput
+              value={newImageUrl}
+              onChange={(e) => setNewImageUrl(e.target.value)}
+              placeholder="Görsel adresi — link görsel olarak gösterilir"
+              className="min-w-[200px]"
+            />
+          </Field>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handleAdd}
+            disabled={!newUrl.trim() || saving}
+            className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50 hover:bg-burgundy-dark"
+          >
+            Linke dönüştür / Ekle
+          </button>
+          <button
+            type="button"
+            onClick={linkToImage}
+            disabled={!newUrl.trim()}
+            className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            title="Link adresini Görsel URL alanına kopyalar (linki görsele dönüştür)"
+          >
+            Linki görsele dönüştür
+          </button>
+          <button
+            type="button"
+            onClick={imageToLink}
+            disabled={!newImageUrl.trim()}
+            className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            title={'Görseli linke dönüştür — görsel URL\'yi link olarak kullanır'}
+          >
+            Görseli linke dönüştür
+          </button>
+        </div>
       </div>
 
       {error ? (
@@ -1249,7 +1296,7 @@ function LinksPanel({ token }: { token: string | null }) {
                       type="url"
                       value={editUrl}
                       onChange={(e) => setEditUrl(e.target.value)}
-                      placeholder="URL"
+                      placeholder="Link URL"
                       className="flex-1 min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm"
                     />
                     <input
@@ -1259,11 +1306,24 @@ function LinksPanel({ token }: { token: string | null }) {
                       placeholder="Etiket"
                       className="flex-1 min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm"
                     />
+                    <input
+                      type="url"
+                      value={editImageUrl}
+                      onChange={(e) => setEditImageUrl(e.target.value)}
+                      placeholder="Görsel URL"
+                      className="flex-1 min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                    />
                     <button type="button" onClick={applyEdit} className="rounded-lg bg-burgundy px-3 py-2 text-sm font-medium text-white hover:bg-burgundy-dark">Kaydet</button>
                     <button type="button" onClick={() => setEditIndex(null)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">İptal</button>
                   </>
                 ) : (
                   <>
+                    {item.imageUrl ? (
+                      <a href={item.url} target="_blank" rel="noreferrer" className="shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- admin list, dynamic URL */}
+                        <img src={item.imageUrl} alt={item.label || ''} className="h-10 w-auto max-w-[120px] rounded object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                      </a>
+                    ) : null}
                     <span className="font-medium text-slate-800">{item.label || item.url}</span>
                     <a href={item.url} target="_blank" rel="noreferrer" className="text-xs text-burgundy truncate max-w-[200px] hover:underline">{item.url}</a>
                     <button type="button" onClick={() => startEdit(index)} className="text-xs font-medium text-slate-600 hover:text-burgundy">Düzenle</button>

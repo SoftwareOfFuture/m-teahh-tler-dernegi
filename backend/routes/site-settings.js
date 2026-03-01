@@ -108,6 +108,7 @@ router.put(
     body('siteLinks').optional().isArray(),
     body('siteLinks.*.url').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
     body('siteLinks.*.label').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
+    body('siteLinks.*.imageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
   ],
   validate,
   async (req, res) => {
@@ -130,6 +131,7 @@ router.put(
         payload.siteLinks = arr.map((item) => ({
           url: (item && item.url && String(item.url).trim()) || '',
           label: (item && item.label && String(item.label).trim()) || '',
+          imageUrl: (item && item.imageUrl && String(item.imageUrl).trim()) || null,
         })).filter((item) => item.url.length > 0);
       }
       if (row) {
