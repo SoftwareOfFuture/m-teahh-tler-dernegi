@@ -61,7 +61,7 @@ export function HeroSlider({ items }: Props) {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* Native img: tüm kaynaklar (API, data URL, harici) sorunsuz yüklensin; hata durumunda yedek gösterilir */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- dynamic/API URLs, fallback on error */}
         <img
           src={currentSrc}
           alt={current.title}

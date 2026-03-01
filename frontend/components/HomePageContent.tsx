@@ -247,12 +247,15 @@ export function HomePageContent() {
                   aria-label="Tanıtım filmi oynat"
                 >
                   {siteSettings.promoVideoCoverUrl ? (
-                    <img
+                    <>
+                      {/* eslint-disable-next-line @next/next/no-img-element -- external/dynamic cover URL */}
+                      <img
                       src={normalizeImageSrc(siteSettings.promoVideoCoverUrl) || siteSettings.promoVideoCoverUrl}
                       alt="Tanıtım filmi kapak"
                       className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
+                    </>
                   ) : null}
                   <div className="absolute inset-0 flex items-center justify-center bg-slate-900/40">
                     <div className="size-16 rounded-full bg-burgundy/90 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform sm:size-20">
@@ -307,7 +310,7 @@ export function HomePageContent() {
             <AnimatedSection sectionId="announcements" animationClass={sectionClass('announcements')} className="min-w-0">
               <div>
               <div className="mb-3 flex min-w-0 flex-wrap items-center justify-between gap-2 xs:mb-4 sm:mb-6">
-                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Üyelik Hakkında</h2>
+                <h2 className="min-w-0 truncate text-base font-bold text-slate-800 xs:text-lg sm:text-xl md:text-2xl">Üyelik</h2>
                 <Link href="/duyurular" className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition-all hover:bg-burgundy/10 hover:text-burgundy xs:px-4 xs:py-2.5 xs:text-sm">
                   Tümü
                 </Link>

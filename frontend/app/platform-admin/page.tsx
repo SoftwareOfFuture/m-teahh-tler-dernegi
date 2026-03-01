@@ -937,7 +937,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
         <div>
           <h2 className="text-lg font-bold text-slate-900">Sosyal Medya Hesapları</h2>
           <p className="mt-1 text-sm text-slate-600">
-            Navbar ve Footer’da gösterilen sosyal medya linklerini buradan güncelleyebilirsiniz. "Site görseli (resmi link)" alanına görsel URL'si girerek sitede kullanılacak resmi görseli tanımlayabilirsiniz; link önizlemede görsele dönüştürülür.
+            Navbar ve Footer bölümünde gösterilen sosyal medya linklerini buradan güncelleyebilirsiniz. &quot;Site görseli (resmi link)&quot; alanına görsel URL&apos;si girerek sitede kullanılacak resmi görseli tanımlayabilirsiniz; link önizlemede görsele dönüştürülür.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -1003,6 +1003,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
             {key === 'siteImageUrl' && form.siteImageUrl?.trim() ? (
               <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <p className="mb-2 text-xs font-medium text-slate-500">Önizleme — bu link site görseli olarak kullanılır:</p>
+                {/* eslint-disable-next-line @next/next/no-img-element -- admin: dynamic URL, preview only */}
                 <img
                   src={form.siteImageUrl.trim()}
                   alt="Site görseli önizleme"
