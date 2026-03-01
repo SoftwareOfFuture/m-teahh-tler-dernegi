@@ -28,6 +28,7 @@ router.get('/', async (req, res) => {
             maintenanceMode: !!row.maintenanceMode,
             maintenanceEndAt: row.maintenanceEndAt ? row.maintenanceEndAt.toISOString() : null,
             siteImageUrl: row.siteImageUrl || null,
+            siteLinks: Array.isArray(row.siteLinks) ? row.siteLinks : [],
           }
         : {
             facebookUrl: null,
@@ -40,6 +41,7 @@ router.get('/', async (req, res) => {
             maintenanceMode: false,
             maintenanceEndAt: null,
             siteImageUrl: null,
+            siteLinks: [],
           }
     );
   } catch (err) {
@@ -65,6 +67,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             maintenanceMode: !!row.maintenanceMode,
             maintenanceEndAt: row.maintenanceEndAt ? row.maintenanceEndAt.toISOString() : null,
             siteImageUrl: row.siteImageUrl || null,
+            siteLinks: Array.isArray(row.siteLinks) ? row.siteLinks : [],
           }
         : {
             id: null,
@@ -78,6 +81,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             maintenanceMode: false,
             maintenanceEndAt: null,
             siteImageUrl: null,
+            siteLinks: [],
           }
     );
   } catch (err) {
@@ -101,6 +105,9 @@ router.put(
     body('maintenanceMode').optional().isBoolean().toBoolean(),
     body('maintenanceEndAt').optional({ checkFalsy: true }).trim(),
     body('siteImageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
+    body('siteLinks').optional().isArray(),
+    body('siteLinks.*.url').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
+    body('siteLinks.*.label').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
   ],
   validate,
   async (req, res) => {
@@ -118,6 +125,13 @@ router.put(
       if (typeof req.body.maintenanceMode === 'boolean') payload.maintenanceMode = req.body.maintenanceMode;
       if (req.body.maintenanceEndAt !== undefined) payload.maintenanceEndAt = req.body.maintenanceEndAt ? new Date(req.body.maintenanceEndAt) : null;
       if (req.body.siteImageUrl !== undefined) payload.siteImageUrl = req.body.siteImageUrl?.trim() || null;
+      if (req.body.siteLinks !== undefined) {
+        const arr = Array.isArray(req.body.siteLinks) ? req.body.siteLinks : [];
+        payload.siteLinks = arr.map((item) => ({
+          url: (item && item.url && String(item.url).trim()) || '',
+          label: (item && item.label && String(item.label).trim()) || '',
+        })).filter((item) => item.url.length > 0);
+      }
       if (row) {
         await row.update(payload);
       } else {

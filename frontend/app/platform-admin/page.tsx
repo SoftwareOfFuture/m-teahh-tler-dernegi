@@ -109,6 +109,7 @@ type TabId =
   | 'smsFeedback'
   | 'social'
   | 'animations'
+  | 'links'
   | 'seo';
 
 const ADMIN_TABS_ALL: { id: TabId; label: string }[] = [
@@ -131,6 +132,7 @@ const ADMIN_TABS_ALL: { id: TabId; label: string }[] = [
   { id: 'smsFeedback', label: 'SMS Geri Bildirimleri' },
   { id: 'social', label: 'Sosyal Medya' },
   { id: 'animations', label: 'Animasyonlar' },
+  { id: 'links', label: 'Linke dönüştür' },
   { id: 'seo', label: 'SEO' },
 ];
 
@@ -435,6 +437,8 @@ export default function PlatformAdminPage() {
               <SocialMediaPanel token={token} />
             ) : tab === 'animations' ? (
               <AnimationsPanel />
+            ) : tab === 'links' ? (
+              <LinksPanel token={token} />
             ) : tab === 'seo' ? (
               <SeoPanel token={token} />
             ) : tab === 'guide' ? (
@@ -1091,6 +1095,186 @@ function AnimationsPanel() {
       <p className="mt-6 text-xs text-slate-500">
         Animasyonlar tarayıcıda (localStorage) saklanır. Farklı cihazlarda aynı ayarlar için her cihazda tekrar seçmeniz gerekir.
       </p>
+    </div>
+  );
+}
+
+type SiteLink = { url: string; label: string };
+
+function LinksPanel({ token }: { token: string | null }) {
+  const [links, setLinks] = useState<SiteLink[]>([]);
+  const [newUrl, setNewUrl] = useState('');
+  const [newLabel, setNewLabel] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [editUrl, setEditUrl] = useState('');
+  const [editLabel, setEditLabel] = useState('');
+
+  const load = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getSiteSettingsAdmin(token);
+      const list = Array.isArray((res as { siteLinks?: SiteLink[] }).siteLinks) ? (res as { siteLinks?: SiteLink[] }).siteLinks! : [];
+      setLinks(list);
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Linkler yüklenemedi.');
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const saveToBackend = useCallback(async (newLinks: SiteLink[]) => {
+    if (!token) return;
+    setSaving(true);
+    setError(null);
+    setSavedMsg(null);
+    try {
+      const current = await getSiteSettingsAdmin(token);
+      await updateSiteSettingsAdmin(token, { ...current, siteLinks: newLinks });
+      setLinks(newLinks);
+      setSavedMsg('Kaydedildi.');
+      setTimeout(() => setSavedMsg(null), 3000);
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Kaydetme başarısız.');
+    } finally {
+      setSaving(false);
+    }
+  }, [token]);
+
+  const handleAdd = () => {
+    const url = newUrl.trim();
+    const label = newLabel.trim() || url;
+    if (!url) return;
+    const next = [...links, { url, label }];
+    setLinks(next);
+    setNewUrl('');
+    setNewLabel('');
+    saveToBackend(next);
+  };
+
+  const handleDelete = (index: number) => {
+    const next = links.filter((_, i) => i !== index);
+    setLinks(next);
+    setEditIndex(null);
+    saveToBackend(next);
+  };
+
+  const startEdit = (index: number) => {
+    setEditIndex(index);
+    setEditUrl(links[index].url);
+    setEditLabel(links[index].label);
+  };
+
+  const applyEdit = () => {
+    if (editIndex == null) return;
+    const url = editUrl.trim();
+    const label = editLabel.trim() || url;
+    if (!url) return;
+    const next = links.map((item, i) => (i === editIndex ? { url, label } : item));
+    setLinks(next);
+    setEditIndex(null);
+    saveToBackend(next);
+  };
+
+  return (
+    <div>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold text-slate-900">Linke dönüştür</h2>
+        <p className="mt-1 text-sm text-slate-600">
+          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Eklediğiniz linkler sitede istediğiniz yerde (footer, metin vb.) kullanılabilir. Link ekle, düzenle veya sil; değişiklikler kaydedilir.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <Field label="URL">
+          <TextInput
+            value={newUrl}
+            onChange={(e) => setNewUrl(e.target.value)}
+            placeholder="https://..."
+            className="min-w-[200px]"
+          />
+        </Field>
+        <Field label="Etiket (görünen metin)">
+          <TextInput
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+            placeholder="Boş bırakılırsa URL kullanılır"
+            className="min-w-[180px]"
+          />
+        </Field>
+        <button
+          type="button"
+          onClick={handleAdd}
+          disabled={!newUrl.trim() || saving}
+          className="rounded-full bg-burgundy px-4 py-2 text-sm font-semibold text-white disabled:opacity-50 hover:bg-burgundy-dark"
+        >
+          Linke dönüştür / Ekle
+        </button>
+      </div>
+
+      {error ? (
+        <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div>
+      ) : null}
+      {savedMsg ? (
+        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">{savedMsg}</div>
+      ) : null}
+
+      <div className="mt-6">
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <h3 className="text-sm font-bold text-slate-700">Kayıtlı linkler</h3>
+          <button type="button" onClick={load} disabled={loading} className="text-xs font-medium text-burgundy hover:underline disabled:opacity-50">
+            Yenile
+          </button>
+        </div>
+        {loading ? (
+          <p className="text-sm text-slate-500">Yükleniyor…</p>
+        ) : links.length === 0 ? (
+          <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">Henüz link eklenmedi. Yukarıdan URL ve isteğe bağlı etiket girip &quot;Linke dönüştür / Ekle&quot; ile ekleyin.</p>
+        ) : (
+          <ul className="space-y-2">
+            {links.map((item, index) => (
+              <li key={index} className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-white p-3">
+                {editIndex === index ? (
+                  <>
+                    <input
+                      type="url"
+                      value={editUrl}
+                      onChange={(e) => setEditUrl(e.target.value)}
+                      placeholder="URL"
+                      className="flex-1 min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                    />
+                    <input
+                      type="text"
+                      value={editLabel}
+                      onChange={(e) => setEditLabel(e.target.value)}
+                      placeholder="Etiket"
+                      className="flex-1 min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                    />
+                    <button type="button" onClick={applyEdit} className="rounded-lg bg-burgundy px-3 py-2 text-sm font-medium text-white hover:bg-burgundy-dark">Kaydet</button>
+                    <button type="button" onClick={() => setEditIndex(null)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">İptal</button>
+                  </>
+                ) : (
+                  <>
+                    <span className="font-medium text-slate-800">{item.label || item.url}</span>
+                    <a href={item.url} target="_blank" rel="noreferrer" className="text-xs text-burgundy truncate max-w-[200px] hover:underline">{item.url}</a>
+                    <button type="button" onClick={() => startEdit(index)} className="text-xs font-medium text-slate-600 hover:text-burgundy">Düzenle</button>
+                    <button type="button" onClick={() => handleDelete(index)} className="text-xs font-medium text-red-600 hover:text-red-700">Sil</button>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }

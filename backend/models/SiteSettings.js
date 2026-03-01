@@ -40,6 +40,11 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(1000),
         allowNull: true,
       },
+      siteLinks: {
+        type: DataTypes.JSONB,
+        allowNull: true,
+        defaultValue: [],
+      },
     },
     {
       tableName: 'site_settings',

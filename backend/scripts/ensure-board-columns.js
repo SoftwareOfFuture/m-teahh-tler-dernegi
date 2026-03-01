@@ -75,6 +75,10 @@ async function main() {
       await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_image_url VARCHAR(1000)`);
       console.log('[ensure-board-columns] Eklendi: site_settings site_image_url');
     }
+    if (!sCols.has('site_links')) {
+      await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_links JSONB DEFAULT '[]'::jsonb`);
+      console.log('[ensure-board-columns] Eklendi: site_settings site_links');
+    }
   } catch (err) {
     console.error('[ensure-board-columns] Hata:', err.message);
   } finally {

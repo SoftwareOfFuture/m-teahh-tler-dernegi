@@ -267,6 +267,7 @@ export type SiteSettings = {
   promoVideoUrl: string | null;
   promoVideoCoverUrl: string | null;
   siteImageUrl?: string | null;
+  siteLinks?: { url: string; label: string }[];
   maintenanceMode?: boolean;
   maintenanceEndAt?: string | null;
 };
