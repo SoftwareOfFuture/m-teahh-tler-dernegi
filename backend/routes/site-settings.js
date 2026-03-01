@@ -27,6 +27,7 @@ router.get('/', async (req, res) => {
             promoVideoCoverUrl: row.promoVideoCoverUrl || null,
             maintenanceMode: !!row.maintenanceMode,
             maintenanceEndAt: row.maintenanceEndAt ? row.maintenanceEndAt.toISOString() : null,
+            siteImageUrl: row.siteImageUrl || null,
           }
         : {
             facebookUrl: null,
@@ -38,6 +39,7 @@ router.get('/', async (req, res) => {
             promoVideoCoverUrl: null,
             maintenanceMode: false,
             maintenanceEndAt: null,
+            siteImageUrl: null,
           }
     );
   } catch (err) {
@@ -62,6 +64,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             promoVideoCoverUrl: row.promoVideoCoverUrl || null,
             maintenanceMode: !!row.maintenanceMode,
             maintenanceEndAt: row.maintenanceEndAt ? row.maintenanceEndAt.toISOString() : null,
+            siteImageUrl: row.siteImageUrl || null,
           }
         : {
             id: null,
@@ -74,6 +77,7 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
             promoVideoCoverUrl: null,
             maintenanceMode: false,
             maintenanceEndAt: null,
+            siteImageUrl: null,
           }
     );
   } catch (err) {
@@ -96,6 +100,7 @@ router.put(
     body('promoVideoCoverUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
     body('maintenanceMode').optional().isBoolean().toBoolean(),
     body('maintenanceEndAt').optional({ checkFalsy: true }).trim(),
+    body('siteImageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 1000 }),
   ],
   validate,
   async (req, res) => {
@@ -112,6 +117,7 @@ router.put(
       };
       if (typeof req.body.maintenanceMode === 'boolean') payload.maintenanceMode = req.body.maintenanceMode;
       if (req.body.maintenanceEndAt !== undefined) payload.maintenanceEndAt = req.body.maintenanceEndAt ? new Date(req.body.maintenanceEndAt) : null;
+      if (req.body.siteImageUrl !== undefined) payload.siteImageUrl = req.body.siteImageUrl?.trim() || null;
       if (row) {
         await row.update(payload);
       } else {

@@ -877,7 +877,7 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
   );
 }
 
-const SOCIAL_KEYS = ['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl', 'promoVideoCoverUrl'] as const;
+const SOCIAL_KEYS = ['facebookUrl', 'instagramUrl', 'twitterUrl', 'youtubeUrl', 'linkedinUrl', 'promoVideoUrl', 'promoVideoCoverUrl', 'siteImageUrl'] as const;
 const SOCIAL_LABELS: Record<(typeof SOCIAL_KEYS)[number], string> = {
   facebookUrl: 'Facebook',
   instagramUrl: 'Instagram',
@@ -886,10 +886,11 @@ const SOCIAL_LABELS: Record<(typeof SOCIAL_KEYS)[number], string> = {
   linkedinUrl: 'LinkedIn',
   promoVideoUrl: 'Tanıtım Filmi (YouTube/Vimeo URL)',
   promoVideoCoverUrl: 'Tanıtım Filmi Kapak Görseli URL',
+  siteImageUrl: 'Site görseli (resmi link) — linki görsel olarak kullanır',
 };
 
 function SocialMediaPanel({ token }: { token: string | null }) {
-  const [form, setForm] = useState<SiteSettings>({
+  const [form, setForm] = useState<SiteSettings & { siteImageUrl?: string | null }>({
     facebookUrl: null,
     instagramUrl: null,
     twitterUrl: null,
@@ -897,6 +898,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
     promoVideoUrl: null,
     promoVideoCoverUrl: null,
     linkedinUrl: null,
+    siteImageUrl: null,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -916,6 +918,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
             linkedinUrl: res.linkedinUrl ?? null,
             promoVideoUrl: res.promoVideoUrl ?? null,
             promoVideoCoverUrl: res.promoVideoCoverUrl ?? null,
+            siteImageUrl: (res as { siteImageUrl?: string | null }).siteImageUrl ?? null,
           });
     } catch (e: unknown) {
       setError((e as Error)?.message ?? 'Ayarlar yüklenemedi.');
@@ -934,7 +937,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
         <div>
           <h2 className="text-lg font-bold text-slate-900">Sosyal Medya Hesapları</h2>
           <p className="mt-1 text-sm text-slate-600">
-            Navbar ve Footer’da gösterilen sosyal medya linklerini buradan güncelleyebilirsiniz. Boş bırakılan hesaplar gösterilmez.
+            Navbar ve Footer’da gösterilen sosyal medya linklerini buradan güncelleyebilirsiniz. "Site görseli (resmi link)" alanına görsel URL'si girerek sitede kullanılacak resmi görseli tanımlayabilirsiniz; link önizlemede görsele dönüştürülür.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -962,6 +965,7 @@ function SocialMediaPanel({ token }: { token: string | null }) {
                   linkedinUrl: form.linkedinUrl?.trim() || null,
                   promoVideoUrl: form.promoVideoUrl?.trim() || null,
                   promoVideoCoverUrl: form.promoVideoCoverUrl?.trim() || null,
+                  siteImageUrl: form.siteImageUrl?.trim() || null,
                 });
                 setSavedMsg('Kaydedildi.');
                 setTimeout(() => setSavedMsg(null), 3000);
@@ -996,6 +1000,17 @@ function SocialMediaPanel({ token }: { token: string | null }) {
               onChange={(e) => setForm((s) => ({ ...s, [key]: e.target.value || null }))}
               placeholder={`https://...`}
             />
+            {key === 'siteImageUrl' && form.siteImageUrl?.trim() ? (
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <p className="mb-2 text-xs font-medium text-slate-500">Önizleme — bu link site görseli olarak kullanılır:</p>
+                <img
+                  src={form.siteImageUrl.trim()}
+                  alt="Site görseli önizleme"
+                  className="max-h-40 w-auto max-w-full rounded-lg object-contain"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+              </div>
+            ) : null}
           </Field>
         ))}
       </div>

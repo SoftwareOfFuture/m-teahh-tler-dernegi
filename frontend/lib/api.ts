@@ -266,6 +266,7 @@ export type SiteSettings = {
   linkedinUrl: string | null;
   promoVideoUrl: string | null;
   promoVideoCoverUrl: string | null;
+  siteImageUrl?: string | null;
   maintenanceMode?: boolean;
   maintenanceEndAt?: string | null;
 };

@@ -71,6 +71,10 @@ async function main() {
       await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS maintenance_end_at TIMESTAMP WITH TIME ZONE`);
       console.log('[ensure-board-columns] Eklendi: site_settings maintenance_end_at');
     }
+    if (!sCols.has('site_image_url')) {
+      await sequelize.query(`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS site_image_url VARCHAR(1000)`);
+      console.log('[ensure-board-columns] Eklendi: site_settings site_image_url');
+    }
   } catch (err) {
     console.error('[ensure-board-columns] Hata:', err.message);
   } finally {

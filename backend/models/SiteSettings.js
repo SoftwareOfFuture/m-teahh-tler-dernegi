@@ -36,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: true,
       },
+      siteImageUrl: {
+        type: DataTypes.STRING(1000),
+        allowNull: true,
+      },
     },
     {
       tableName: 'site_settings',
