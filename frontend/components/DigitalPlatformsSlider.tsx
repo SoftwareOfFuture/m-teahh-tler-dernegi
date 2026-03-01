@@ -250,6 +250,7 @@ export function DigitalPlatformsSlider({
   useEffect(() => {
     if (!list.length) return;
     if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      setVisibleIndices(new Set(list.map((_, idx) => idx)));
       return;
     }
     const observer = new IntersectionObserver(

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { register, setToken, uploadMyDocument } from '../../lib/api';
@@ -118,6 +118,25 @@ export default function RegisterPage() {
     return password !== password2;
   }, [password, password2]);
 
+  const checkLegalReachedEnd = (el: HTMLDivElement | null) => {
+    if (!el) return false;
+    const atEnd = el.scrollHeight <= el.clientHeight || el.scrollTop + el.clientHeight >= el.scrollHeight - 16;
+    setLegalScrolledEnd(atEnd);
+    return atEnd;
+  };
+
+  useEffect(() => {
+    if (!legalOpen) return;
+    setLegalScrolledEnd(false);
+    const raf = window.requestAnimationFrame(() => {
+      const el = legalScrollRef.current;
+      if (!el) return;
+      el.scrollTop = 0;
+      checkLegalReachedEnd(el);
+    });
+    return () => window.cancelAnimationFrame(raf);
+  }, [legalOpen]);
+
   return (
     <PageLayoutWithFooter>
       <PageHero title="Üye Kayıt" subtitle="ANTMUTDER üyeliği için başvurunuzu oluşturun. Derneğimizin kapısı sektör mensuplarına açıktır." />
@@ -170,8 +189,8 @@ export default function RegisterPage() {
                   websiteUrl: websiteUrl.trim() ? websiteUrl.trim() : undefined,
                   phoneCountryCode,
                   phoneNumber: pn,
-                  kvkkAccepted: true,
-                  termsAccepted: true,
+                  kvkkAccepted,
+                  termsAccepted,
                 });
                 setToken(res.token);
                 for (const kind of requiredKinds) {
@@ -338,11 +357,7 @@ export default function RegisterPage() {
                     type="button"
                     className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                     onClick={() => {
-                      setLegalScrolledEnd(false);
                       setLegalOpen('kvkk');
-                      setTimeout(() => {
-                        if (legalScrollRef.current) legalScrollRef.current.scrollTop = 0;
-                      }, 0);
                     }}
                   >
                     KVKK Metnini Oku
@@ -363,11 +378,7 @@ export default function RegisterPage() {
                     type="button"
                     className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                     onClick={() => {
-                      setLegalScrolledEnd(false);
                       setLegalOpen('terms');
-                      setTimeout(() => {
-                        if (legalScrollRef.current) legalScrollRef.current.scrollTop = 0;
-                      }, 0);
                     }}
                   >
                     Kullanım ve Üyelik Şartlarını Oku
@@ -452,9 +463,7 @@ export default function RegisterPage() {
               ref={legalScrollRef}
               className="legal-scroll-area flex-1 min-h-0 overflow-y-scroll overflow-x-hidden px-6 py-4 scroll-smooth touch-scroll"
               onScroll={(e) => {
-                const el = e.currentTarget;
-                const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 16;
-                if (atEnd) setLegalScrolledEnd(true);
+                checkLegalReachedEnd(e.currentTarget);
               }}
             >
               <pre className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800 pb-6">{legalText(legalOpen)}</pre>

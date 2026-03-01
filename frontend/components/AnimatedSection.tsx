@@ -20,18 +20,39 @@ export function AnimatedSection({ sectionId, animationClass, children, className
       setHasAnimated(true);
       return;
     }
+    if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
+      setHasAnimated(true);
+      return;
+    }
+    if (typeof IntersectionObserver === 'undefined') {
+      setHasAnimated(true);
+      return;
+    }
+    let revealed = false;
+    const reveal = () => {
+      if (!revealed) {
+        revealed = true;
+        setHasAnimated(true);
+      }
+    };
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setHasAnimated(true);
+            reveal();
           }
         });
       },
       { rootMargin: '0px 0px -80px 0px', threshold: 0.1 }
     );
+    const fallbackTimer = window.setTimeout(() => {
+      reveal();
+    }, 1200);
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      window.clearTimeout(fallbackTimer);
+      observer.disconnect();
+    };
   }, [animationClass]);
 
   const showAnimation = hasAnimated && animationClass;

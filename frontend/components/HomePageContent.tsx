@@ -218,7 +218,7 @@ export function HomePageContent() {
     getAnimationClass(sectionAnimations[id] ?? DEFAULT_SECTION_ANIM);
 
   return (
-    <div className="flex h-screen w-full min-w-0 max-w-full flex-col overflow-x-hidden overflow-y-auto bg-white">
+    <div className="flex min-h-screen w-full min-w-0 max-w-full flex-col overflow-x-hidden bg-white">
       <Navbar />
       <main className="w-full min-w-0 max-w-full overflow-x-hidden pt-4 pb-16 sm:pt-6 sm:pb-20 safe-area-x safe-area-b">
         {slidesLoading ? (
