@@ -28,13 +28,23 @@ router.get('/', async (req, res) => {
     return res.status(400).json({ error: 'Sadece http/https desteklenir' });
   }
   try {
+    const origin = parsed.origin || (parsed.protocol + '//' + parsed.host);
     const resp = await fetch(url, {
       method: 'GET',
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; AntmutderImageProxy/1)' },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'Accept-Language': 'tr-TR,tr;q=0.9,en;q=0.8',
+        'Referer': origin + '/',
+      },
       redirect: 'follow',
     });
     if (!resp.ok) {
-      return res.status(resp.status).send(resp.status === 404 ? 'Not found' : 'Upstream error');
+      if (resp.status === 403 || resp.status === 429) {
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        return res.status(502).send('Gorsel sunucusu erisim engelliyor.');
+      }
+      return res.status(resp.status >= 500 ? 502 : resp.status).send(resp.status === 404 ? 'Not found' : 'Upstream error');
     }
     const contentType = resp.headers.get('content-type');
     if (!isImageMime(contentType)) {
