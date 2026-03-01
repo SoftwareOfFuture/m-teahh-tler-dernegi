@@ -1,10 +1,19 @@
+const CLOUDINARY_HOST = 'res.cloudinary.com';
+
 export function normalizeImageSrc(src: string | null | undefined): string {
   const s = String(src ?? '').trim();
   if (!s) return '';
   if (typeof window !== 'undefined' && s.startsWith('/') && !s.startsWith('//')) {
     return window.location.origin + s;
   }
-  if (s.startsWith('data:') || s.startsWith('http://') || s.startsWith('https://') || s.startsWith('/')) return s;
+  if (s.startsWith('data:')) return s;
+  if (s.startsWith('http://') || s.startsWith('https://')) {
+    if (typeof window !== 'undefined' && !s.includes(CLOUDINARY_HOST)) {
+      return '/api/proxy-image?url=' + encodeURIComponent(s);
+    }
+    return s;
+  }
+  if (s.startsWith('/')) return s;
   const looksBase64 = s.length >= 128 && /^[A-Za-z0-9+/]+=*$/.test(s);
   if (!looksBase64) return s;
   const mime =

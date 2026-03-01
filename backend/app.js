@@ -21,6 +21,7 @@ const propertiesRoutes = require('./routes/properties');
 const boardMembersRoutes = require('./routes/board-members');
 const boardRolesRoutes = require('./routes/board-roles');
 const uploadRoutes = require('./routes/upload');
+const proxyImageRoutes = require('./routes/proxy-image');
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use('/api/sms-feedback', smsFeedbackRoutes);
 app.use('/api/contact-messages', contactMessagesRoutes);
 app.use('/api/site-settings', siteSettingsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/proxy-image', proxyImageRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 

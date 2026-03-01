@@ -7,11 +7,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**',
-      },
+      { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'res.cloudinary.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'resimlink.com', pathname: '/**' },
+      { protocol: 'http', hostname: 'resimlink.com', pathname: '/**' },
     ],
   },
 };
