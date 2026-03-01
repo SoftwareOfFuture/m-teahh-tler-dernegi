@@ -1008,13 +1008,15 @@ function SocialMediaPanel({ token }: { token: string | null }) {
             {key === 'siteImageUrl' && form.siteImageUrl?.trim() ? (
               <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
                 <p className="mb-2 text-xs font-medium text-slate-500">Önizleme — bu link site görseli olarak kullanılır:</p>
-                {/* eslint-disable-next-line @next/next/no-img-element -- admin: dynamic URL, preview only */}
-                <img
-                  src={form.siteImageUrl.trim()}
-                  alt="Site görseli önizleme"
-                  className="max-h-40 w-auto max-w-full rounded-lg object-contain"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                />
+                <div className="flex min-h-[120px] items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white/80">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- admin: dynamic URL, preview only */}
+                  <img
+                    src={form.siteImageUrl.trim()}
+                    alt="Site görseli önizleme"
+                    className="max-h-40 max-w-full object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                </div>
               </div>
             ) : null}
           </Field>
@@ -1239,6 +1241,14 @@ function LinksPanel({ token }: { token: string | null }) {
               placeholder="Görsel adresi veya aşağıdan Cloudinary ile yükleyin"
               className="min-w-[200px]"
             />
+            {newImageUrl.trim() ? (
+              <div className="mt-2 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50/80 p-2">
+                <span className="flex h-20 w-28 items-center justify-center overflow-hidden sm:h-24 sm:w-36">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- admin preview, dynamic URL */}
+                  <img src={newImageUrl.trim()} alt="Önizleme" className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                </span>
+              </div>
+            ) : null}
           </Field>
           <Field label="Yerelden görsel yükle (canlı link)">
             <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50">
@@ -1351,15 +1361,26 @@ function LinksPanel({ token }: { token: string | null }) {
                       placeholder="Görsel URL"
                       className="flex-1 min-w-0 rounded-lg border border-slate-200 px-3 py-2 text-sm"
                     />
+                    {editImageUrl.trim() ? (
+                      <div className="flex shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50/80 p-1">
+                        <span className="flex h-14 w-20 items-center justify-center overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element -- admin edit preview */}
+                          <img src={editImageUrl.trim()} alt="" className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        </span>
+                      </div>
+                    ) : null}
                     <button type="button" onClick={applyEdit} className="rounded-lg bg-burgundy px-3 py-2 text-sm font-medium text-white hover:bg-burgundy-dark">Kaydet</button>
                     <button type="button" onClick={() => setEditIndex(null)} className="rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">İptal</button>
                   </>
                 ) : (
                   <>
                     {item.imageUrl ? (
-                      <a href={item.url} target="_blank" rel="noreferrer" className="shrink-0">
-                        {/* eslint-disable-next-line @next/next/no-img-element -- admin list, dynamic URL */}
-                        <img src={item.imageUrl} alt={item.label || ''} className="h-14 w-auto max-w-[200px] rounded object-contain bg-white/50" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                      <a href={item.url} target="_blank" rel="noreferrer" className="flex shrink-0 items-center justify-center rounded border border-slate-200 bg-slate-50/80">
+                        {/* Sabit çerçeve: görsel oranı bozulmadan tam gösterilir */}
+                        <span className="flex h-16 w-24 items-center justify-center overflow-hidden p-1 sm:h-20 sm:w-32">
+                          {/* eslint-disable-next-line @next/next/no-img-element -- admin list, dynamic URL */}
+                          <img src={item.imageUrl} alt={item.label || ''} className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        </span>
                       </a>
                     ) : null}
                     <span className="font-medium text-slate-800">{item.label || item.url}</span>
