@@ -57,4 +57,26 @@ router.get(
   }
 );
 
+router.delete(
+  '/admin/bulk',
+  auth,
+  platformAdminOnly,
+  async (req, res) => {
+    try {
+      const body = req.body && typeof req.body === 'object' ? req.body : {};
+      const deleteAll = body.deleteAll === true;
+      const ids = Array.isArray(body.ids) ? body.ids.filter((id) => Number.isInteger(Number(id))) : [];
+      if (deleteAll) {
+        const deleted = await db.ContactMessage.destroy({ where: {} });
+        return res.json({ success: true, deleted });
+      }
+      if (ids.length === 0) return res.status(400).json({ error: 'ids veya deleteAll gerekli.' });
+      const deleted = await db.ContactMessage.destroy({ where: { id: ids } });
+      res.json({ success: true, deleted });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
+);
+
 module.exports = router;

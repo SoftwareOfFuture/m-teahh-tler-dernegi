@@ -32,6 +32,8 @@ import {
   listNewsAdminAll,
   listPartnersAdminAll,
   listPropertiesAdminAll,
+  deleteContactMessagesAdminBulk,
+  deleteSmsFeedbackAdminBulk,
   listContactMessagesAdminAll,
   listSmsFeedbackAdminAll,
   listPublicationsAdminAll,
@@ -672,6 +674,8 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -681,6 +685,7 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
       const res = await listContactMessagesAdminAll(token, { page, limit: 50 });
       setItems(res.items || []);
       setTotalPages(res.totalPages || 1);
+      setSelectedIds(new Set());
     } catch (e: unknown) {
       setError((e as Error)?.message ?? 'Mesajlar yüklenemedi.');
     } finally {
@@ -691,6 +696,51 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
   useEffect(() => {
     load();
   }, [load]);
+
+  const pageIds = useMemo(() => items.map((m) => m.id), [items]);
+  const allOnPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.has(id));
+  const toggleAllOnPage = () => {
+    if (allOnPageSelected) setSelectedIds((s) => new Set([...s].filter((id) => !pageIds.includes(id))));
+    else setSelectedIds((s) => new Set([...s, ...pageIds]));
+  };
+  const toggleOne = (id: number) => {
+    setSelectedIds((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const clearSelected = async () => {
+    if (!token || selectedIds.size === 0) return;
+    if (!window.confirm(`Seçilen ${selectedIds.size} mesajı silmek istediğinize emin misiniz?`)) return;
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteContactMessagesAdminBulk(token, { ids: [...selectedIds] });
+      setSelectedIds(new Set());
+      await load();
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Silme başarısız.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+  const clearAll = async () => {
+    if (!token) return;
+    if (!window.confirm('Tüm iletişim mesajlarını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) return;
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteContactMessagesAdminBulk(token, { deleteAll: true });
+      setSelectedIds(new Set());
+      await load();
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Silme başarısız.');
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div>
@@ -723,20 +773,56 @@ function ContactMessagesPanel({ token }: { token: string | null }) {
         </div>
       ) : (
         <>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleAllOnPage}
+              className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {allOnPageSelected ? 'Seçimi kaldır' : 'Seç hepsini'}
+            </button>
+            <button
+              type="button"
+              onClick={clearSelected}
+              disabled={selectedIds.size === 0 || deleting}
+              className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
+            >
+              Seçilenleri temizle {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}
+            </button>
+            <button
+              type="button"
+              onClick={clearAll}
+              disabled={deleting}
+              className="rounded-full border border-red-300 bg-red-100 px-4 py-2 text-sm font-semibold text-red-800 hover:bg-red-200 disabled:opacity-50"
+            >
+              Hepsini temizle
+            </button>
+          </div>
           <div className="mt-6 space-y-4">
             {items.map((m) => (
               <div
                 key={m.id}
-                className="rounded-2xl border border-black/5 bg-white p-5 shadow-soft"
+                className="flex gap-3 rounded-2xl border border-black/5 bg-white p-5 shadow-soft"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div className="font-semibold text-slate-900">{m.name}</div>
-                  <div className="text-xs text-slate-500">{formatDate(m.createdAt)}</div>
+                <label className="flex shrink-0 items-start pt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(m.id)}
+                    onChange={() => toggleOne(m.id)}
+                    className="h-4 w-4 rounded border-slate-300"
+                    aria-label="Mesajı seç"
+                  />
+                </label>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="font-semibold text-slate-900">{m.name}</div>
+                    <div className="text-xs text-slate-500">{formatDate(m.createdAt)}</div>
+                  </div>
+                  <a href={`mailto:${m.email}`} className="mt-1 text-sm text-burgundy hover:underline">
+                    {m.email}
+                  </a>
+                  <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">{m.message}</p>
                 </div>
-                <a href={`mailto:${m.email}`} className="mt-1 text-sm text-burgundy hover:underline">
-                  {m.email}
-                </a>
-                <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">{m.message}</p>
               </div>
             ))}
           </div>
@@ -776,6 +862,8 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -785,6 +873,7 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
       const res = await listSmsFeedbackAdminAll(token, { page, limit: 50 });
       setItems(res.items || []);
       setTotalPages(res.totalPages || 1);
+      setSelectedIds(new Set());
     } catch (e: unknown) {
       setError((e as Error)?.message ?? 'SMS geri bildirimleri yüklenemedi.');
     } finally {
@@ -795,6 +884,51 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
   useEffect(() => {
     load();
   }, [load]);
+
+  const pageIds = useMemo(() => items.map((m) => m.id), [items]);
+  const allOnPageSelected = pageIds.length > 0 && pageIds.every((id) => selectedIds.has(id));
+  const toggleAllOnPage = () => {
+    if (allOnPageSelected) setSelectedIds((s) => new Set([...s].filter((id) => !pageIds.includes(id))));
+    else setSelectedIds((s) => new Set([...s, ...pageIds]));
+  };
+  const toggleOne = (id: number) => {
+    setSelectedIds((s) => {
+      const next = new Set(s);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const clearSelected = async () => {
+    if (!token || selectedIds.size === 0) return;
+    if (!window.confirm(`Seçilen ${selectedIds.size} kaydı silmek istediğinize emin misiniz?`)) return;
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteSmsFeedbackAdminBulk(token, { ids: [...selectedIds] });
+      setSelectedIds(new Set());
+      await load();
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Silme başarısız.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+  const clearAll = async () => {
+    if (!token) return;
+    if (!window.confirm('Tüm SMS geri bildirimlerini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.')) return;
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteSmsFeedbackAdminBulk(token, { deleteAll: true });
+      setSelectedIds(new Set());
+      await load();
+    } catch (e: unknown) {
+      setError((e as Error)?.message ?? 'Silme başarısız.');
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div>
@@ -827,25 +961,61 @@ function SmsFeedbackPanel({ token }: { token: string | null }) {
         </div>
       ) : (
         <>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleAllOnPage}
+              className="rounded-full border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              {allOnPageSelected ? 'Seçimi kaldır' : 'Seç hepsini'}
+            </button>
+            <button
+              type="button"
+              onClick={clearSelected}
+              disabled={selectedIds.size === 0 || deleting}
+              className="rounded-full border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-50"
+            >
+              Seçilenleri temizle {selectedIds.size > 0 ? `(${selectedIds.size})` : ''}
+            </button>
+            <button
+              type="button"
+              onClick={clearAll}
+              disabled={deleting}
+              className="rounded-full border border-red-300 bg-red-100 px-4 py-2 text-sm font-semibold text-red-800 hover:bg-red-200 disabled:opacity-50"
+            >
+              Hepsini temizle
+            </button>
+          </div>
           <div className="mt-6 space-y-4">
             {items.map((m) => (
               <div
                 key={m.id}
-                className="rounded-2xl border border-black/5 bg-white p-5 shadow-soft"
+                className="flex gap-3 rounded-2xl border border-black/5 bg-white p-5 shadow-soft"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <a href={`tel:${m.phoneE164}`} className="font-semibold text-slate-900 hover:text-burgundy">
-                    {m.phoneE164}
-                  </a>
-                  <div className="text-xs text-slate-500">{formatDate(m.createdAt)}</div>
+                <label className="flex shrink-0 items-start pt-0.5">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.has(m.id)}
+                    onChange={() => toggleOne(m.id)}
+                    className="h-4 w-4 rounded border-slate-300"
+                    aria-label="Kaydı seç"
+                  />
+                </label>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <a href={`tel:${m.phoneE164}`} className="font-semibold text-slate-900 hover:text-burgundy">
+                      {m.phoneE164}
+                    </a>
+                    <div className="text-xs text-slate-500">{formatDate(m.createdAt)}</div>
+                  </div>
+                  {m.name ? <p className="mt-1 text-sm text-slate-700">{m.name}</p> : null}
+                  {m.email ? (
+                    <a href={`mailto:${m.email}`} className="mt-1 block text-sm text-burgundy hover:underline">
+                      {m.email}
+                    </a>
+                  ) : null}
+                  <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">{m.message}</p>
                 </div>
-                {m.name ? <p className="mt-1 text-sm text-slate-700">{m.name}</p> : null}
-                {m.email ? (
-                  <a href={`mailto:${m.email}`} className="mt-1 block text-sm text-burgundy hover:underline">
-                    {m.email}
-                  </a>
-                ) : null}
-                <p className="mt-3 whitespace-pre-wrap text-sm text-slate-700">{m.message}</p>
               </div>
             ))}
           </div>

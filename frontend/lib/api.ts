@@ -344,6 +344,17 @@ export async function listContactMessagesAdminAll(
   );
 }
 
+export async function deleteContactMessagesAdminBulk(
+  token: string,
+  payload: { ids?: number[]; deleteAll?: boolean }
+) {
+  return await apiFetch<{ success: true; deleted: number }>('/api/contact-messages/admin/bulk', {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+}
+
 export type SmsFeedback = {
   id: number;
   phoneE164: string;
@@ -367,6 +378,17 @@ export async function listSmsFeedbackAdminAll(
     url,
     { method: 'GET', headers: { Authorization: `Bearer ${token}` } }
   );
+}
+
+export async function deleteSmsFeedbackAdminBulk(
+  token: string,
+  payload: { ids?: number[]; deleteAll?: boolean }
+) {
+  return await apiFetch<{ success: true; deleted: number }>('/api/sms-feedback/admin/bulk', {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
 }
 
 export async function createSmsFeedback(payload: {
