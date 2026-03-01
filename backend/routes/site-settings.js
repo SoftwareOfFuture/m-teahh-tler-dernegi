@@ -108,7 +108,7 @@ router.put(
     body('siteLinks').optional().isArray(),
     body('siteLinks.*.url').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
     body('siteLinks.*.label').optional({ checkFalsy: true }).trim().isLength({ max: 500 }),
-    body('siteLinks.*.imageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 2000 }),
+    body('siteLinks.*.imageUrl').optional({ checkFalsy: true }).trim().isLength({ max: 500000 }),
   ],
   validate,
   async (req, res) => {

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { PageHero } from '../../components/PageHero';
 import { PageLayoutWithFooter } from '../../components/PageLayout';
 import { ImageUrlInput } from '../../components/ImageUrlInput';
+import { isCloudinaryConfigured, uploadImageToCloudinary } from '../../lib/cloudinary';
 import {
   approveMember,
   setMemberPassword,
@@ -1114,6 +1115,8 @@ function LinksPanel({ token }: { token: string | null }) {
   const [editUrl, setEditUrl] = useState('');
   const [editLabel, setEditLabel] = useState('');
   const [editImageUrl, setEditImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -1207,7 +1210,7 @@ function LinksPanel({ token }: { token: string | null }) {
       <div className="mb-4">
         <h2 className="text-lg font-bold text-slate-900">Linke dönüştür</h2>
         <p className="mt-1 text-sm text-slate-600">
-          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Görseli &quot;Yerelden görsel yükle&quot; ile bilgisayarınızdan seçebilir veya görsel URL yapıştırabilirsiniz; linki görsele / görseli linke dönüştür butonları ile hızlı düzenleyebilirsiniz.
+          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Görseli &quot;Yerelden görsel yükle&quot; ile Cloudinary’e yükleyerek canlı link (örn. https://res.cloudinary.com/.../image/upload/.../xxx.jpg) alabilir veya doğrudan görsel URL yapıştırabilirsiniz; linki görsele / görseli linke dönüştür butonları ile hızlı düzenleyebilirsiniz.
         </p>
       </div>
 
@@ -1231,35 +1234,48 @@ function LinksPanel({ token }: { token: string | null }) {
           </Field>
           <Field label="Görsel URL (opsiyonel)">
             <TextInput
-              value={newImageUrl.startsWith('data:') ? '(yerel görsel yüklendi)' : newImageUrl}
-              onChange={(e) => !newImageUrl.startsWith('data:') && setNewImageUrl(e.target.value)}
-              placeholder="Görsel adresi veya yerelden yükleyin"
+              value={newImageUrl}
+              onChange={(e) => setNewImageUrl(e.target.value)}
+              placeholder="Görsel adresi veya aşağıdan Cloudinary ile yükleyin"
               className="min-w-[200px]"
             />
           </Field>
-          <Field label="Yerelden görsel yükle">
-            <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file || !file.type.startsWith('image/')) return;
-                  const reader = new FileReader();
-                  reader.onload = () => {
-                    const dataUrl = reader.result;
-                    if (typeof dataUrl === 'string') setNewImageUrl(dataUrl);
-                  };
-                  reader.readAsDataURL(file);
-                }}
-              />
-              <svg className="size-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-              Görsel seç
-            </label>
-            {newImageUrl.startsWith('data:') ? (
-              <button type="button" onClick={() => setNewImageUrl('')} className="mt-1 text-xs text-red-600 hover:underline">Yüklü görseli kaldır</button>
-            ) : null}
+          <Field label="Yerelden görsel yükle (canlı link)">
+            {isCloudinaryConfigured() ? (
+              <>
+                <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:pointer-events-none disabled:opacity-50">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploadingImage}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = '';
+                      if (!file || !file.type.startsWith('image/')) return;
+                      setUploadError(null);
+                      setUploadingImage(true);
+                      try {
+                        const url = await uploadImageToCloudinary(file);
+                        setNewImageUrl(url);
+                      } catch (err) {
+                        setUploadError((err as Error)?.message ?? 'Yükleme başarısız.');
+                      } finally {
+                        setUploadingImage(false);
+                      }
+                    }}
+                  />
+                  <svg className="size-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                  {uploadingImage ? 'Yükleniyor…' : 'Görsel seç (Cloudinary)'}
+                </label>
+                {uploadError ? <p className="mt-1 text-xs text-red-600">{uploadError}</p> : null}
+                {newImageUrl ? <button type="button" onClick={() => setNewImageUrl('')} className="mt-1 text-xs text-red-600 hover:underline">Görsel URL’yi temizle</button> : null}
+              </>
+            ) : (
+              <p className="text-sm text-amber-700">
+                Canlı görsel linki için Cloudinary ayarlayın: <code className="rounded bg-slate-100 px-1">NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME</code> ve <code className="rounded bg-slate-100 px-1">NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> (.env). Upload preset’i Dashboard’da Unsigned olarak oluşturun.
+              </p>
+            )}
           </Field>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -1623,7 +1639,7 @@ function UsageGuidePanel() {
       <section className="rounded-xl border border-slate-200 bg-white p-4">
         <h3 className="font-bold text-slate-800">Linke dönüştür</h3>
         <p className="mt-1 text-sm text-slate-600">
-          Site genelinde kullanılabilecek linkler ekleyin. <strong>Link URL</strong> (tıklanınca gidilecek adres) ve <strong>Etiket</strong> (görünen metin) zorunludur. <strong>Görsel URL</strong> opsiyoneldir: girerseniz link, sitede bu görselle gösterilir (görsel tıklanınca Link URLye gider). <strong>Yerelden görsel yükle</strong> ile bilgisayarınızdan bir resim seçebilirsiniz; seçilen dosya otomatik olarak görsel olarak kaydedilir (base64). <strong>Linki görsele dönüştür</strong> butonu, Link URL alanındaki adresi Görsel URL alanına kopyalar (link bir görsel adresiyse kullanışlıdır). <strong>Görseli linke dönüştür</strong> butonu, Görsel URLyi link olarak kullanır. Eklenen linkleri listeden düzenleyebilir veya silebilirsiniz; her işlemde ayarlar otomatik kaydedilir. Bu linkler API üzerinden <strong>siteLinks</strong> olarak okunup footer veya başka alanlarda kullanılabilir.
+          Site genelinde kullanılabilecek linkler ekleyin. <strong>Link URL</strong> (tıklanınca gidilecek adres) ve <strong>Etiket</strong> (görünen metin) zorunludur. <strong>Görsel URL</strong> opsiyoneldir: girerseniz link, sitede bu görselle gösterilir (görsel tıklanınca Link URLye gider). <strong>Yerelden görsel yükle</strong> ile bilgisayarınızdan bir resim seçebilirsiniz; Cloudinary ayarlıysa dosya Cloudinary’e yüklenir ve canlı görsel linki (örn. https://res.cloudinary.com/.../xxx.jpg) Görsel URL alanına yazılır. Cloudinary için <code>NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME</code> ve <code>NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET</code> ortam değişkenlerini tanımlayın (Upload preset: Unsigned). <strong>Linki görsele dönüştür</strong> butonu, Link URL alanındaki adresi Görsel URL alanına kopyalar (link bir görsel adresiyse kullanışlıdır). <strong>Görseli linke dönüştür</strong> butonu, Görsel URLyi link olarak kullanır. Eklenen linkleri listeden düzenleyebilir veya silebilirsiniz; her işlemde ayarlar otomatik kaydedilir. Bu linkler API üzerinden <strong>siteLinks</strong> olarak okunup footer veya başka alanlarda kullanılabilir.
         </p>
       </section>
 
