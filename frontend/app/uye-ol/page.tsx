@@ -10,7 +10,7 @@ import { register, setToken, uploadMyDocument } from '../../lib/api';
 type DocKey = 'contractor_license' | 'tax_certificate' | 'trade_registry';
 
 function acceptHint() {
-  return 'application/pdf,image/png,image/jpeg';
+  return '.pdf,application/pdf';
 }
 
 function kindLabel(kind: DocKey) {
@@ -172,6 +172,17 @@ export default function RegisterPage() {
               }
 
               const requiredKinds: DocKey[] = ['contractor_license', 'tax_certificate', 'trade_registry'];
+              const invalidFormat = requiredKinds.filter((k) => {
+                const file = docs[k];
+                if (!file) return false;
+                const nameOk = file.name.toLowerCase().endsWith('.pdf');
+                const mimeOk = file.type === 'application/pdf' || file.type === '';
+                return !(nameOk && mimeOk);
+              });
+              if (invalidFormat.length) {
+                setError('Yüklenen belgelerin tamamı yalnızca PDF (.pdf) olmalıdır.');
+                return;
+              }
               const missing = requiredKinds.filter((k) => !docs[k]);
               if (missing.length) {
                 setError('Lütfen zorunlu belgeleri yükleyin.');
@@ -318,8 +329,8 @@ export default function RegisterPage() {
 
             <div className="rounded-3xl border border-black/5 bg-soft-gray p-4">
               <h3 className="text-sm font-bold text-slate-900">Belge Yükleme</h3>
-              <p className="mt-1 text-xs text-slate-600">
-                Başvurunuzun onaylanabilmesi için belgeler zorunludur. PDF/JPG/PNG kabul edilir.
+              <p className="mt-1 text-xs font-semibold text-red-600">
+                Başvurunuzun onaylanabilmesi için belgeler zorunludur. Yalnızca PDF (.pdf) dosyası yükleyebilirsiniz.
               </p>
 
               <div className="mt-4 space-y-3">
@@ -336,6 +347,17 @@ export default function RegisterPage() {
                       className="mt-2 block w-full text-sm"
                       onChange={(e) => {
                         const f = e.target.files?.[0] ?? null;
+                        if (f) {
+                          const nameOk = f.name.toLowerCase().endsWith('.pdf');
+                          const mimeOk = f.type === 'application/pdf' || f.type === '';
+                          if (!(nameOk && mimeOk)) {
+                            setError('Sadece PDF (.pdf) dosyası yükleyebilirsiniz.');
+                            e.currentTarget.value = '';
+                            setDocs((s) => ({ ...s, [k]: null }));
+                            return;
+                          }
+                        }
+                        setError(null);
                         setDocs((s) => ({ ...s, [k]: f }));
                       }}
                     />
