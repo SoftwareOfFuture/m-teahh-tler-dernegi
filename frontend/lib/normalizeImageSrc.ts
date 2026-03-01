@@ -1,4 +1,11 @@
 const CLOUDINARY_HOST = 'res.cloudinary.com';
+const RESIMLINK_HOST = 'resimlink.com';
+
+function isProxyableUrl(url: string): boolean {
+  if (url.includes(CLOUDINARY_HOST)) return false;
+  if (url.includes(RESIMLINK_HOST)) return false;
+  return true;
+}
 
 export function normalizeImageSrc(src: string | null | undefined): string {
   const s = String(src ?? '').trim();
@@ -8,7 +15,7 @@ export function normalizeImageSrc(src: string | null | undefined): string {
   }
   if (s.startsWith('data:')) return s;
   if (s.startsWith('http://') || s.startsWith('https://')) {
-    if (typeof window !== 'undefined' && !s.includes(CLOUDINARY_HOST)) {
+    if (typeof window !== 'undefined' && isProxyableUrl(s)) {
       return '/api/proxy-image?url=' + encodeURIComponent(s);
     }
     return s;
