@@ -1359,7 +1359,7 @@ function LinksPanel({ token }: { token: string | null }) {
                     {item.imageUrl ? (
                       <a href={item.url} target="_blank" rel="noreferrer" className="shrink-0">
                         {/* eslint-disable-next-line @next/next/no-img-element -- admin list, dynamic URL */}
-                        <img src={item.imageUrl} alt={item.label || ''} className="h-10 w-auto max-w-[120px] rounded object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        <img src={item.imageUrl} alt={item.label || ''} className="h-14 w-auto max-w-[200px] rounded object-contain bg-white/50" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                       </a>
                     ) : null}
                     <span className="font-medium text-slate-800">{item.label || item.url}</span>
