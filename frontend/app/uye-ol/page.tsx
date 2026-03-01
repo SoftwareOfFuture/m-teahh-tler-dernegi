@@ -432,16 +432,16 @@ export default function RegisterPage() {
       </section>
 
       {legalOpen ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-3xl rounded-3xl bg-white shadow-card">
-            <div className="flex items-center justify-between gap-3 border-b border-black/5 px-6 py-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 overflow-y-auto">
+          <div className="my-8 w-full max-w-3xl rounded-3xl bg-white shadow-card flex flex-col max-h-[calc(100vh-4rem)]">
+            <div className="flex shrink-0 items-center justify-between gap-3 border-b border-black/5 px-6 py-4">
               <div className="min-w-0">
                 <div className="truncate text-sm font-bold text-slate-900">{legalTitle(legalOpen)}</div>
-                <div className="mt-1 text-xs text-slate-500">Aşağı kaydırıp metnin sonuna gelmeden onaylayamazsınız.</div>
+                <div className="mt-1 text-xs text-slate-500">Metni aşağı kaydırın, sonuna gelince buton aktif olur.</div>
               </div>
               <button
                 type="button"
-                className="rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50"
                 onClick={() => setLegalOpen(null)}
               >
                 Kapat
@@ -450,17 +450,17 @@ export default function RegisterPage() {
 
             <div
               ref={legalScrollRef}
-              className="legal-scroll-area max-h-[75vh] min-h-[200px] overflow-y-auto overflow-x-hidden px-6 py-4 scroll-smooth"
+              className="legal-scroll-area flex-1 min-h-0 overflow-y-scroll overflow-x-hidden px-6 py-4 scroll-smooth touch-scroll"
               onScroll={(e) => {
                 const el = e.currentTarget;
-                const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 12;
+                const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 16;
                 if (atEnd) setLegalScrolledEnd(true);
               }}
             >
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800 pb-4">{legalText(legalOpen)}</pre>
+              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800 pb-6">{legalText(legalOpen)}</pre>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-black/5 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex shrink-0 flex-col gap-3 border-t border-black/5 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-xs text-slate-500">
                 İsterseniz ayrı sayfadan da okuyabilirsiniz:{" "}
                 {legalOpen === 'kvkk' ? (
