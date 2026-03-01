@@ -1207,7 +1207,7 @@ function LinksPanel({ token }: { token: string | null }) {
       <div className="mb-4">
         <h2 className="text-lg font-bold text-slate-900">Linke dönüştür</h2>
         <p className="mt-1 text-sm text-slate-600">
-          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Görsel URL ile linki görsel olarak gösterebilir (görseli linke); link alanına girilen adresi görsel URL&apos;ye kopyalayarak linki görsele dönüştürebilirsiniz.
+          URL ve etiket girerek site genelinde kullanılabilecek linkler ekleyin. Görseli &quot;Yerelden görsel yükle&quot; ile bilgisayarınızdan seçebilir veya görsel URL yapıştırabilirsiniz; linki görsele / görseli linke dönüştür butonları ile hızlı düzenleyebilirsiniz.
         </p>
       </div>
 
@@ -1231,11 +1231,35 @@ function LinksPanel({ token }: { token: string | null }) {
           </Field>
           <Field label="Görsel URL (opsiyonel)">
             <TextInput
-              value={newImageUrl}
-              onChange={(e) => setNewImageUrl(e.target.value)}
-              placeholder="Görsel adresi — link görsel olarak gösterilir"
+              value={newImageUrl.startsWith('data:') ? '(yerel görsel yüklendi)' : newImageUrl}
+              onChange={(e) => !newImageUrl.startsWith('data:') && setNewImageUrl(e.target.value)}
+              placeholder="Görsel adresi veya yerelden yükleyin"
               className="min-w-[200px]"
             />
+          </Field>
+          <Field label="Yerelden görsel yükle">
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file || !file.type.startsWith('image/')) return;
+                  const reader = new FileReader();
+                  reader.onload = () => {
+                    const dataUrl = reader.result;
+                    if (typeof dataUrl === 'string') setNewImageUrl(dataUrl);
+                  };
+                  reader.readAsDataURL(file);
+                }}
+              />
+              <svg className="size-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              Görsel seç
+            </label>
+            {newImageUrl.startsWith('data:') ? (
+              <button type="button" onClick={() => setNewImageUrl('')} className="mt-1 text-xs text-red-600 hover:underline">Yüklü görseli kaldır</button>
+            ) : null}
           </Field>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -1455,37 +1479,161 @@ function SeoPanel({ token }: { token: string | null }) {
 
 function UsageGuidePanel() {
   return (
-    <div className="space-y-6">
-      <h2 className="text-lg font-bold text-slate-900">Platform Admin Kullanım Kılavuzu</h2>
-      <p className="text-sm text-slate-600">
-        Bu panel sadece platform admin hesapları tarafından görülebilir. Üyeler bu sayfaya ve kılavuza erişemez.
-      </p>
-      <div className="prose prose-slate max-w-none text-sm">
-        <h3 className="font-semibold text-slate-800">Üyeler</h3>
-        <p>Yeni üye başvurularını onaylayın veya reddedin. Belgeleri inceleyip onay/red/tekrar gönderim isteyebilirsiniz.</p>
-        <h3 className="font-semibold text-slate-800">Slider</h3>
-        <p>Anasayfadaki hero slider öğelerini ekleyin, düzenleyin, sıralayın. Görsel, başlık, açıklama ve link girebilirsiniz.</p>
-        <h3 className="font-semibold text-slate-800">Banner</h3>
-        <p>Sayfa içi banner’ları yönetin. Görsel ve tıklanabilir link ayarlayın.</p>
-        <h3 className="font-semibold text-slate-800">Haberler / Duyurular</h3>
-        <p>Haber ve duyuru ekleyin, düzenleyin, yayına alın veya kaldırın. Yayında olmayan içerik sadece admin listesinde görünür.</p>
-        <h3 className="font-semibold text-slate-800">Videolar / Yönetim Kurulu (Yayınlar)</h3>
-        <p>Video arşivi ve yayınlar (PDF/dosya) ekleyip yayınlayın.</p>
-        <h3 className="font-semibold text-slate-800">Kurul Üyeleri ve Kurul Kategorileri</h3>
-        <p>Yönetim kurulu üyelerini ve görev kategorilerini (Başkan, Asil Üye vb.) buradan yönetin.</p>
-        <h3 className="font-semibold text-slate-800">Partnerler / Emlak İlanları</h3>
-        <p>Partner logoları ve emlak ilanlarını ekleyip sıralayın.</p>
-        <h3 className="font-semibold text-slate-800">Kurumsal, Bugüne Kadar Yaptıklarımız, İletişim</h3>
-        <p>İlgili sayfaların metin, başlık ve iletişim bilgilerini düzenleyin.</p>
-        <h3 className="font-semibold text-slate-800">İletişim Mesajları / SMS Geri Bildirimleri</h3>
-        <p>Formdan gelen mesajları ve SMS geri bildirimlerini görüntüleyin.</p>
-        <h3 className="font-semibold text-slate-800">Sosyal Medya</h3>
-        <p>Site ayarlarındaki sosyal medya linklerini güncelleyin.</p>
-        <h3 className="font-semibold text-slate-800">Animasyonlar</h3>
-        <p>Anasayfa bölümleri için animasyon tercihlerini seçin (localStorage’da saklanır).</p>
-        <h3 className="font-semibold text-slate-800">SEO</h3>
-        <p>Varsayılan meta başlık, açıklama ve anahtar kelimeleri düzenleyin. Bu sekmeye sadece SEO yetkisi açık olan platform admin hesapları erişebilir.</p>
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-xl font-bold text-slate-900">Platform Admin Kullanım Kılavuzu</h2>
+        <p className="mt-2 text-sm text-slate-600">
+          Bu panel yalnızca platform_admin rolüne sahip hesaplar tarafından görülebilir. Üyeler ve ziyaretçiler bu sayfaya erişemez. Sol menüden sekmelere tıklayarak ilgili bölüme geçebilirsiniz.
+        </p>
       </div>
+
+      <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+        <h3 className="font-bold text-slate-800">Sayfa üstü: Bakım modu</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Platform admin sayfasının en üstünde <strong>Bakım modu</strong> alanı bulunur. Bakım modunu <strong>Aç</strong> yaptığınızda sitede (platform admin hariç) modern bir bakım ekranı gösterilir; ziyaretçiler içeriği görmez. <strong>Bakım bitiş tarihi ve saati</strong> alanına bir tarih girip <strong>Kaydet</strong> derseniz, bakım ekranında kalan süre sayacı (gün, saat, dakika, saniye) ve tahmini bitiş saati görünür. Tarihi temizlemek için <strong>Temizle</strong> kullanın.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Üyeler</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Yeni üye başvuruları burada listelenir. <strong>Belgeleri Gör</strong> ile üyenin yüklediği belgeleri (kimlik, vergi levhası vb.) inceleyebilir; belgeyi onaylayabilir, reddedebilir veya <strong>Tekrar gönderim iste</strong> ile düzeltme talep edebilirsiniz. Tüm zorunlu belgeler onaylandıktan sonra <strong>Üyeyi onayla</strong> ile hesabı aktifleştirebilirsiniz. <strong>Reddet</strong> veya <strong>Sil</strong> ile başvuruyu sonlandırabilirsiniz. Yetkiniz varsa <strong>Şifre belirle</strong> ile üye için yeni şifre atayabilirsiniz.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Slider</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Anasayfadaki büyük hero slider öğelerini buradan yönetin. Her slayt için <strong>görsel URL</strong>, <strong>başlık</strong>, <strong>açıklama</strong> ve <strong>link (href)</strong> girebilirsiniz. Sıralama ve yayında olma durumunu düzenleyebilirsiniz. Görsel yüklenmezse varsayılan bir görsel gösterilir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Banner</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Anasayfada sliderın hemen altındaki yatay tıklanabilir banner alanını yönetin. Her banner için görsel (PNG önerilir; örn. 1920×190 px) ve link girebilirsiniz. Birden fazla banner ekleyip sıralayabilirsiniz.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Haberler</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Haber ekleyin, düzenleyin, sıralayın. Başlık, özet, içerik ve görsel URL girebilirsiniz. <strong>Yayında</strong> işaretli olanlar sitede görünür; işareti kaldırırsanız sadece admin listesinde kalır. Yayın tarihi ile liste sıralaması etkilenir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Duyurular</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Duyuru ekleyin, düzenleyin, yayına alın veya kaldırın. Duyurular sitede <strong>Üyelik</strong> sayfasında (ve ana sayfa ilgili bölümde) listelenir. Yayında olmayan duyurular sadece admin listesinde görünür.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Videolar</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Video arşivi öğelerini yönetin. Video URLsi (YouTube, Vimeo vb.), başlık, açıklama ve kapak görseli girebilirsiniz. Sitede <strong>Arşiv</strong> sayfasında listelenir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Yönetim Kurulu (Yayınlar)</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Yayınlar (PDF veya dosya linki) ekleyip sıralayın. Başlık, açıklama ve dosya/link bilgisi girebilirsiniz. Anasayfada ve ilgili sayfalarda gösterilir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Kurul Üyeleri</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Yönetim kurulu üyelerini ekleyin, düzenleyin, sıralayın. Ad, görev, kategori (Başkan, Asil Üye vb.), fotoğraf URLsi ve iletişim bilgilerini girebilirsiniz.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Kurul Kategorileri</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Yönetim kurulu görev kategorilerini (Başkan, Başkan Yardımcısı, Asil Üye, Sekreter vb.) tanımlayın. Kurul üyeleri eklerken bu kategorilerden birini seçersiniz.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Partnerler</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Partner kurumların logolarını ve web adreslerini ekleyin. Logo URLsi, başlık ve sıra numarası girebilirsiniz. Anasayfada partnerler bölümünde gösterilir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Emlak İlanları</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Onaylı üyelerin eklediği emlak ilanlarını buradan görüntüleyebilirsiniz. İlanlar üyeler tarafından <strong>İlanlarım</strong> sayfasından eklenir; gerekirse yönetim bu sekmeden takip edebilir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Kurumsal</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          <strong>/kurumsal</strong> sayfasının tüm metin alanlarını düzenleyin: hero başlık ve alt başlık, Hakkımızda paragrafları, PDF başlık ve URL, hızlı bilgiler (her satır bir madde), misyon ve vizyon. Kaydetmeden önce <strong>Yenile</strong> ile mevcut veriyi çekebilirsiniz.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Bugüne Kadar Yaptıklarımız</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          <strong>/bugune-kadar-yaptiklarimiz</strong> sayfasının başlık, alt başlık ve paragraf içeriklerini buradan güncelleyin.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">İletişim</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          <strong>/iletisim</strong> sayfasının hero başlığı, alt başlığı, adres, e-posta, telefon ve harita embed URLsini düzenleyin. Bu sayfadaki iletişim formundan gelen mesajlar <strong>İletişim Mesajları</strong> sekmesinde listelenir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">İletişim Mesajları</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          İletişim sayfasındaki &quot;Mesaj Gönder&quot; formundan gelen mesajları görüntüleyin. Gönderen adı, e-posta ve mesaj içeriği listelenir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">SMS Geri Bildirimleri</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Sitedeki SMS geri bildirim formundan gelen kayıtları (telefon numarası vb.) buradan inceleyebilirsiniz.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Sosyal Medya</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Navbar ve footerda görünen sosyal medya hesaplarını (Facebook, Instagram, Twitter, YouTube, LinkedIn) güncelleyin. Boş bırakılan hesaplar sitede gösterilmez. <strong>Tanıtım Filmi (YouTube/Vimeo URL)</strong> alanına video linki girerseniz anasayfada tanıtım filmi bölümü çıkar. <strong>Tanıtım Filmi Kapak Görseli URL</strong> ile o bölümdeki kapak resmini belirleyebilirsiniz. <strong>Site görseli (resmi link)</strong> alanına bir görsel URLsi girerseniz bu görsel sitede site görseli olarak kullanılabilir; önizlemede link görsele dönüştürülür.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Animasyonlar</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Anasayfadaki bölümler (Hero, Haberler, Üyelik, Arşiv vb.) için giriş animasyonu seçin. Seçimler tarayıcıda (localStorage) saklanır; değişiklikler anında kaydedilir. Farklı cihazlarda aynı ayar için o cihazda tekrar seçmeniz gerekir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">Linke dönüştür</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Site genelinde kullanılabilecek linkler ekleyin. <strong>Link URL</strong> (tıklanınca gidilecek adres) ve <strong>Etiket</strong> (görünen metin) zorunludur. <strong>Görsel URL</strong> opsiyoneldir: girerseniz link, sitede bu görselle gösterilir (görsel tıklanınca Link URLye gider). <strong>Yerelden görsel yükle</strong> ile bilgisayarınızdan bir resim seçebilirsiniz; seçilen dosya otomatik olarak görsel olarak kaydedilir (base64). <strong>Linki görsele dönüştür</strong> butonu, Link URL alanındaki adresi Görsel URL alanına kopyalar (link bir görsel adresiyse kullanışlıdır). <strong>Görseli linke dönüştür</strong> butonu, Görsel URLyi link olarak kullanır. Eklenen linkleri listeden düzenleyebilir veya silebilirsiniz; her işlemde ayarlar otomatik kaydedilir. Bu linkler API üzerinden <strong>siteLinks</strong> olarak okunup footer veya başka alanlarda kullanılabilir.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="font-bold text-slate-800">SEO</h3>
+        <p className="mt-1 text-sm text-slate-600">
+          Site genelinde kullanılan varsayılan meta başlık, açıklama ve anahtar kelimeleri düzenleyin. Bu ayarlar &quot;seo&quot; sayfası olarak kaydedilir. Kurumsal ve İletişim sayfalarının meta bilgileri kendi sayfa içeriklerinden (hero başlık / alt başlık) türetilir. Sitemap ve robots.txt otomatik üretilir. Bu sekmeye yalnızca <strong>SEO yetkisi</strong> açık olan platform admin hesapları erişebilir.
+        </p>
+      </section>
+
     </div>
   );
 }
