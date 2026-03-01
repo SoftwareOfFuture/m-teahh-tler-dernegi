@@ -10,8 +10,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// Resolve req.member (approved member) for member-only routes
 async function memberApprovedOnly(req, res, next) {
   try {
     const member = await db.Member.findOne({ where: { userId: req.user.id } });
@@ -24,8 +22,6 @@ async function memberApprovedOnly(req, res, next) {
     res.status(500).json({ error: err.message });
   }
 }
-
-// GET /api/properties - public list (published only)
 router.get(
   '/',
   [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -47,8 +43,6 @@ router.get(
     }
   }
 );
-
-// GET /api/properties/admin/all - admin list including unpublished
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -64,9 +58,6 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// ----- Member (onaylı üye) kendi ilanları -----
-// GET /api/properties/member/mine
 router.get('/member/mine', auth, memberApprovedOnly, async (req, res) => {
   try {
     const items = await db.Property.findAll({
@@ -78,8 +69,6 @@ router.get('/member/mine', auth, memberApprovedOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST /api/properties/member - üye ilan ekler
 router.post(
   '/member',
   auth,
@@ -116,8 +105,6 @@ router.post(
     }
   }
 );
-
-// PUT /api/properties/member/:id - üye kendi ilanını günceller
 router.put(
   '/member/:id',
   auth,
@@ -145,8 +132,6 @@ router.put(
     }
   }
 );
-
-// DELETE /api/properties/member/:id - üye kendi ilanını siler
 router.delete('/member/:id', auth, memberApprovedOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Property.findOne({ where: { id: req.params.id, memberId: req.member.id } });
@@ -157,8 +142,6 @@ router.delete('/member/:id', auth, memberApprovedOnly, [param('id').isInt().toIn
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/properties/:id - public single property (detay sayfası)
 router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Property.findOne({
@@ -170,8 +153,6 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST /api/properties - admin create
 router.post(
   '/',
   auth,
@@ -209,8 +190,6 @@ router.post(
     }
   }
 );
-
-// PUT /api/properties/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -251,8 +230,6 @@ router.put(
     }
   }
 );
-
-// DELETE /api/properties/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Property.findByPk(req.params.id);

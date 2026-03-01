@@ -155,7 +155,7 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center w-full max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14">
         <div className="w-full grid grid-cols-1 lg:grid-cols-[1fr_1.15fr] gap-6 lg:gap-8 items-stretch">
-          {/* Sol: Mesaj kartı */}
+          {}
           <div className="relative rounded-3xl overflow-hidden border border-white/10 maintenance-message-card px-6 sm:px-8 py-8 sm:py-10 flex flex-col justify-center opacity-0 maintenance-slide-left-in">
             <div className="maintenance-badge-shine inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 w-fit mb-6">
               <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
@@ -184,7 +184,7 @@ export function MaintenanceGate({ children }: { children: React.ReactNode }) {
             )}
           </div>
 
-          {/* Sağ: Sayaç hero kartı */}
+          {}
           <div className="relative rounded-3xl overflow-hidden border border-white/10 maintenance-shimmer-border maintenance-hero-card px-6 sm:px-8 py-8 sm:py-10 flex flex-col justify-center opacity-0 maintenance-slide-right-in">
             <div className="absolute inset-0 rounded-3xl bg-white/[0.02]" />
             <div className="relative">

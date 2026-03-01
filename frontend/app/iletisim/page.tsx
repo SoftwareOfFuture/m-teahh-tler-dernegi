@@ -8,22 +8,14 @@ import { getPagePublic, createContactMessage, type PageContent } from '../../lib
 function toMapsEmbedSrc(input: string | null | undefined, addressFallback: string | null | undefined): string | null {
   const raw = String(input ?? '').trim();
   const addr = String(addressFallback ?? '').trim();
-
-  // If user didn't provide any link, embed from address as a convenience
   if (!raw) {
     if (!addr) return null;
     return `https://www.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
   }
-
-  // If user provided plain address text
   if (!raw.startsWith('http://') && !raw.startsWith('https://')) {
     return `https://www.google.com/maps?q=${encodeURIComponent(raw)}&output=embed`;
   }
-
-  // If already an embed URL
   if (raw.includes('/maps/embed') || raw.includes('output=embed')) return raw;
-
-  // Try to convert common Google Maps URLs into embeddable form
   try {
     const u = new URL(raw);
     if (u.hostname.includes('google.') && u.pathname.startsWith('/maps')) {
@@ -31,10 +23,7 @@ function toMapsEmbedSrc(input: string | null | undefined, addressFallback: strin
       return u.toString();
     }
   } catch {
-    // ignore
   }
-
-  // Fallback: embed from address if we have it; still show the raw link as "Haritada aç"
   if (addr) return `https://www.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
   return null;
 }
@@ -49,7 +38,6 @@ function toMapsOpenHref(input: string | null | undefined, addressFallback: strin
   if (!raw.startsWith('http://') && !raw.startsWith('https://')) {
     return `https://www.google.com/maps?q=${encodeURIComponent(raw)}`;
   }
-  // If it's an embed link, keep it as open href too (still works in new tab)
   return raw;
 }
 
@@ -84,7 +72,6 @@ export default function ContactPage() {
         if (cancelled) return;
         setPage(res);
       } catch {
-        // keep fallback
       }
     }
     load();

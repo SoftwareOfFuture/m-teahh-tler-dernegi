@@ -10,8 +10,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// GET /api/announcements - public list with pagination
 router.get(
   '/',
   [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -33,8 +31,6 @@ router.get(
     }
   }
 );
-
-// GET /api/announcements/admin/all - admin: all including unpublished
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -50,8 +46,6 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/announcements/recent - for homepage
 router.get('/recent', async (req, res) => {
   try {
     const items = await db.Announcement.findAll({
@@ -64,8 +58,6 @@ router.get('/recent', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/announcements/upcoming - events with eventDate in future
 router.get('/upcoming', async (req, res) => {
   try {
     const today = new Date().toISOString().split('T')[0];
@@ -79,8 +71,6 @@ router.get('/upcoming', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/announcements/:id
 router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Announcement.findByPk(req.params.id);
@@ -93,8 +83,6 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST, PUT, DELETE - admin only
 router.post(
   '/',
   auth,

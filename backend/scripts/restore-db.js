@@ -1,10 +1,4 @@
-/**
- * SQL yedeğini hedef veritabanına geri yükler.
- * Hedef: NEON_URL veya POSTGRES_URL (yeni Neon connection string).
- *
- * Kullanım: node scripts/restore-db.js [backup-dosyasi.sql]
- * Örnek: NEON_URL="postgres://..." node scripts/restore-db.js backup-2025-02-17.sql
- */
+
 require('dotenv').config();
 const { spawnSync } = require('child_process');
 const path = require('path');

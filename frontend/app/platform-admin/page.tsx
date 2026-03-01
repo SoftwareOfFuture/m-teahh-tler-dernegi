@@ -280,23 +280,21 @@ export default function PlatformAdminPage() {
         </div>
       ) : (
         <div className="mt-6 flex w-full min-w-0 flex-col gap-4 lg:mt-8 lg:flex-row lg:gap-6">
-          {/* Sol panel: mobilde yatay sekme, lg+ daraltılabilir sidebar */}
           <aside
             className={`flex shrink-0 flex-col border border-slate-200 bg-white shadow-soft transition-[width] duration-300 ease-out rounded-2xl overflow-hidden ${
               sidebarCollapsed ? 'lg:w-14' : 'lg:w-56'
             } w-full lg:w-auto`}
           >
             <div className={`flex items-center border-b border-slate-100 p-2 ${sidebarCollapsed ? 'lg:justify-center' : 'justify-between lg:justify-between'}`}>
-              {/* Mobil: yatay kaydırılabilir sekmeler */}
-              <nav className="flex flex-1 overflow-x-auto py-2 lg:hidden" aria-label="Admin menüsü (mobil)">
-                <div className="flex min-w-0 gap-1 px-1">
+              <nav className="touch-scroll flex flex-1 overflow-x-auto overflow-y-hidden py-2 lg:hidden" aria-label="Admin menüsü (mobil)">
+                <div className="inline-flex min-h-[44px] gap-1 px-1">
                   {adminTabs.map(({ id, label }) => (
                     <button
                       key={id}
                       type="button"
                       onClick={() => setTab(id)}
-                      className={`flex shrink-0 items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] ${
-                        tab === id ? 'bg-burgundy text-white' : 'text-slate-700 hover:bg-slate-100'
+                      className={`flex shrink-0 items-center rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors whitespace-nowrap min-h-[44px] min-w-[44px] ${
+                        tab === id ? 'bg-burgundy text-white' : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
                       }`}
                     >
                       {label}
@@ -345,8 +343,7 @@ export default function PlatformAdminPage() {
             </nav>
           </aside>
 
-          {/* İçerik alanı */}
-          <section className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
+          <section className="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6 overflow-x-hidden overflow-y-auto">
             <div className="mb-4 space-y-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-sm font-semibold text-slate-700">Bakım modu</span>
@@ -1007,13 +1004,12 @@ function SocialMediaPanel({ token }: { token: string | null }) {
             />
             {key === 'siteImageUrl' && form.siteImageUrl?.trim() ? (
               <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-                <p className="mb-2 text-xs font-medium text-slate-500">Önizleme — bu link site görseli olarak kullanılır:</p>
-                <div className="flex min-h-[120px] items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white/80">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- admin: dynamic URL, preview only */}
+                <p className="mb-2 text-xs font-medium text-slate-500">Önizleme — görsel tam sığar, kesilmez:</p>
+                <div className="flex min-h-[120px] max-h-52 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white/80">
                   <img
                     src={form.siteImageUrl.trim()}
                     alt="Site görseli önizleme"
-                    className="max-h-40 max-w-full object-contain"
+                    className="max-h-full max-w-full object-contain"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
                 </div>
@@ -1235,6 +1231,7 @@ function LinksPanel({ token }: { token: string | null }) {
             />
           </Field>
           <Field label="Görsel URL (opsiyonel)">
+            <p className="mb-1 text-xs text-slate-500">Görsel link veya yerelden yüklenen: her zaman <strong>tam sığdırılır</strong>, oran korunur, kesilmez.</p>
             <TextInput
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
@@ -1243,8 +1240,7 @@ function LinksPanel({ token }: { token: string | null }) {
             />
             {newImageUrl.trim() ? (
               <div className="mt-2 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50/80 p-2">
-                <span className="flex h-20 w-28 items-center justify-center overflow-hidden sm:h-24 sm:w-36">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- admin preview, dynamic URL */}
+                <span className="flex max-h-40 min-h-20 min-w-20 max-w-56 items-center justify-center overflow-hidden sm:max-h-48 sm:max-w-72">
                   <img src={newImageUrl.trim()} alt="Önizleme" className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                 </span>
               </div>
@@ -1363,8 +1359,7 @@ function LinksPanel({ token }: { token: string | null }) {
                     />
                     {editImageUrl.trim() ? (
                       <div className="flex shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50/80 p-1">
-                        <span className="flex h-14 w-20 items-center justify-center overflow-hidden">
-                          {/* eslint-disable-next-line @next/next/no-img-element -- admin edit preview */}
+                        <span className="flex max-h-24 max-w-32 items-center justify-center overflow-hidden">
                           <img src={editImageUrl.trim()} alt="" className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                         </span>
                       </div>
@@ -1376,9 +1371,7 @@ function LinksPanel({ token }: { token: string | null }) {
                   <>
                     {item.imageUrl ? (
                       <a href={item.url} target="_blank" rel="noreferrer" className="flex shrink-0 items-center justify-center rounded border border-slate-200 bg-slate-50/80">
-                        {/* Sabit çerçeve: görsel oranı bozulmadan tam gösterilir */}
-                        <span className="flex h-16 w-24 items-center justify-center overflow-hidden p-1 sm:h-20 sm:w-32">
-                          {/* eslint-disable-next-line @next/next/no-img-element -- admin list, dynamic URL */}
+                        <span className="flex max-h-24 max-w-40 items-center justify-center overflow-hidden p-1 sm:max-h-28 sm:max-w-48">
                           <img src={item.imageUrl} alt={item.label || ''} className="max-h-full max-w-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                         </span>
                       </a>
@@ -1658,7 +1651,7 @@ function UsageGuidePanel() {
       <section className="rounded-xl border border-slate-200 bg-white p-4">
         <h3 className="font-bold text-slate-800">Linke dönüştür</h3>
         <p className="mt-1 text-sm text-slate-600">
-          Site genelinde kullanılabilecek linkler ekleyin. <strong>Link URL</strong> (tıklanınca gidilecek adres) ve <strong>Etiket</strong> (görünen metin) zorunludur. <strong>Görsel URL</strong> opsiyoneldir: girerseniz link, sitede bu görselle gösterilir (görsel tıklanınca Link URLye gider). <strong>Yerelden görsel yükle</strong> ile bilgisayarınızdan bir resim seçebilirsiniz; Cloudinary ayarlıysa dosya Cloudinary’e yüklenir ve canlı görsel linki (örn. https://res.cloudinary.com/.../xxx.jpg) Görsel URL alanına yazılır. Cloudinary için Backend .env: <code>CLOUDINARY_CLOUD_NAME</code>, <code>CLOUDINARY_API_KEY</code>, <code>CLOUDINARY_API_SECRET</code> (API Key/Secret sadece sunucuda). <strong>Linki görsele dönüştür</strong> butonu, Link URL alanındaki adresi Görsel URL alanına kopyalar (link bir görsel adresiyse kullanışlıdır). <strong>Görseli linke dönüştür</strong> butonu, Görsel URLyi link olarak kullanır. Eklenen linkleri listeden düzenleyebilir veya silebilirsiniz; her işlemde ayarlar otomatik kaydedilir. Bu linkler API üzerinden <strong>siteLinks</strong> olarak okunup footer veya başka alanlarda kullanılabilir.
+          Site genelinde kullanılabilecek linkler ekleyin. <strong>Link URL</strong> (tıklanınca gidilecek adres) ve <strong>Etiket</strong> (görünen metin) zorunludur. <strong>Görsel URL</strong> opsiyoneldir: girerseniz link, sitede bu görselle gösterilir (görsel tıklanınca Link URLye gider). Görsel (link veya yerelden) her yerde <strong>tam sığdırılır</strong>: oran korunur, kesilmez; gerekirse küçültülür. <strong>Yerelden görsel yükle</strong> ile bilgisayarınızdan bir resim seçebilirsiniz; Cloudinary ayarlıysa dosya Cloudinary’e yüklenir ve canlı görsel linki (örn. https://res.cloudinary.com/.../xxx.jpg) Görsel URL alanına yazılır. Cloudinary için Backend .env: <code>CLOUDINARY_CLOUD_NAME</code>, <code>CLOUDINARY_API_KEY</code>, <code>CLOUDINARY_API_SECRET</code> (API Key/Secret sadece sunucuda). <strong>Linki görsele dönüştür</strong> butonu, Link URL alanındaki adresi Görsel URL alanına kopyalar (link bir görsel adresiyse kullanışlıdır). <strong>Görseli linke dönüştür</strong> butonu, Görsel URLyi link olarak kullanır. Eklenen linkleri listeden düzenleyebilir veya silebilirsiniz; her işlemde ayarlar otomatik kaydedilir. Bu linkler API üzerinden <strong>siteLinks</strong> olarak okunup footer veya başka alanlarda kullanılabilir.
         </p>
       </section>
 
@@ -2059,7 +2052,6 @@ function MembersPanel({
 
   function canDeleteMemberRow(m: any) {
     const st = String(m?.verificationStatus || '');
-    // "sil" butonu ancak red / belge tekrarı / onay sonrası aktif
     return st === 'approved' || st === 'rejected' || st === 'resubmit_required';
   }
 
@@ -3101,7 +3093,6 @@ function GenericContentPanel<T extends { id: number; isPublished?: boolean }>({
                   const raw = createForm[f.key];
                   let v = typeof raw === 'string' ? raw.trim() : raw;
                   
-                  // Handle sortOrder as integer
                   if (f.key === 'sortOrder') {
                     if (v === undefined || v === null || v === '') {
                       v = 0;
@@ -3243,7 +3234,6 @@ function GenericContentPanel<T extends { id: number; isPublished?: boolean }>({
                           const raw = edit[f.key];
                           let v = typeof raw === 'string' ? raw.trim() : raw;
                           
-                          // Handle sortOrder as integer
                           if (f.key === 'sortOrder') {
                             if (v === undefined || v === null || v === '') {
                               v = 0;

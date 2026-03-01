@@ -1,14 +1,11 @@
-/**
- * Merkezi SEO sabitleri ve yardımcılar.
- * Admin panelinden gelen değerler (getPagePublic('seo')) ile birleştirilebilir.
- */
+
 
 const SITE_NAME = 'Antalya İnşaat Müteahhitleri Derneği';
 const DEFAULT_DESCRIPTION =
   'Antalya İnşaat Müteahhitleri Derneği. Sektörel birliktelik, paylaşım ve dayanışma. Haberler, yayınlar, video arşivi ve iletişim.';
 const DEFAULT_KEYWORDS =
   'Antalya İnşaat Müteahhitleri Derneği, ANTMUTDER, inşaat sektörü, müteahhit derneği, Antalya dernek, sektörel birliktelik';
-/** Canlı site adresi (Cloudflare/Vercel domain). Build öncesi .env ile ayarlanır. */
+
 const BASE_URL =
   typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SITE_URL
     ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
@@ -39,7 +36,6 @@ export function absoluteUrl(path: string): string {
   return `${SEO.baseUrl}${p}`;
 }
 
-/** JSON-LD Organization (footer / genel) */
 export function organizationJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -56,7 +52,6 @@ export function organizationJsonLd() {
   };
 }
 
-/** JSON-LD WebSite (ana sayfa) */
 export function websiteJsonLd() {
   return {
     '@context': 'https://schema.org',
@@ -72,7 +67,6 @@ export function websiteJsonLd() {
   };
 }
 
-/** BreadcrumbList JSON-LD */
 export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
   return {
     '@context': 'https://schema.org',

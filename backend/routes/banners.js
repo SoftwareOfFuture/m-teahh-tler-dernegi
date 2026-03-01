@@ -11,7 +11,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/banners - public list (homepage banner)
 router.get(
   '/',
   [query('limit').optional().isInt({ min: 1, max: 10 }).toInt()],
@@ -31,7 +30,6 @@ router.get(
   }
 );
 
-// GET /api/banners/admin/all - admin list
 router.get(
   '/admin/all',
   auth,
@@ -55,7 +53,6 @@ router.get(
   }
 );
 
-// POST /api/banners - admin create
 router.post(
   '/',
   auth,
@@ -84,7 +81,6 @@ router.post(
   }
 );
 
-// PUT /api/banners/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -116,7 +112,6 @@ router.put(
   }
 );
 
-// DELETE /api/banners/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.HomeBanner.findByPk(req.params.id);

@@ -256,8 +256,6 @@ export async function register(payload: {
   });
 }
 
-// --- Site Settings (sosyal medya) ---
-
 export type SiteSettings = {
   facebookUrl: string | null;
   instagramUrl: string | null;
@@ -307,7 +305,6 @@ export async function updateSiteSettingsAdmin(token: string, payload: Partial<Si
   return result;
 }
 
-/** Görseli backend üzerinden Cloudinary'e yükler (API Key/Secret sadece sunucuda). Canlı URL döner. */
 export async function uploadImage(token: string, imageDataUri: string): Promise<{ url: string }> {
   return await apiFetch<{ url: string }>('/api/upload/image', {
     method: 'POST',
@@ -315,8 +312,6 @@ export async function uploadImage(token: string, imageDataUri: string): Promise<
     body: JSON.stringify({ image: imageDataUri }),
   });
 }
-
-// --- Contact Message (public) ---
 
 export async function createContactMessage(payload: { name: string; email: string; message: string }) {
   return await apiFetch<{ success: true; id: number }>('/api/contact-messages', {
@@ -348,8 +343,6 @@ export async function listContactMessagesAdminAll(
     { method: 'GET', headers: { Authorization: `Bearer ${token}` } }
   );
 }
-
-// --- SMS Feedback (public) ---
 
 export type SmsFeedback = {
   id: number;
@@ -442,8 +435,6 @@ export async function updateMyMember(
     body: JSON.stringify(updates),
   });
 }
-
-// --- Member Documents ---
 
 export async function listMyDocuments(token: string) {
   return await apiFetch<{
@@ -586,8 +577,6 @@ export async function deleteMember(token: string, memberId: number) {
   });
 }
 
-// --- Content (public) ---
-
 export async function listSlidesPublic(params?: { limit?: number }) {
   const qs = new URLSearchParams();
   if (params?.limit) qs.set('limit', String(params.limit));
@@ -665,8 +654,6 @@ export async function listPublicationsRecent(params?: { limit?: number }) {
   );
 }
 
-// --- Board Roles (Yönetim Kurulu kategorileri) ---
-
 export type BoardRole = {
   id: number;
   label: string;
@@ -710,8 +697,6 @@ export async function deleteBoardRole(token: string, id: number) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
-
-// --- Board Members (Yönetim Kurulu piramit) ---
 
 export type BoardMember = {
   id: number;
@@ -812,8 +797,6 @@ export async function deleteMyProperty(token: string, id: number) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
-
-// --- Content (admin) ---
 
 export async function listSlidesAdminAll(token: string, params?: { page?: number; limit?: number }) {
   const qs = new URLSearchParams();
@@ -1051,8 +1034,6 @@ export async function deleteProperty(token: string, id: number) {
     headers: { Authorization: `Bearer ${token}` },
   });
 }
-
-// --- Pages (Kurumsal etc.) ---
 
 export async function getPagePublic(slug: string) {
   return await apiFetch<PageContent>(`/api/pages/${encodeURIComponent(slug)}`, { method: 'GET' });

@@ -79,7 +79,7 @@ export default function VideosPage() {
     <PageLayoutWithFooter>
       <PageHero title="Arşiv" subtitle="ANTMUTDER duyuruları, etkinlikleri ve sektör videoları." />
 
-      {/* Duyurular - haberler gibi açılır kartlar */}
+      {}
       <section className="mt-8 min-w-0">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-slate-900 sm:text-xl">Duyurular</h2>
@@ -98,7 +98,7 @@ export default function VideosPage() {
         )}
       </section>
 
-      {/* Videolar */}
+      {}
       <section className="mt-10">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-lg font-bold text-slate-900 sm:text-xl">Videolar</h2>

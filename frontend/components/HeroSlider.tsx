@@ -61,7 +61,7 @@ export function HeroSlider({ items }: Props) {
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element -- dynamic/API URLs, fallback on error */}
+        {}
         <img
           src={currentSrc}
           alt={current.title}
@@ -107,7 +107,7 @@ export function HeroSlider({ items }: Props) {
           </div>
         </div>
 
-        {/* Sağ/sol oklar: sadece sm ve üzeri (mobilde gizli, dokunmatik kaydırma kullanılır) */}
+        {}
         <button
           type="button"
           onClick={() => setIdx((v) => (v - 1 + len) % len)}

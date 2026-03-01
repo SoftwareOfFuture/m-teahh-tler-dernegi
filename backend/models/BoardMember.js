@@ -12,26 +12,21 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       unit: {
-        // birim / pozisyon
         type: DataTypes.STRING(255),
       },
       profession: {
-        // meslek
         type: DataTypes.STRING(255),
       },
       duty: {
-        // görevi
         type: DataTypes.STRING(255),
       },
       residenceAddress: {
-        // yerleşim yeri adresi
         type: DataTypes.TEXT,
       },
       imageUrl: {
         type: DataTypes.TEXT,
       },
       role: {
-        // legacy: 'baskan' | 'uyelik' - used when boardRoleId is null
         type: DataTypes.STRING(50),
         allowNull: true,
       },

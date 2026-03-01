@@ -5,7 +5,7 @@ import { normalizeImageSrc } from '../lib/normalizeImageSrc';
 
 type Props = {
   item: VideoItem;
-  /** Tıklanınca video oynatılacak (href varsa). Yoksa detay sayfasına gider. */
+  
   onOpen?: (item: VideoItem) => void;
 };
 

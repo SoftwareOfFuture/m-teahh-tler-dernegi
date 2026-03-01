@@ -11,7 +11,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/site-settings - public (sosyal medya linkleri)
 router.get('/', async (req, res) => {
   try {
     const row = await db.SiteSettings.findOne({ order: [['id', 'ASC']] });
@@ -49,7 +48,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /api/site-settings/admin - admin
 router.get('/admin', auth, adminOnly, async (req, res) => {
   try {
     const row = await db.SiteSettings.findOne({ order: [['id', 'ASC']] });
@@ -89,7 +87,6 @@ router.get('/admin', auth, adminOnly, async (req, res) => {
   }
 });
 
-// PUT /api/site-settings/admin - admin upsert
 router.put(
   '/admin',
   auth,

@@ -89,8 +89,6 @@ router.put(
     }
   }
 );
-
-// GET /api/pages/:slug - public
 router.get('/:slug', [param('slug').trim().isLength({ min: 1, max: 64 })], validate, async (req, res) => {
   try {
     const slug = req.params.slug;

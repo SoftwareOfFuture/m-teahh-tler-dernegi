@@ -11,8 +11,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// GET /api/news - public list with pagination
 router.get(
   '/',
   [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -34,8 +32,6 @@ router.get(
     }
   }
 );
-
-// GET /api/news/admin/all - admin: all news including unpublished
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -51,8 +47,6 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/news/slider - latest for homepage slider
 router.get('/slider', async (req, res) => {
   try {
     const items = await db.News.findAll({
@@ -65,8 +59,6 @@ router.get('/slider', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/news/:id
 router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.News.findByPk(req.params.id);
@@ -79,8 +71,6 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST, PUT, DELETE - admin only
 router.post(
   '/',
   auth,

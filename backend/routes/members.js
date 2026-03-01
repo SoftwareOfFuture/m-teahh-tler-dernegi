@@ -38,8 +38,6 @@ async function requiredDocsApproved(memberId) {
   }
   return { ok: true };
 }
-
-// GET /api/members - public directory (approved only), with search & pagination
 router.get(
   '/',
   [
@@ -89,8 +87,6 @@ router.get(
     }
   }
 );
-
-// Admin: GET all members (including unapproved) - must be before /:id
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -150,8 +146,6 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/members/:id/documents/public - public approved documents for approved members
 router.get('/:id/documents/public', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const member = await db.Member.findByPk(req.params.id, {
@@ -173,8 +167,6 @@ router.get('/:id/documents/public', [param('id').isInt().toInt()], validate, asy
     res.status(500).json({ error: err.message });
   }
 });
-
-// Member: PATCH /api/members/me - update own profile (safe fields only)
 router.patch(
   '/me',
   auth,
@@ -205,8 +197,6 @@ router.patch(
     }
   }
 );
-
-// Member: GET /api/members/me/documents - list own docs (metadata only)
 router.get('/me/documents', auth, async (req, res) => {
   try {
     const member = await getMyMember(req);
@@ -221,8 +211,6 @@ router.get('/me/documents', auth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// Member: POST /api/members/me/documents - upload/replace a document (base64)
 router.post(
   '/me/documents',
   auth,
@@ -285,16 +273,12 @@ router.post(
     }
   }
 );
-
-// Member/Admin: GET /api/members/documents/:docId/download - download doc
 router.get('/documents/:docId/download', auth, [param('docId').isInt().toInt()], validate, async (req, res) => {
   try {
     const doc = await db.MemberDocument.findByPk(req.params.docId);
     if (!doc) return res.status(404).json({ error: 'Document not found.' });
     const member = await db.Member.findByPk(doc.memberId);
     if (!member) return res.status(404).json({ error: 'Member not found.' });
-
-    // Access: owner or platform_admin
     const isOwner = member.userId && member.userId === req.user.id;
     const isPlatformAdmin = req.user.role === 'platform_admin';
     if (!isOwner && !isPlatformAdmin) return res.status(403).json({ error: 'Access denied.' });
@@ -306,8 +290,6 @@ router.get('/documents/:docId/download', auth, [param('docId').isInt().toInt()],
     res.status(500).json({ error: err.message });
   }
 });
-
-// Platform Admin: GET /api/members/:id/documents - list member docs
 router.get('/:id/documents', auth, platformAdminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const member = await db.Member.findByPk(req.params.id);
@@ -326,8 +308,6 @@ router.get('/:id/documents', auth, platformAdminOnly, [param('id').isInt().toInt
     res.status(500).json({ error: err.message });
   }
 });
-
-// Platform Admin: PATCH /api/members/:memberId/documents/:docId/review - approve/reject/resubmit
 router.patch(
   '/:memberId/documents/:docId/review',
   auth,
@@ -363,8 +343,6 @@ router.patch(
     }
   }
 );
-
-// Platform Admin: request resubmission (member-level)
 router.patch(
   '/:id/request-resubmission',
   auth,
@@ -382,8 +360,6 @@ router.patch(
     }
   }
 );
-
-// Platform Admin: reject member
 router.patch(
   '/:id/reject',
   auth,
@@ -401,7 +377,6 @@ router.patch(
     }
   }
 );
-// Admin: POST member
 router.post(
   '/',
   auth,
@@ -434,8 +409,6 @@ router.post(
     }
   }
 );
-
-// Admin: PUT member (isApproved sadece platform_admin değiştirebilir)
 router.put(
   '/:id',
   auth,
@@ -473,8 +446,6 @@ router.put(
     }
   }
 );
-
-// Platform Admin: Üye onayla (hızlı onay için)
 router.patch('/:id/approve', auth, platformAdminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const member = await db.Member.findByPk(req.params.id);
@@ -487,14 +458,11 @@ router.patch('/:id/approve', auth, platformAdminOnly, [param('id').isInt().toInt
     res.status(500).json({ error: err.message });
   }
 });
-
-// Admin: DELETE member
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const member = await db.Member.findByPk(req.params.id);
     if (!member) return res.status(404).json({ error: 'Member not found.' });
     const st = String(member.verificationStatus || '');
-    // Silme: red / belge tekrarı / onay verilmeden aktif olmamalı
     if (st === 'pending_docs' || st === 'under_review') {
       return res.status(400).json({ error: 'Üye bu aşamada silinemez. Önce onay/red/belge tekrarı işlemi yapılmalı.' });
     }

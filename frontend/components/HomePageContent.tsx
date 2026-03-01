@@ -78,31 +78,30 @@ export function HomePageContent() {
     let cancelled = false;
     async function load() {
       try {
-        const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-        const fetchWithRetry = async <T,>(fn: () => Promise<T>, retries = 2) => {
+        const fetchWithRetry = async <T,>(fn: () => Promise<T>, retries = 1) => {
           let lastErr: any = null;
           for (let i = 0; i <= retries; i++) {
             try {
               return await fn();
             } catch (e) {
               lastErr = e;
-              await sleep(400 + i * 600);
+              if (i < retries) await new Promise((r) => setTimeout(r, 200));
             }
           }
           throw lastErr;
         };
         const r1 = await Promise.allSettled([
-          fetchWithRetry(() => listSlidesPublic({ limit: 8 }), 1),
-          fetchWithRetry(() => listBannersPublic({ limit: 10 }), 2),
-          fetchWithRetry(() => listNewsPublic({ page: 1, limit: 6 }), 1),
+          fetchWithRetry(() => listSlidesPublic({ limit: 8 })),
+          fetchWithRetry(() => listBannersPublic({ limit: 10 })),
+          fetchWithRetry(() => listNewsPublic({ page: 1, limit: 6 })),
         ]);
         if (cancelled) return;
         const r2 = await Promise.allSettled([
-          fetchWithRetry(() => listAnnouncementsRecent(), 1),
-          fetchWithRetry(() => listVideosRecent({ limit: 3 }), 1),
-          fetchWithRetry(() => listPublicationsRecent({ limit: 6 }), 1),
-          fetchWithRetry(() => listPartnersPublic({ limit: 500 }), 1),
-          fetchWithRetry(() => listMembersPublic({ page: 1, limit: 500 }), 1),
+          fetchWithRetry(() => listAnnouncementsRecent()),
+          fetchWithRetry(() => listVideosRecent({ limit: 3 })),
+          fetchWithRetry(() => listPublicationsRecent({ limit: 6 })),
+          fetchWithRetry(() => listPartnersPublic({ limit: 50 })),
+          fetchWithRetry(() => listMembersPublic({ page: 1, limit: 50 })),
         ]);
         if (cancelled) return;
         const slides = r1[0].status === 'fulfilled' ? r1[0].value : null;
@@ -219,9 +218,9 @@ export function HomePageContent() {
     getAnimationClass(sectionAnimations[id] ?? DEFAULT_SECTION_ANIM);
 
   return (
-    <div className="flex min-h-screen w-full min-w-0 flex-col overflow-x-hidden bg-white">
+    <div className="flex min-h-screen w-full min-w-0 max-w-full flex-col overflow-x-hidden bg-white">
       <Navbar />
-      <main className="flex-1 w-full min-w-0 overflow-x-hidden pt-4 pb-16 sm:pt-6 sm:pb-20 safe-area-x safe-area-b">
+      <main className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden pt-4 pb-16 sm:pt-6 sm:pb-20 safe-area-x safe-area-b">
         {slidesLoading ? (
           <section className="relative w-full overflow-hidden rounded-xl bg-slate-100 sm:rounded-2xl">
             <div className="h-[240px] animate-pulse xs:h-[280px] sm:h-[360px] md:h-[440px] lg:h-[500px]" />
@@ -248,7 +247,7 @@ export function HomePageContent() {
                 >
                   {siteSettings.promoVideoCoverUrl ? (
                     <>
-                      {/* eslint-disable-next-line @next/next/no-img-element -- external/dynamic cover URL */}
+                      {}
                       <img
                       src={normalizeImageSrc(siteSettings.promoVideoCoverUrl) || siteSettings.promoVideoCoverUrl}
                       alt="Tanıtım filmi kapak"

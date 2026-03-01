@@ -10,8 +10,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// GET /api/publications - public list with pagination
 router.get(
   '/',
   [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -33,8 +31,6 @@ router.get(
     }
   }
 );
-
-// GET /api/publications/recent - for homepage
 router.get('/recent', async (req, res) => {
   try {
     const limit = Number(req.query.limit || 3);
@@ -48,8 +44,6 @@ router.get('/recent', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/publications/admin/all - admin list including unpublished
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -65,8 +59,6 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST /api/publications - admin create
 router.post(
   '/',
   auth,
@@ -97,8 +89,6 @@ router.post(
     }
   }
 );
-
-// PUT /api/publications/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -131,8 +121,6 @@ router.put(
     }
   }
 );
-
-// DELETE /api/publications/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Publication.findByPk(req.params.id);

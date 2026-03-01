@@ -1,10 +1,4 @@
-/**
- * board_members tablosunu düzeltir:
- * 1. Yeni kolonları ekler (profession, duty, residence_address) - yoksa
- * 2. Tüm kurul üyelerini siler
- *
- * Kullanım: node scripts/fix-board-members.js
- */
+
 require('dotenv').config();
 
 if (process.env.POSTGRES_URL_NON_POOLING) {
@@ -42,7 +36,6 @@ async function main() {
   const table = 'board_members';
 
   try {
-    // 1. Eksik kolonları ekle
     const cols = await q.describeTable(table);
     const toAdd = [];
     if (!cols.profession) toAdd.push({ name: 'profession', type: 'VARCHAR(255)' });
@@ -54,8 +47,6 @@ async function main() {
       console.log('Kolon eklendi:', c.name);
     }
     if (toAdd.length === 0) console.log('Tüm kolonlar mevcut.');
-
-    // 2. Tüm kurul üyelerini sil
     const [rows, meta] = await sequelize.query(`DELETE FROM "${table}"`);
     const deleted = meta?.rowCount ?? 0;
     console.log('Silinen kurul üyesi sayısı:', deleted);

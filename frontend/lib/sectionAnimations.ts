@@ -1,7 +1,4 @@
-/**
- * Sayfa bölümleri için animasyon seçenekleri.
- * Platform admin panelinden seçilen değerler localStorage'da tutulur.
- */
+
 
 export const SECTION_IDS = [
   'hero',
@@ -75,11 +72,9 @@ export function setStoredSectionAnimations(map: SectionAnimationsMap): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(map));
   } catch {
-    // ignore
   }
 }
 
-/** Bölüm için uygulanacak Tailwind/class ismi (opacity 0 başlangıç için gerekirse) */
 export function getAnimationClass(animationId: AnimationId | undefined): string {
   if (!animationId || animationId === 'none') return '';
   return `animate-${animationId}`;

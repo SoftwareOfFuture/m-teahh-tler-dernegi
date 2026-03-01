@@ -15,7 +15,6 @@ function parseYouTubeId(url: string): string | null {
       if (u.pathname.startsWith('/shorts/')) return u.pathname.split('/shorts/')[1] || null;
     }
   } catch {
-    // ignore
   }
   return null;
 }
@@ -35,7 +34,6 @@ function toEmbedInfo(rawUrl: string): { kind: 'youtube' | 'vimeo' | 'file' | 'un
       if (id && /^\d+$/.test(id)) return { kind: 'vimeo', embedUrl: `https://player.vimeo.com/video/${id}?autoplay=1` };
     }
   } catch {
-    // ignore
   }
 
   if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(u)) return { kind: 'file', fileUrl: u };

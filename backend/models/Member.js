@@ -39,7 +39,6 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: false,
     },
     verificationStatus: {
-      // pending_docs | under_review | resubmit_required | rejected | approved
       type: DataTypes.STRING(32),
       defaultValue: 'pending_docs',
     },

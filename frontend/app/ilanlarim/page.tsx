@@ -166,7 +166,7 @@ export default function IlanlarimPage() {
               </div>
             )}
 
-            {/* Yeni ilan formu */}
+            {}
             <div className="mt-6 rounded-3xl bg-soft-gray p-6">
               <h3 className="text-base font-bold text-slate-900">Yeni İlan Ekle</h3>
               <form onSubmit={handleCreate} className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -252,7 +252,7 @@ export default function IlanlarimPage() {
               </form>
             </div>
 
-            {/* Listem */}
+            {}
             <div className="mt-8">
               <h3 className="text-base font-bold text-slate-900">Eklediğim İlanlar</h3>
               {listLoading ? (

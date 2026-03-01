@@ -1,12 +1,4 @@
-/**
- * Kurul listesi Excel dosyasından üyeleri import eder.
- * - Tüm liste (Yönetim + Denetim Kurulu) alınır.
- * - Yeni kişiler: eklenir.
- * - Mevcut kişiler: sadece boş alanlar Excel'den doldurulur (mevcut veri korunur).
- *
- * Kullanım: node scripts/import-board-from-xls.js [dosya-yolu]
- * Örnek: node scripts/import-board-from-xls.js board-list-2.xlsx
- */
+
 require('dotenv').config();
 const path = require('path');
 const XLSX = require('xlsx');
@@ -18,8 +10,6 @@ if (process.env.POSTGRES_URL_NON_POOLING) {
 const db = require('../models');
 
 const filePath = process.argv[2] || path.join(__dirname, '../board-list-2.xlsx');
-
-// Excel "Yeni Görevi" -> BoardRole label eşlemesi (sadece Yönetim Kurulu için)
 const ROLE_MAP = [
   { pattern: /Yönetim Kurulu Başkan\s*$/i, roleLabel: 'Yönetim Kurulu Başkanı' },
   { pattern: /Yönetim Kurulu Başkan Yardımcısı/i, roleLabel: 'Başkan Yardımcısı' },
@@ -126,8 +116,6 @@ async function main() {
       console.log('Eklendi:', m.name, '-', m.duty || '');
       continue;
     }
-
-    // Mevcut kayıt: sadece boş alanları doldur
     const updates = {};
     if (isEmpty(existing.unit) && !isEmpty(m.unit)) updates.unit = m.unit;
     if (isEmpty(existing.profession) && !isEmpty(m.profession)) updates.profession = m.profession;

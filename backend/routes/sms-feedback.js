@@ -10,8 +10,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// Public: POST /api/sms-feedback
 router.post(
   '/',
   [
@@ -38,8 +36,6 @@ router.post(
     }
   }
 );
-
-// Platform Admin: GET /api/sms-feedback/admin/all
 router.get(
   '/admin/all',
   auth,

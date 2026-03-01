@@ -36,7 +36,6 @@ export default function CorporatePage() {
         if (cancelled) return;
         setPage(res);
       } catch {
-        // keep fallback
       }
     }
     load();

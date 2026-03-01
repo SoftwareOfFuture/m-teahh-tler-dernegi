@@ -1,10 +1,4 @@
-/**
- * Cloudinary ile görsel yükleme — yüklenen dosya canlı URL olarak döner
- * (örn. https://res.cloudinary.com/.../image/upload/.../xxx.jpg)
- *
- * Gerekli env: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
- * Upload preset: Cloudinary Dashboard > Settings > Upload > Upload presets > Unsigned olarak oluşturun.
- */
+
 
 const CLOUD_NAME = typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME : '';
 const UPLOAD_PRESET = typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET : '';

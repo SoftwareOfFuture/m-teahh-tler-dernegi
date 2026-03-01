@@ -66,7 +66,7 @@ export default function MyProfilePage() {
       const { blob } = await getMemberDocumentBlob(token, docId);
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank', 'noopener,noreferrer');
-      // Let the new tab load; revoke later.
+
       setTimeout(() => URL.revokeObjectURL(url), 5 * 60 * 1000);
     } catch (e: any) {
       setDocsError(e?.message ?? 'Önizleme açılamadı.');

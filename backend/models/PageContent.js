@@ -43,11 +43,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(64),
       },
       mapEmbedUrl: {
-        // Google Maps "Embed a map" iframe src
         type: DataTypes.STRING(2000),
       },
       quickInfo: {
-        // newline-separated bullet lines
         type: DataTypes.TEXT,
       },
       mission: {

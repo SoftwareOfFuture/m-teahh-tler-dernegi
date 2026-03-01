@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export type DigitalPlatformItem = {
   id: string;
@@ -20,7 +20,6 @@ function isInternalHref(href: string) {
 }
 
 function themeClasses(accent: DigitalPlatformItem['accent']) {
-  // Tüm accent'ler için bordo-kırmızı tema
   switch (accent) {
     case 'emerald':
       return {
@@ -65,6 +64,7 @@ function themeClasses(accent: DigitalPlatformItem['accent']) {
 function PlatformBlock({
   item,
   align = 'left',
+  inView = true,
   cardRef,
   imageRef,
   overlayRef,
@@ -78,6 +78,7 @@ function PlatformBlock({
 }: {
   item: DigitalPlatformItem;
   align?: 'left' | 'right';
+  inView?: boolean;
   cardRef?: (el: HTMLDivElement | null) => void;
   imageRef?: (el: HTMLDivElement | null) => void;
   overlayRef?: (el: HTMLDivElement | null) => void;
@@ -95,8 +96,10 @@ function PlatformBlock({
     item.backgroundImageUrl ||
     'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=2400&q=70';
 
+  const transitionClass = 'transition-all duration-500 ease-out';
+  const inViewClass = inView ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-[0.98]';
   const inner = (
-    <div ref={cardRef} className="relative min-h-[180px] w-full xs:min-h-[200px] sm:min-h-[280px]">
+    <div ref={cardRef} className={`relative min-h-[180px] w-full xs:min-h-[200px] sm:min-h-[280px] ${transitionClass} ${inViewClass}`}>
       <div ref={imageRef} className="absolute inset-0 overflow-hidden">
         <Image
           src={bg}
@@ -115,7 +118,7 @@ function PlatformBlock({
         <div className={`flex w-full min-w-0 ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
           <div
             ref={contentRef}
-            className={`min-w-0 max-w-full flex-1 ${align === 'right' ? 'text-right' : 'text-left'}`}
+            className={`min-w-0 max-w-full flex-1 ${align === 'right' ? 'text-right' : 'text-left'} ${transitionClass} ${inViewClass}`}
           >
             <div
               ref={pillRef}
@@ -242,321 +245,30 @@ export function DigitalPlatformsSlider({
   const subtitleElsRef = useRef<Array<HTMLDivElement | null>>([]);
   const descElsRef = useRef<Array<HTMLParagraphElement | null>>([]);
   const buttonElsRef = useRef<Array<HTMLSpanElement | null>>([]);
+  const [visibleIndices, setVisibleIndices] = useState<Set<number>>(new Set([0]));
 
   useEffect(() => {
     if (!list.length) return;
-
     if (typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) {
       return;
     }
-
-    let obs: IntersectionObserver | null = null;
-    let disconnected = false;
-
-    const runObserver = async () => {
-      await new Promise((r) => requestAnimationFrame(r));
-      await new Promise((r) => setTimeout(r, 50));
-      if (disconnected) return;
-
-      const containerEls = contentElsRef.current.filter(Boolean) as HTMLDivElement[];
-      if (!containerEls.length) return;
-
-      try {
-        const mod: any = await import('gsap');
-        const gsap = mod?.gsap || mod?.default || mod;
-        if (!gsap) return;
-
-        // Initialize all elements as hidden with modern effects
-        containerEls.forEach((containerEl, idx) => {
-          const dir = containerEl.getAttribute('data-anim-dir') === 'right' ? 1 : -1;
-          
-          // Card container animation
-          const card = cardElsRef.current[idx];
-          const image = imageElsRef.current[idx];
-          const overlay = overlayElsRef.current[idx];
-          const gradient = gradientElsRef.current[idx];
-          
-          if (card) {
-            gsap.set(card, {
-              opacity: 0,
-              scale: 0.92,
-              y: 40,
-            });
-          }
-          
-          if (image) {
-            gsap.set(image, {
-              scale: 1.15,
-            });
-            // Image içindeki img elementini animasyonlu yap
-            const imgEl = image.querySelector('img');
-            if (imgEl) {
-              gsap.set(imgEl, {
-                scale: 1.15,
-                opacity: 0.7,
-              });
-            }
-          }
-          
-          if (overlay) {
-            gsap.set(overlay, {
-              opacity: 0,
-            });
-          }
-          
-          if (gradient) {
-            gsap.set(gradient, {
-              opacity: 0,
-            });
-          }
-          
-          // Container animation (smooth entrance)
-          gsap.set(containerEl, {
-            opacity: 0,
-            x: 60 * dir,
-            y: 20,
-            scale: 0.95,
-            filter: 'blur(8px)',
-          });
-
-          // Individual text elements with stagger-ready setup
-          const pill = pillElsRef.current[idx];
-          const title = titleElsRef.current[idx];
-          const subtitle = subtitleElsRef.current[idx];
-          const desc = descElsRef.current[idx];
-          const button = buttonElsRef.current[idx];
-
-          if (pill) {
-            gsap.set(pill, {
-              opacity: 0,
-              y: 20,
-              scale: 0.8,
-              filter: 'blur(4px)',
-            });
-          }
-          if (title) {
-            gsap.set(title, {
-              opacity: 0,
-              y: 30,
-              scale: 0.9,
-              filter: 'blur(6px)',
-            });
-          }
-          if (subtitle) {
-            gsap.set(subtitle, {
-              opacity: 0,
-              y: 25,
-              scale: 0.92,
-              filter: 'blur(5px)',
-            });
-          }
-          if (desc) {
-            gsap.set(desc, {
-              opacity: 0,
-              y: 20,
-              scale: 0.95,
-              filter: 'blur(4px)',
-            });
-          }
-          if (button) {
-            gsap.set(button, {
-              opacity: 0,
-              y: 15,
-              scale: 0.85,
-              filter: 'blur(3px)',
-            });
-          }
-        });
-
-        obs = new IntersectionObserver(
-          (entries) => {
-            if (disconnected) return;
-            for (const entry of entries) {
-              if (!entry.isIntersecting) continue;
-              const containerEl = entry.target as HTMLDivElement;
-              const idx = Array.from(containerEls).indexOf(containerEl);
-              if (idx === -1) continue;
-
-              const dir = containerEl.getAttribute('data-anim-dir') === 'right' ? 1 : -1;
-              
-              // Get individual elements
-              const pill = pillElsRef.current[idx];
-              const title = titleElsRef.current[idx];
-              const subtitle = subtitleElsRef.current[idx];
-              const desc = descElsRef.current[idx];
-              const button = buttonElsRef.current[idx];
-
-              // Get card elements
-              const card = cardElsRef.current[idx];
-              const image = imageElsRef.current[idx];
-              const overlay = overlayElsRef.current[idx];
-              const gradient = gradientElsRef.current[idx];
-              
-              // Create timeline for smooth sequential animation
-              const tl = gsap.timeline({
-                defaults: { ease: 'power3.out' },
-              });
-
-              // Card entrance animation (first - the whole card slides in)
-              if (card) {
-                tl.to(card, {
-                  opacity: 1,
-                  scale: 1,
-                  y: 0,
-                  duration: 1.0,
-                  ease: 'power3.out',
-                });
-              }
-              
-              // Background image zoom effect
-              if (image) {
-                tl.to(
-                  image,
-                  {
-                    scale: 1,
-                    duration: 1.2,
-                    ease: 'power2.out',
-                  },
-                  '-=0.8'
-                );
-                // Image içindeki img elementini animasyonlu yap
-                const imgEl = image.querySelector('img');
-                if (imgEl) {
-                  tl.to(
-                    imgEl,
-                    {
-                      scale: 1,
-                      opacity: 1,
-                      duration: 1.2,
-                      ease: 'power2.out',
-                    },
-                    '-=1.2'
-                  );
-                }
-              }
-              
-              // Overlay fade in
-              if (overlay) {
-                tl.to(
-                  overlay,
-                  {
-                    opacity: 1,
-                    duration: 0.8,
-                  },
-                  '-=1.0'
-                );
-              }
-              
-              // Gradient fade in
-              if (gradient) {
-                tl.to(
-                  gradient,
-                  {
-                    opacity: 1,
-                    duration: 0.8,
-                  },
-                  '-=0.8'
-                );
-              }
-
-              // Container/content entrance (smooth)
-              tl.to(containerEl, {
-                opacity: 1,
-                x: 0,
-                y: 0,
-                scale: 1,
-                filter: 'blur(0px)',
-                duration: 0.9,
-              }, '-=0.5');
-
-              // Stagger text elements with modern effects
-              if (pill) {
-                tl.to(
-                  pill,
-                  {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: 'blur(0px)',
-                    duration: 0.6,
-                  },
-                  '-=0.7'
-                );
-              }
-
-              if (title) {
-                tl.to(
-                  title,
-                  {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: 'blur(0px)',
-                    duration: 0.75,
-                  },
-                  '-=0.5'
-                );
-              }
-
-              if (subtitle) {
-                tl.to(
-                  subtitle,
-                  {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: 'blur(0px)',
-                    duration: 0.65,
-                  },
-                  '-=0.4'
-                );
-              }
-
-              if (desc) {
-                tl.to(
-                  desc,
-                  {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: 'blur(0px)',
-                    duration: 0.7,
-                  },
-                  '-=0.3'
-                );
-              }
-
-              if (button) {
-                tl.to(
-                  button,
-                  {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    filter: 'blur(0px)',
-                    duration: 0.6,
-                    ease: 'back.out(1.2)',
-                  },
-                  '-=0.2'
-                );
-              }
-
-              obs?.unobserve(containerEl);
-            }
-          },
-          { threshold: 0.4, rootMargin: '0px 0px -25% 0px' }
-        );
-
-        for (const el of containerEls) obs.observe(el);
-      } catch {
-      }
-    };
-
-    runObserver();
-
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const i = parseInt((entry.target as HTMLDivElement).getAttribute('data-index') ?? '', 10);
+          if (!isNaN(i)) setVisibleIndices((prev) => new Set([...prev, i]));
+        }
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+    );
+    const t = setTimeout(() => {
+      const els = contentElsRef.current.filter(Boolean) as HTMLDivElement[];
+      els.forEach((el) => observer.observe(el));
+    }, 80);
     return () => {
-      disconnected = true;
-      obs?.disconnect();
+      clearTimeout(t);
+      observer.disconnect();
     };
   }, [list]);
 
@@ -580,6 +292,7 @@ export function DigitalPlatformsSlider({
               <PlatformBlock
                 item={item}
                 align={align}
+                inView={visibleIndices.has(idx)}
                 cardRef={(el) => {
                   cardElsRef.current[idx] = el;
                 }}
@@ -593,7 +306,10 @@ export function DigitalPlatformsSlider({
                   gradientElsRef.current[idx] = el;
                 }}
                 contentRef={(el) => {
-                  if (el) el.setAttribute('data-anim-dir', animDir);
+                  if (el) {
+                    el.setAttribute('data-anim-dir', animDir);
+                    el.setAttribute('data-index', String(idx));
+                  }
                   contentElsRef.current[idx] = el;
                 }}
                 pillRef={(el) => {
@@ -619,4 +335,3 @@ export function DigitalPlatformsSlider({
     </section>
   );
 }
-

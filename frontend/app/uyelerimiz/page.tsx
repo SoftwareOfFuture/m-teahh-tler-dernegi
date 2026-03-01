@@ -1,7 +1,5 @@
 'use client';
 
-/* eslint-disable @next/next/no-img-element */
-
 import { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PageHero } from '../../components/PageHero';
@@ -28,7 +26,7 @@ function normalizeWebsiteUrl(raw: string | null | undefined): string | null {
   const lower = v.toLowerCase();
   if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('file:')) return null;
   if (lower.startsWith('http://') || lower.startsWith('https://')) return v;
-  // allow "www.example.com" or "example.com"
+
   return `https://${v.replace(/^\/+/, '')}`;
 }
 
@@ -66,8 +64,7 @@ function MembersPageInner() {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    
-    // Fetch both partners and members
+
     Promise.all([
       listPartnersPublic({ limit: 500 }),
       listMembersPublic({ page: 1, limit: 500, search: effectiveSearch || undefined }),
@@ -76,8 +73,7 @@ function MembersPageInner() {
         if (cancelled) return;
         
         const combined: CombinedItem[] = [];
-        
-        // Add partners
+
         if (Array.isArray(partnersRes)) {
           const pm = new Map<number, Partner>();
           partnersRes.forEach((p: Partner) => {
@@ -93,17 +89,15 @@ function MembersPageInner() {
           });
           setPartnersMap(pm);
         }
-        
-        // Add approved members (exclude admin accounts)
+
         if (membersRes?.items) {
           membersRes.items.forEach((m: PublicMember) => {
-            // Exclude admin accounts
+
             if (m.role === 'platform_admin' || m.role === 'admin') return;
             
             const company = (m.company || m.name || '').trim();
             if (!company) return;
-            
-            // Apply search filter if needed
+
             if (effectiveSearch) {
               const searchLower = effectiveSearch.toLowerCase();
               const matchesCompany = company.toLowerCase().includes(searchLower);
@@ -123,8 +117,7 @@ function MembersPageInner() {
             });
           });
         }
-        
-        // Pagination
+
         const itemsPerPage = 12;
         const startIndex = (page - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
@@ -251,7 +244,7 @@ function MembersPageInner() {
         </div>
       </section>
 
-      {/* Modal */}
+      {}
       {selectedItem && (
         <MemberPartnerModal
           item={selectedItem}

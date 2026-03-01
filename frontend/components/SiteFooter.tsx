@@ -50,7 +50,7 @@ export function SiteFooter() {
     <footer className="mt-auto w-full min-w-0 overflow-hidden bg-burgundy-dark safe-area-inset-bottom" role="contentinfo">
       <div className="w-full min-w-0 px-3 py-8 xs:px-4 xs:py-10 sm:px-6 sm:py-14 md:py-16 lg:px-8 lg:py-20 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))] [padding-bottom:max(2.5rem,calc(env(safe-area-inset-bottom)+1.5rem))]">
         <div className="grid grid-cols-1 gap-8 min-w-0 sm:gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-12">
-          {/* Hakkımızda */}
+          {}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">Hakkımızda</h3>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/80">
@@ -58,7 +58,7 @@ export function SiteFooter() {
             </p>
           </div>
 
-          {/* Hızlı Erişim */}
+          {}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">Hızlı Erişim</h3>
             <ul className="mt-4 space-y-0 text-sm text-white/80 sm:space-y-2">
@@ -75,7 +75,7 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Yasal */}
+          {}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">Yasal</h3>
             <ul className="mt-4 space-y-0 text-sm text-white/80 sm:space-y-2">
@@ -86,7 +86,7 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* İletişim & Sosyal Medya */}
+          {}
           <div>
             <h3 className="text-base font-bold text-white sm:text-lg">İletişim</h3>
             <p className="mt-3 text-sm text-white/80">Antalya İnşaat Müteahhitleri Derneği</p>

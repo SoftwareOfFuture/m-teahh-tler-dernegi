@@ -4,8 +4,6 @@ const db = require('../models');
 const { auth, adminOnly } = require('../middleware/auth');
 
 const router = express.Router();
-
-// Varsayılan eşleşme (DB'de dutyPattern yoksa)
 const FALLBACK_PATTERNS = [
   { pattern: /Yönetim Kurulu Başkan\s*$/i, order: 1, label: 'Yönetim Kurulu Başkanı' },
   { pattern: /Yönetim Kurulu Başkan (Vekili|Yardımcısı)/i, order: 2, label: null },
@@ -34,14 +32,12 @@ function getRoleLabelAndSort(p, rolesFromDb = []) {
   if (p.role === 'baskan') {
     return { roleLabel: 'Yönetim Kurulu Başkanı', roleSortOrder: 1 };
   }
-  // Önce DB'deki rollerden dutyPattern ile eşleşme (sortOrder'a göre)
   const sortedRoles = [...rolesFromDb].sort((a, b) => (a.sortOrder ?? 99) - (b.sortOrder ?? 99));
   for (const r of sortedRoles) {
     if (r.dutyPattern && dutyMatchesPattern(duty, r.dutyPattern)) {
       return { roleLabel: r.label, roleSortOrder: r.sortOrder ?? 99 };
     }
   }
-  // Fallback: hardcoded pattern
   for (const { pattern, order, label } of FALLBACK_PATTERNS) {
     if (pattern.test(duty)) {
       return { roleLabel: label || duty, roleSortOrder: order };
@@ -69,8 +65,6 @@ async function getBoardRolesSafe() {
     return [];
   }
 }
-
-// GET /api/board-members - public list (published only), with BoardRole
 router.get('/', async (req, res) => {
   try {
     const [items, roles] = await Promise.all([
@@ -92,8 +86,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/board-members/admin/all - admin list
 router.get(
   '/admin/all',
   auth,
@@ -124,8 +116,6 @@ router.get(
     }
   }
 );
-
-// POST /api/board-members - admin create (manual validation for robustness)
 router.post('/', auth, adminOnly, async (req, res) => {
   try {
     const raw = req.body || {};
@@ -163,8 +153,6 @@ router.post('/', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// PUT /api/board-members/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -207,8 +195,6 @@ router.put(
     }
   }
 );
-
-// DELETE /api/board-members/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.BoardMember.findByPk(req.params.id);

@@ -8,12 +8,6 @@ import { getToken } from '../lib/api';
 import { useSiteSettings } from '../lib/useSiteSettings';
 import { MobileMenu, type MobileMenuItem } from './MobileMenu';
 
-/* =============================================================================
-   NAVBAR - Kurumsal Beyaz Navbar
-   - Sabit üstte kalır, kaydırmada kayma/gizlenme yok
-   - Blur efekti, fixed + spacer ile layout shift yok
-   ============================================================================= */
-
 export type NavItem = { href: string; label: string } | { label: string; children: { href: string; label: string }[] };
 
 function InstagramIcon() {
@@ -72,7 +66,6 @@ export function Navbar() {
         className="flex w-full min-w-0 flex-nowrap items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6 md:py-3 lg:px-6 [padding-left:max(0.75rem,env(safe-area-inset-left))] [padding-right:max(0.75rem,env(safe-area-inset-right))]"
         aria-label="Ana navigasyon"
       >
-        {/* SOL: Logo */}
         <Link
           href="/"
           className="flex min-h-[44px] shrink-0 items-center gap-2 sm:gap-3"
@@ -87,7 +80,6 @@ export function Navbar() {
           </div>
         </Link>
 
-        {/* ORTA: Nav linkleri — tek sıra, sıkı */}
         <div className="hidden shrink-0 flex-nowrap items-center gap-px lg:flex">
           {navItems.map((item) => {
             if ('children' in item) {
@@ -117,10 +109,7 @@ export function Navbar() {
                       <path d="M6 9l6 6 6-6" />
                     </svg>
                   </button>
-                  {/* Köprü: buton ile menü arasında boşluk - fare menüye geçerken dropdown kapanmasın */}
-                  {open ? (
-                    <div className="absolute left-0 right-0 top-full h-1 z-50" aria-hidden />
-                  ) : null}
+                  {open ? <div className="absolute left-0 right-0 top-full h-1 z-50" aria-hidden /> : null}
                   {open ? (
                     <ul
                       className="absolute left-0 top-full z-50 pt-1 min-w-[200px] list-none rounded-xl border border-slate-100 bg-white py-1 shadow-soft"
@@ -164,7 +153,6 @@ export function Navbar() {
           })}
         </div>
 
-        {/* SAĞ: Sosyal ikonlar + Üye Girişi + Hamburger */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <div className="hidden items-center gap-0.5 md:flex">
             {social?.instagramUrl ? (
@@ -254,7 +242,6 @@ export function Navbar() {
         </div>
       </nav>
     </header>
-    {/* Spacer: fixed navbar için yer kaplar, kaydırınca içerik zıplamaz */}
     <div className="h-14 flex-shrink-0 sm:h-14" aria-hidden />
     </>
   );

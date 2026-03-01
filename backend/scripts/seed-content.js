@@ -1,6 +1,4 @@
 require('dotenv').config();
-
-// Use NON_POOLING connection for schema sync/migrations.
 if (process.env.POSTGRES_URL_NON_POOLING) {
   process.env.POSTGRES_URL = process.env.POSTGRES_URL_NON_POOLING;
   process.env.DATABASE_URL = process.env.POSTGRES_URL_NON_POOLING;
@@ -8,11 +6,7 @@ if (process.env.POSTGRES_URL_NON_POOLING) {
 
 const db = require('../models');
 
-// PageContent (kurumsal, iletisim) - always seed/update antmutder.org themed baseline
-// Other content (slides, news, etc.) - only when SEED_DEFAULT_CONTENT=true
-
 function isoFromDotDate(dot) {
-  // "30.01.2026" -> "2026-01-30"
   const m = String(dot || '').match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
   if (!m) return new Date().toISOString().split('T')[0];
   const [, dd, mm, yyyy] = m;
@@ -48,9 +42,6 @@ async function seedMissingByKey(model, rows, name, getKey, attrs = ['id', 'title
   await model.bulkCreate(toInsert);
   console.log(`${name}: inserted ${toInsert.length} missing rows`);
 }
-
-// Sadece eksik sayfaları oluştur. Mevcut sayfaları GÜNCELLEME - admin panelden
-// yapılan değişiklikler deploy sonrası silinmesin.
 async function seedPageContent(pages) {
   for (const p of pages) {
     const existing = await db.PageContent.findOne({ where: { slug: p.slug } });
@@ -66,8 +57,6 @@ async function seedPageContent(pages) {
 async function seed() {
   try {
     await db.sequelize.sync({ alter: true });
-
-    // PAGE CONTENT - Antalya İnşaat Müteahhitleri Derneği (antmutder.org) - always seed/update
     const pageContents = [
       {
         slug: 'kurumsal',
@@ -109,8 +98,6 @@ async function seed() {
       },
     ];
     await seedPageContent(pageContents);
-
-    // BOARD ROLES - Yönetim Kurulu kategorileri (piramit sırasına göre)
     const defaultBoardRoles = [
       { label: 'Yönetim Kurulu Başkanı', sortOrder: 1 },
       { label: 'Yönetim Kurulu Başkan Yardımcısı', sortOrder: 2 },
@@ -139,8 +126,6 @@ async function seed() {
       console.log('seed-content: slides/news/etc. skipped (SEED_DEFAULT_CONTENT is not true)');
       process.exit(0);
     }
-
-    // HERO SLIDER - antmutder.org teması
     const slides = [
       {
         title: 'Antalya İnşaat Müteahhitleri Derneği',
@@ -170,8 +155,6 @@ async function seed() {
         isPublished: true,
       },
     ];
-
-    // NEWS
     const news = [
       {
         title: 'Sektör Buluşması Antalya’da Gerçekleştirildi',
@@ -228,8 +211,6 @@ async function seed() {
         isPublished: true,
       },
     ];
-
-    // ANNOUNCEMENTS - ANTMUTDER teması
     const announcements = [
       {
         code: 'ANTMUTDER-2026-01',
@@ -264,8 +245,6 @@ async function seed() {
         isPublished: true,
       },
     ];
-
-    // VIDEOS
     const videos = [
       {
         title: 'Tanıtım Filmi',
@@ -292,8 +271,6 @@ async function seed() {
         isPublished: true,
       },
     ];
-
-    // PUBLICATIONS - ANTMUTDER teması
     const publications = [
       {
         title: 'Antalya İnşaat Müteahhitleri Derneği Faaliyet Raporu 2025',

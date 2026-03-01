@@ -29,7 +29,6 @@ export default function BuguneKadarYaptiklarimizPage() {
         if (cancelled) return;
         setPage(res);
       } catch {
-        // keep fallback
       }
     }
     load();

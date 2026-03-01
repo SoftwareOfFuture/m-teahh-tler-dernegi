@@ -13,7 +13,6 @@ module.exports = (sequelize, DataTypes) => {
         references: { model: 'members', key: 'id' },
       },
       kind: {
-        // contractor_license | tax_certificate | trade_registry
         type: DataTypes.STRING(64),
         allowNull: false,
       },
@@ -28,12 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: 0,
       },
       data: {
-        // stored in Postgres as BYTEA
         type: DataTypes.BLOB,
         allowNull: false,
       },
       status: {
-        // uploaded | approved | rejected | resubmit_required
         type: DataTypes.STRING(32),
         defaultValue: 'uploaded',
       },

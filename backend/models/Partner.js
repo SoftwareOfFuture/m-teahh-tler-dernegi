@@ -8,19 +8,19 @@ module.exports = (sequelize, DataTypes) => {
         autoIncrement: true,
       },
       title: {
-        // partner name
+
         type: DataTypes.STRING(255),
         allowNull: true,
       },
       logoText: {
-        // used in current UI as text-logo
+
         type: DataTypes.STRING(255),
       },
       logoUrl: {
         type: DataTypes.TEXT,
       },
       websiteUrl: {
-        // partner website URL
+
         type: DataTypes.STRING(500),
       },
       sortOrder: {

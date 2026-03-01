@@ -11,7 +11,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/partners - public list for logo slider
 router.get(
   '/',
   [query('limit').optional().isInt({ min: 1, max: 500 }).toInt()],
@@ -31,7 +30,6 @@ router.get(
   }
 );
 
-// GET /api/partners/admin/all - admin list
 router.get(
   '/admin/all',
   auth,
@@ -55,7 +53,6 @@ router.get(
   }
 );
 
-// POST /api/partners - admin create
 router.post(
   '/',
   auth,
@@ -86,7 +83,6 @@ router.post(
   }
 );
 
-// PUT /api/partners/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -120,7 +116,6 @@ router.put(
   }
 );
 
-// DELETE /api/partners/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Partner.findByPk(req.params.id);

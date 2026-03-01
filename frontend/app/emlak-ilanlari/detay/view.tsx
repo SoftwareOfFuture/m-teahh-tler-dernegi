@@ -78,7 +78,7 @@ export function PropertyDetailView() {
           </div>
         ) : (
           <article className="mt-6 overflow-hidden rounded-3xl bg-white shadow-card">
-            {/* Görsel - sabah/emlak tarzı büyük alan */}
+            {}
             <div className="relative aspect-[21/9] w-full min-h-[200px] bg-slate-100">
               <Image
                 src={normalizeImageSrc(item.imageUrl) || PLACEHOLDER_IMG}
@@ -98,7 +98,7 @@ export function PropertyDetailView() {
             <div className="p-6 sm:p-8">
               <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">{item.title}</h1>
 
-              {/* Özet bilgiler - ikonlu satır */}
+              {}
               <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 border-b border-slate-200 pb-6 text-sm text-slate-700">
                 {item.address && (
                   <span className="flex items-center gap-2">
@@ -135,7 +135,7 @@ export function PropertyDetailView() {
                 )}
               </div>
 
-              {/* Açıklama */}
+              {}
               {item.description && (
                 <div className="mt-6">
                   <h2 className="text-lg font-bold text-slate-900">Açıklama</h2>

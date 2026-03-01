@@ -11,7 +11,6 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/slides - public list for homepage slider
 router.get(
   '/',
   [query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -31,7 +30,6 @@ router.get(
   }
 );
 
-// GET /api/slides/admin/all - admin list
 router.get(
   '/admin/all',
   auth,
@@ -55,7 +53,6 @@ router.get(
   }
 );
 
-// POST /api/slides - admin create
 router.post(
   '/',
   auth,
@@ -88,7 +85,6 @@ router.post(
   }
 );
 
-// PUT /api/slides/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -124,7 +120,6 @@ router.put(
   }
 );
 
-// DELETE /api/slides/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.HeroSlide.findByPk(req.params.id);

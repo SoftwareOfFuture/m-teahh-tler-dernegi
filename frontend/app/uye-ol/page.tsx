@@ -174,8 +174,6 @@ export default function RegisterPage() {
                   termsAccepted: true,
                 });
                 setToken(res.token);
-
-                // Upload required documents right after registration
                 for (const kind of requiredKinds) {
                   const f = docs[kind]!;
                   const base64 = await fileToBase64(f);

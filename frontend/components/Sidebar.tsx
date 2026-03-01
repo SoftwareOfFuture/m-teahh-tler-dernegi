@@ -32,7 +32,7 @@ export function Sidebar({ events, loadingEvents }: Props) {
 
   return (
     <aside className="space-y-6">
-      {/* Üye Arama */}
+      {}
       <div className="rounded-3xl bg-white p-5 shadow-card">
         <h3 className="text-sm font-bold text-slate-900">Üye Arama</h3>
 
@@ -57,7 +57,7 @@ export function Sidebar({ events, loadingEvents }: Props) {
             className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-burgundy"
           />
 
-          {/* Dummy action */}
+          {}
           <button
             type="button"
             className="w-full rounded-full bg-soft-gray px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
@@ -72,7 +72,7 @@ export function Sidebar({ events, loadingEvents }: Props) {
               }
               setSearching(true);
               try {
-                // Backend public endpoint lists ONLY approved members.
+
                 const res = await listMembersPublic({ page: 1, limit: 6, search: query });
                 setResults(res.items || []);
               } catch (e: any) {
@@ -132,7 +132,7 @@ export function Sidebar({ events, loadingEvents }: Props) {
         </div>
       </div>
 
-      {/* Sektörel Paydaşlar */}
+      {}
       <button
         type="button"
         className="w-full rounded-full bg-soft-gray px-5 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100"
@@ -140,7 +140,7 @@ export function Sidebar({ events, loadingEvents }: Props) {
         SEKTÖREL PAYDAŞLAR
       </button>
 
-      {/* Etkinlikler */}
+      {}
       <div className="rounded-3xl bg-white p-5 shadow-card">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900">Etkinlikler</h3>

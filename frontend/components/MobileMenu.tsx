@@ -4,15 +4,6 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-/* =============================================================================
-   MobileMenu - Mobil uyumlu hamburger menü
-   - Hamburger ↔ X animasyonu
-   - Sağdan slide-in + opacity
-   - Açıkken body scroll kilitli
-   - Link tıklanınca otomatik kapanır
-   - Dark mode uyumlu, minimal tasarım
-   ============================================================================= */
-
 export type MobileMenuItem =
   | { href: string; label: string }
   | { label: string; children: { href: string; label: string }[] };
@@ -22,20 +13,13 @@ type MobileMenuProps = {
   onToggle: () => void;
   items: MobileMenuItem[];
   activeHref?: string;
-  /** Menü panelinde linklerin altında render edilecek ek içerik (örn. sosyal ikonlar) */
   footer?: React.ReactNode;
-  /** Menü butonu için ek class */
   buttonClassName?: string;
-  /** Menü paneli için ek class */
   panelClassName?: string;
 };
 
 const MENU_ID = 'mobile-menu-panel';
 
-/**
- * Hamburger ↔ X animasyonlu ikon.
- * Üç çizgi: açıkken üst ve alt 45° döner, orta opacity 0.
- */
 function HamburgerIcon({ open }: { open: boolean }) {
   return (
     <svg
@@ -50,7 +34,6 @@ function HamburgerIcon({ open }: { open: boolean }) {
       aria-hidden
       className="size-6"
     >
-      {/* Üst çizgi: açıkken 45° döner, ortaya taşınır */}
       <line
         x1="4"
         y1="6"
@@ -60,7 +43,6 @@ function HamburgerIcon({ open }: { open: boolean }) {
           open ? 'translate-y-1.5 rotate-45' : ''
         }`}
       />
-      {/* Orta çizgi: açıkken opacity 0 */}
       <line
         x1="4"
         y1="12"
@@ -70,7 +52,6 @@ function HamburgerIcon({ open }: { open: boolean }) {
           open ? 'opacity-0' : ''
         }`}
       />
-      {/* Alt çizgi: açıkken -45° döner, ortaya taşınır */}
       <line
         x1="4"
         y1="18"
@@ -98,7 +79,6 @@ export function MobileMenu({
     setMounted(true);
   }, []);
 
-  // Menü açıkken body scroll devre dışı
   useEffect(() => {
     if (open) {
       const prev = document.body.style.overflow;
@@ -122,16 +102,12 @@ export function MobileMenu({
 
   const overlayContent = (
       <>
-        {/* Backdrop: tıklanınca kapat - body'da render, parent transform'tan etkilenmez */}
         <div
-          className={`fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out lg:hidden ${
-            open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
-          }`}
+          className={`fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out lg:hidden ${open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
           aria-hidden
           onClick={onToggle}
         />
 
-        {/* Menü paneli: viewport tam yükseklik, sağdan slide-in */}
         <div
           id={MENU_ID}
           role="navigation"
@@ -191,7 +167,6 @@ export function MobileMenu({
 
   return (
     <>
-      {/* Hamburger / Kapat butonu */}
       <button
         type="button"
         onClick={onToggle}

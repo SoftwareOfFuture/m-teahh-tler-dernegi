@@ -18,8 +18,6 @@ function isCloudinaryConfigured() {
   );
 }
 
-// POST /api/upload/image — admin only, body: { image: "data:image/...;base64,..." }
-// Yüklenen görsel Cloudinary'e gider, canlı URL döner (API Key/Secret sadece sunucuda).
 router.post(
   '/image',
   auth,

@@ -31,7 +31,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full safe-area-inset-top">
-      {/* Glassmorphism navbar: semi-transparent + backdrop-blur */}
+      {}
       <div className="mx-4 mt-4 rounded-2xl border border-white/20 bg-white/70 px-4 py-3 shadow-soft backdrop-blur-xl md:mx-6 md:mt-6 md:rounded-full md:px-6 md:py-3">
         <div className="flex w-full items-center justify-between gap-4">
           <Link href="/" className="group flex items-center gap-3">
@@ -88,7 +88,7 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile menu: slide-down with animation */}
+      {}
       <div
         className={`overflow-hidden transition-all duration-300 ease-out ${
           open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'

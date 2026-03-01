@@ -35,7 +35,6 @@ export function ChunkErrorAutoReload() {
         if (sessionStorage.getItem(KEY)) return;
         sessionStorage.setItem(KEY, '1');
       } catch {
-        // ignore storage failures
       }
 
       try {

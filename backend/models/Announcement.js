@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
       autoIncrement: true,
     },
     code: {
-      // e.g. AMD-2026-68
       type: DataTypes.STRING(100),
     },
     title: {

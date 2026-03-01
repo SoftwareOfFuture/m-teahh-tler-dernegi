@@ -18,7 +18,6 @@ router.get('/upcoming', async (req, res) => {
     const items = await db.Event.findAll({
       where: {
         isPublished: true,
-        // if eventDate is null, still include but sort after dated ones
       },
       order: [
         ['sortOrder', 'ASC'],

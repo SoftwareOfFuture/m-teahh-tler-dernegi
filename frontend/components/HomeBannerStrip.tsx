@@ -34,71 +34,30 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
     setCurrentIndex(0);
     setLayerA(list[0]);
     setLayerB(list[0]);
-    (async () => {
-      try {
-        const mod: any = await import('gsap');
-        const gsap = mod?.gsap || mod?.default || mod;
-        if (!gsap) return;
-        if (layerARef.current) gsap.set(layerARef.current, { opacity: 1, zIndex: 2 });
-        if (layerBRef.current) gsap.set(layerBRef.current, { opacity: 0, zIndex: 1 });
-      } catch {
-      }
-    })();
   }, [list]);
 
   useEffect(() => {
     const len = list.length;
     if (len <= 1) return;
-    let killed = false;
     const t = setInterval(() => {
       const fromLayer = activeLayerRef.current;
       const toLayer = fromLayer === 'a' ? 'b' : 'a';
       const nextIndex = (currentIndexRef.current + 1) % len;
       const nextBanner = list[nextIndex];
 
-      // Put next banner into the hidden layer (React will re-render with new image)
       if (toLayer === 'a') setLayerA(nextBanner);
       else setLayerB(nextBanner);
 
-      // Animasyon bitince activeLayer güncellenir (CSS ile GSAP çakışması önlenir)
-      (async () => {
-        try {
-          const mod: any = await import('gsap');
-          const gsap = mod?.gsap || mod?.default || mod;
-          if (!gsap || killed) return;
-
-          const activeEl = fromLayer === 'a' ? layerARef.current : layerBRef.current;
-          const nextEl = toLayer === 'a' ? layerARef.current : layerBRef.current;
-          if (!activeEl || !nextEl) return;
-
-          // Çıkış katmanı üstte, giriş altta - crossfade için
-          gsap.set(activeEl, { opacity: 1, zIndex: 2 });
-          gsap.set(nextEl, { opacity: 0, zIndex: 1 });
-
-          const tl = gsap.timeline({
-            onComplete: () => {
-              gsap.set(activeEl, { opacity: 0, zIndex: 1 });
-              gsap.set(nextEl, { opacity: 1, zIndex: 2 });
-              setActiveLayer(toLayer);
-              setCurrentIndex(nextIndex);
-              activeLayerRef.current = toLayer;
-              currentIndexRef.current = nextIndex;
-            },
-          });
-          tl.to(activeEl, { opacity: 0, duration: 0.7, ease: 'power2.in' }, 0);
-          tl.to(nextEl, { opacity: 1, duration: 0.7, ease: 'power2.out' }, 0);
-        } catch {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
           setActiveLayer(toLayer);
           setCurrentIndex(nextIndex);
           activeLayerRef.current = toLayer;
           currentIndexRef.current = nextIndex;
-        }
-      })();
+        });
+      });
     }, 6500);
-    return () => {
-      killed = true;
-      clearInterval(t);
-    };
+    return () => clearInterval(t);
   }, [list]);
 
   if (!list.length && loading) {
@@ -117,10 +76,10 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
   const content = (
     <div ref={rootRef} className="group relative w-full min-w-0 overflow-hidden rounded-xl bg-slate-900 shadow-soft-lg sm:rounded-2xl">
       <div className="relative h-[65px] w-full min-w-0 sm:h-[90px] md:h-[120px] lg:h-[150px] xl:h-[190px]">
-        {/* Layer A - animasyon dışında opacity activeLayer ile, animasyonda GSAP kontrolü */}
+        {}
         <div
           ref={layerARef}
-          className="absolute inset-0"
+          className="absolute inset-0 transition-opacity duration-700 ease-out"
           style={{ opacity: activeLayer === 'a' ? 1 : 0, zIndex: activeLayer === 'a' ? 2 : 1 }}
         >
           <Image
@@ -131,10 +90,10 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
             className="object-contain transition-transform duration-300 group-hover:scale-[1.02]"
           />
         </div>
-        {/* Layer B - animasyon dışında opacity activeLayer ile, animasyonda GSAP kontrolü */}
+        {}
         <div
           ref={layerBRef}
-          className="absolute inset-0"
+          className="absolute inset-0 transition-opacity duration-700 ease-out"
           style={{ opacity: activeLayer === 'b' ? 1 : 0, zIndex: activeLayer === 'b' ? 2 : 1 }}
         >
           <Image
@@ -146,7 +105,7 @@ export function HomeBannerStrip({ banners, loading }: { banners: HomeBanner[]; l
           />
         </div>
       </div>
-      {/* Mobil: dot göstergeleri */}
+      {}
       {list.length > 1 ? (
         <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 sm:bottom-3 md:bottom-4" aria-hidden>
           {list.map((_, i) => (

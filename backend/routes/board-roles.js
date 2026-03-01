@@ -10,8 +10,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// GET /api/board-roles - public list (for pyramid display)
 router.get('/', async (req, res) => {
   try {
     const items = await db.BoardRole.findAll({
@@ -22,8 +20,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/board-roles/admin/all - admin list
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const items = await db.BoardRole.findAll({
@@ -34,8 +30,6 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST /api/board-roles - admin create
 router.post(
   '/',
   auth,
@@ -61,8 +55,6 @@ router.post(
     }
   }
 );
-
-// PUT /api/board-roles/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -89,8 +81,6 @@ router.put(
     }
   }
 );
-
-// DELETE /api/board-roles/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.BoardRole.findByPk(req.params.id);

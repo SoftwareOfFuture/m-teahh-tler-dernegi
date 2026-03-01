@@ -1,10 +1,4 @@
-/**
- * Mevcut veritabanından SQL yedeği alır.
- * pg_dump, Docker veya Node.js (pg) ile çalışır.
- *
- * Kullanım: node scripts/backup-db.js
- * Çıktı: backend/backup-YYYY-MM-DDTHH-MM-SS.sql
- */
+
 require('dotenv').config();
 const { spawnSync } = require('child_process');
 const path = require('path');

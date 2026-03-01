@@ -10,8 +10,6 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   next();
 };
-
-// GET /api/videos - public list with pagination
 router.get(
   '/',
   [query('page').optional().isInt({ min: 1 }).toInt(), query('limit').optional().isInt({ min: 1, max: 50 }).toInt()],
@@ -33,8 +31,6 @@ router.get(
     }
   }
 );
-
-// GET /api/videos/recent - for homepage
 router.get('/recent', async (req, res) => {
   try {
     const limit = Number(req.query.limit || 3);
@@ -48,8 +44,6 @@ router.get('/recent', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/videos/admin/all - admin list including unpublished
 router.get('/admin/all', auth, adminOnly, async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -65,8 +59,6 @@ router.get('/admin/all', auth, adminOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// GET /api/videos/:id - public single video (for detail page)
 router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Video.findOne({
@@ -78,8 +70,6 @@ router.get('/:id', [param('id').isInt().toInt()], validate, async (req, res) => 
     res.status(500).json({ error: err.message });
   }
 });
-
-// POST /api/videos - admin create
 router.post(
   '/',
   auth,
@@ -110,8 +100,6 @@ router.post(
     }
   }
 );
-
-// PUT /api/videos/:id - admin update
 router.put(
   '/:id',
   auth,
@@ -144,8 +132,6 @@ router.put(
     }
   }
 );
-
-// DELETE /api/videos/:id - admin delete
 router.delete('/:id', auth, adminOnly, [param('id').isInt().toInt()], validate, async (req, res) => {
   try {
     const item = await db.Video.findByPk(req.params.id);

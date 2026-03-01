@@ -87,7 +87,7 @@ export default function PublicationsPage() {
         {loading ? <div className="mt-6 text-sm text-slate-500">Yükleniyor…</div> : null}
       </section>
 
-      {/* Yönetim Kurulu Piramiti - PDFlerden sonra */}
+      {}
       <BoardPyramid members={boardMembers} />
 
       <PdfPreviewModal
