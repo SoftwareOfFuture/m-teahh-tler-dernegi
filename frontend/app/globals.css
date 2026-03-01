@@ -36,6 +36,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.legal-scroll-area {
+  scrollbar-gutter: stable;
+}
+
 @media (max-width: 768px) {
   input[type="text"],
   input[type="email"],

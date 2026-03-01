@@ -275,14 +275,14 @@ export function DigitalPlatformsSlider({
   if (!list.length) return null;
 
   return (
-    <section className="w-full max-w-full overflow-hidden" aria-label="Dijital platformlar">
+    <section className="w-full max-w-full overflow-x-hidden" aria-label="Dijital platformlar">
       <div className="mb-4 sm:mb-8">
         <h2 className="text-center text-base font-bold text-slate-800 xs:text-lg sm:text-2xl lg:text-3xl">
           {title}
         </h2>
       </div>
 
-      <div className="w-full overflow-hidden rounded-2xl shadow-soft-lg">
+      <div className="w-full overflow-x-hidden rounded-2xl shadow-soft-lg">
         {list.map((item, idx) => {
           const align: 'left' | 'right' = idx % 2 === 0 ? 'left' : 'right';
           const animDir: 'left' | 'right' = align === 'left' ? 'left' : 'right';

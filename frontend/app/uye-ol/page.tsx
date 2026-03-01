@@ -450,14 +450,14 @@ export default function RegisterPage() {
 
             <div
               ref={legalScrollRef}
-              className="max-h-[60vh] overflow-y-auto px-6 py-4"
+              className="legal-scroll-area max-h-[75vh] min-h-[200px] overflow-y-auto overflow-x-hidden px-6 py-4 scroll-smooth"
               onScroll={(e) => {
                 const el = e.currentTarget;
-                const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 8;
+                const atEnd = el.scrollTop + el.clientHeight >= el.scrollHeight - 12;
                 if (atEnd) setLegalScrolledEnd(true);
               }}
             >
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800">{legalText(legalOpen)}</pre>
+              <pre className="whitespace-pre-wrap text-sm leading-relaxed text-slate-800 pb-4">{legalText(legalOpen)}</pre>
             </div>
 
             <div className="flex flex-col gap-3 border-t border-black/5 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">

@@ -220,7 +220,7 @@ export function HomePageContent() {
   return (
     <div className="flex min-h-screen w-full min-w-0 max-w-full flex-col overflow-x-hidden bg-white">
       <Navbar />
-      <main className="flex-1 w-full min-w-0 max-w-full overflow-x-hidden pt-4 pb-16 sm:pt-6 sm:pb-20 safe-area-x safe-area-b">
+      <main className="w-full min-w-0 max-w-full overflow-x-hidden pt-4 pb-16 sm:pt-6 sm:pb-20 safe-area-x safe-area-b">
         {slidesLoading ? (
           <section className="relative w-full overflow-hidden rounded-xl bg-slate-100 sm:rounded-2xl">
             <div className="h-[240px] animate-pulse xs:h-[280px] sm:h-[360px] md:h-[440px] lg:h-[500px]" />
