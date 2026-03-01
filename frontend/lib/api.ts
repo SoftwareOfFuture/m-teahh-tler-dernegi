@@ -272,8 +272,22 @@ export type SiteSettings = {
   maintenanceEndAt?: string | null;
 };
 
-export async function getSiteSettingsPublic() {
-  return await apiFetch<SiteSettings>('/api/site-settings', { method: 'GET' });
+const SITE_SETTINGS_CACHE_TTL_MS = 60_000;
+let siteSettingsCache: { data: SiteSettings; at: number } | null = null;
+
+export async function getSiteSettingsPublic(): Promise<SiteSettings> {
+  if (typeof window !== 'undefined' && siteSettingsCache && Date.now() - siteSettingsCache.at < SITE_SETTINGS_CACHE_TTL_MS) {
+    return siteSettingsCache.data;
+  }
+  const data = await apiFetch<SiteSettings>('/api/site-settings', { method: 'GET' });
+  if (typeof window !== 'undefined') {
+    siteSettingsCache = { data, at: Date.now() };
+  }
+  return data;
+}
+
+export function clearSiteSettingsCache() {
+  siteSettingsCache = null;
 }
 
 export async function getSiteSettingsAdmin(token: string) {
@@ -284,11 +298,13 @@ export async function getSiteSettingsAdmin(token: string) {
 }
 
 export async function updateSiteSettingsAdmin(token: string, payload: Partial<SiteSettings>) {
-  return await apiFetch<SiteSettings>('/api/site-settings/admin', {
+  const result = await apiFetch<SiteSettings>('/api/site-settings/admin', {
     method: 'PUT',
     headers: { Authorization: `Bearer ${token}` },
     body: JSON.stringify(payload),
   });
+  clearSiteSettingsCache();
+  return result;
 }
 
 // --- Contact Message (public) ---

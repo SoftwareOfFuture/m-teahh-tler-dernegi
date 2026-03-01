@@ -8,10 +8,11 @@ const DEFAULT_DESCRIPTION =
   'Antalya İnşaat Müteahhitleri Derneği. Sektörel birliktelik, paylaşım ve dayanışma. Haberler, yayınlar, video arşivi ve iletişim.';
 const DEFAULT_KEYWORDS =
   'Antalya İnşaat Müteahhitleri Derneği, ANTMUTDER, inşaat sektörü, müteahhit derneği, Antalya dernek, sektörel birliktelik';
+/** Canlı site adresi (Cloudflare/Vercel domain). Build öncesi .env ile ayarlanır. */
 const BASE_URL =
   typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_SITE_URL
     ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
-    : 'https://antmutder.org';
+    : 'https://www.antmutder.org';
 
 export const SEO = {
   siteName: SITE_NAME,
