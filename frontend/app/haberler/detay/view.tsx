@@ -90,8 +90,8 @@ export function NewsDetailView() {
         ) : (
           <article className="mt-6 overflow-hidden rounded-3xl bg-white shadow-card">
             {item.imageUrl ? (
-              <div className="relative aspect-[21/9] w-full">
-                <Image src={normalizeImageSrc(item.imageUrl)} alt={item.title} fill className="object-cover" />
+              <div className="relative w-full bg-slate-100 min-h-[240px] h-[min(65vh,620px)] flex items-center justify-center overflow-hidden">
+                <Image src={normalizeImageSrc(item.imageUrl)} alt={item.title} fill className="object-contain" />
               </div>
             ) : null}
             <div className="p-6">
