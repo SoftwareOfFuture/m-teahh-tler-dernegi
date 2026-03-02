@@ -54,9 +54,12 @@ export const metadata: Metadata = {
     description: SEO.defaultDescription,
   },
   icons: {
-    icon: [{ url: '/favicon.ico', type: 'image/x-icon', sizes: '32x32' }],
-    shortcut: '/favicon.ico',
-    apple: '/favicon.ico',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', type: 'image/x-icon', sizes: '32x32' },
+    ],
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
   verification: {},
 };
