@@ -55,11 +55,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/favicon.ico', type: 'image/x-icon', sizes: '32x32' },
+      { url: '/site-logo.png', type: 'image/png', sizes: '512x512' },
+      { url: '/site-logo.png', type: 'image/png', sizes: '192x192' },
+      { url: '/site-logo.png', type: 'image/png', sizes: '32x32' },
     ],
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    shortcut: '/site-logo.png',
+    apple: '/site-logo.png',
   },
   verification: {},
 };
